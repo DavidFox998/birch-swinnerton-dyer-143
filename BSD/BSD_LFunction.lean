@@ -1,3 +1,12 @@
+import Mathlib.Data.ZMod.Basic
+import Mathlib.FieldTheory.Finite.Basic
+import Mathlib.NumberTheory.LSeries.Dirichlet
+import Mathlib.Analysis.Complex.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+import Mathlib.NumberTheory.ArithmeticFunction
+import Mathlib.RingTheory.Multiplicity
+import Mathlib.Tactic
+
 /-!
 # BSD_LFunction — Tier 3: L(E₁₄₃, s) analytic structure, axiom-free elements
 
@@ -31,15 +40,6 @@ Non-split multiplicative reduction at p=11 and p=13 (a₁₁ = a₁₃ = −1).
 SORRY: 0. Axiom footprint: classical trio {propext, Classical.choice, Quot.sound}.
 YM/NS freeze: unaffected. BSD Surface: OPEN.
 -/
-
-import Mathlib.Data.ZMod.Basic
-import Mathlib.FieldTheory.Finite.Basic
-import Mathlib.NumberTheory.LSeries.Dirichlet
-import Mathlib.Analysis.Complex.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
-import Mathlib.NumberTheory.ArithmeticFunction
-import Mathlib.RingTheory.Multiplicity
-import Mathlib.Tactic
 
 noncomputable section
 open Complex Real Finset Nat
