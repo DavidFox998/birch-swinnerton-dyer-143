@@ -1,3 +1,11 @@
+import Towers.BSD.BSD_ClassNumberLowerProof
+import Towers.BSD.BSD_MasterCertification
+import Towers.BSD.BSD_MasterProof
+import Mathlib.RingTheory.ClassGroup
+import Mathlib.NumberTheory.NumberField.ClassNumber
+import Mathlib.GroupTheory.OrderOfElement
+import Mathlib.RingTheory.Ideal.Norm
+
 /-!
 # BSD_P2_Principal_CLOSED
 
@@ -22,17 +30,9 @@
 SORRY: 0.  Axiom footprint: classical trio {propext, Classical.choice, Quot.sound}.
 -/
 
-import BSD.BSD_ClassNumberLowerProof
-import BSD.BSD_MasterCertification
-import BSD.BSD_MasterProof
-import Mathlib.RingTheory.ClassGroup
-import Mathlib.NumberTheory.NumberField.ClassNumber
-import Mathlib.GroupTheory.OrderOfElement
-import Mathlib.RingTheory.Ideal.Norm
-
 set_option maxHeartbeats 800000
 
-namespace BSD
+namespace Towers.BSD
 
 open NumberField
 
@@ -466,4 +466,4 @@ theorem BSD_classNumber_eq_10_via_principal
     exact Nat.le_of_dvd (by linarith [BSD_classNumber_lower_bound]) hdvd
   · exact BSD_classNumber_lower_bound
 
-end BSD
+end Towers.BSD
