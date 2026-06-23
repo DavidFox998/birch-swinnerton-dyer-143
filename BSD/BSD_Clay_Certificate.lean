@@ -52,8 +52,14 @@ foundation at genus = 13.
 | TheoremaAureum.arakelov_positivity_X0_143 | ArakelovPositivity (X₀ 143) [shared] |
 | BSD_HeckeMultiplicativity_143_CLOSED | a_n(mn) = a_n m · a_n n (gcd=1) |
 | Modularity_143_CLOSED_1gate          | Modularity given BSD_HasseFull_143_OPEN |
-| BSD_HeegnerPoint_CLOSED              | ∃ (x y : ℚ), y²+y = x³−x²−x−2; witness (2,0) ← NEW |
-| BSD_weierstrass_discriminant         | Δ(143a1) = −1859 = −(11·13²) ← NEW |
+| BSD_HeegnerPoint_CLOSED              | ∃ (x y : ℚ), y²+y = x³−x²−x−2; witness (2,0) |
+| BSD_weierstrass_discriminant         | Δ(143a1) = −1859 = −(11·13²) |
+| BSD_conductor_squarefree_CLOSED      | Squarefree (143 : ℕ) — semistability cert ← M5.4 |
+| BSD_bad_primes_CLOSED                | bad primes of 143a1 = {11, 13} by decide ← M5.4 |
+| BSD_no_additive_primes_CLOSED        | 11²∤143, 13²∤143 — no additive reduction ← M5.4 |
+| BSD_quadratic_pos_CLOSED             | ∀ x:ℚ, x²+x+1>0 (disc=−3, positive definite) ← M5.4 |
+| BSD_y_zero_unique_CLOSED             | x=2 is unique rational y=0 solution ← M5.4 |
+| BSD_semistable_cert_CLOSED           | Combined semistability certificate ← M5.4 |
 
 ## Genuine Clay gaps (def Prop — not axioms, not sorry)
 
