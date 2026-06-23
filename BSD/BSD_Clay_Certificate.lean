@@ -70,6 +70,10 @@ foundation at genus = 13.
 | BSD_BQF_ClassNumber_bridge_CLOSED    | classNumber K = reducedForms143.length (both=10) ← M5.5 |
 | K1_Upper_Gate_CLOSED                 | K1_ClassNumber_Upper_BSD gate discharged ← M5.5 |
 | K1_Lower_Gate_CLOSED                 | K1_ClassNumber_Lower_BSD gate discharged ← M5.5 |
+| EvenK_NonPrincipal_Bridge_CLOSED     | p2^k not principal for k∈{2,4,6,8} ← M5.6 |
+| BSD_orderOf_p2_CLOSED                | ∃ p2 : ClassGroup(𝓞K), 10 ≤ orderOf p2 ← M5.6 |
+| ClassGroup_OrderOf_Bridge_CLOSED     | EvenK bridge → ∃ p2, 10 ≤ orderOf p2 ← M5.6 |
+| BSD_TermBound_CLOSED                 | ‖a_n n / n^s‖ ≤ √n·τ(n)/n^σ (conditional on a_n bound) ← M5.6 |
 
 ## Genuine Clay gaps (def Prop — not axioms, not sorry)
 
