@@ -1,3 +1,10 @@
+import Towers.BSD.BSD_Multiplicativity_Closed
+import Towers.BSD.BSD_MasterCertification
+import Towers.BSD.BSD_ClassNum_Upper_CLOSED
+import Towers.BSD.BSD_ClassNumber_10_CLOSED
+import Towers.BSD.BSD_HeegnerPoint_CLOSED
+import Towers.RH.Chain.C08_M4WeilBridge
+
 /-!
 # BSD_Clay_Certificate — Standalone Clay BSD Compliance Certificate
 # Theorema Aureum 143 · Volume I · Clay Problem II
@@ -103,13 +110,6 @@ DISCHARGED (Milestone 5.2 + 5.3):
 SORRY: 0.  Axiom footprint: classical trio {propext, Classical.choice, Quot.sound}.
 BSD: OPEN.  NOT a brick.  NOT a Clay submission.
 -/
-
-import Towers.BSD.BSD_Multiplicativity_Closed
-import Towers.BSD.BSD_MasterCertification
-import Towers.BSD.BSD_ClassNum_Upper_CLOSED
-import Towers.BSD.BSD_ClassNumber_10_CLOSED
-import Towers.BSD.BSD_HeegnerPoint_CLOSED
-import Towers.RH.Chain.C08_M4WeilBridge
 
 namespace Towers.BSD
 
