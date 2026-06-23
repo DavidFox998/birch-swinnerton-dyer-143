@@ -1,3 +1,9 @@
+import Towers.BSD.BSD_P2_Principal_CLOSED
+import Towers.BSD.BSD_ReducedForms
+import Mathlib.GroupTheory.OrderOfElement
+import Mathlib.NumberTheory.NumberField.ClassNumber
+import Mathlib.RingTheory.ClassGroup
+
 /-!
 # BSD_ClassNum_Upper_CLOSED — Upper class-number gate closed
 
@@ -29,12 +35,6 @@ This file:
 
 SORRY: 0.  Axiom footprint: classical trio.
 -/
-
-import Towers.BSD.BSD_P2_Principal_CLOSED
-import Towers.BSD.BSD_ReducedForms
-import Mathlib.GroupTheory.OrderOfElement
-import Mathlib.NumberTheory.NumberField.ClassNumber
-import Mathlib.RingTheory.ClassGroup
 
 set_option maxHeartbeats 800000
 
