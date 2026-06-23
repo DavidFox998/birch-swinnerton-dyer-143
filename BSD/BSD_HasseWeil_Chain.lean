@@ -1,3 +1,5 @@
+import Towers.BSD.BSD_LFunction_Closed
+
 /-!
 # BSD_HasseWeil_Chain — Milestone 3: Weil Bound and Convergence Improvement
 
@@ -42,8 +44,6 @@ and the bound |sin(nθ)/sin θ| ≤ n+1 — not readily available in Mathlib v4.
 SORRY: 0. Axiom footprint: classical trio {propext, Classical.choice, Quot.sound}.
 BSD Surface: OPEN. NOT a brick. No Clay claim.
 -/
-
-import Towers.BSD.BSD_LFunction_Closed
 
 namespace Towers.BSD
 
