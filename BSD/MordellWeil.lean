@@ -1,5 +1,7 @@
+import Towers.BSD.B01_EllipticCurve
+
 /-
-  # BSD.MordellWeil
+  # Towers.BSD.MordellWeil
 
   BSD Tower — Mordell-Weil and BSD rank conjecture surfaces.
 
@@ -8,7 +10,7 @@
   discharged by `trivial`, `fun _ => trivial`, or `sorry`.
 
   Content:
-  • `MordellWeil`   — BSD rank conjecture: rank E(ℚ) = ord_{s=1} L(E,s)
+  • `MordellWeil_OPEN`   — BSD rank conjecture: rank E(ℚ) = ord_{s=1} L(E,s)
                            for ALL Weierstrass curves over ℚ.
   • `IsLFunctionOf`      — genuine predicate: f is THE L-function of E
                            (pinned to the opaque EllipticLFunction anchor).
@@ -25,10 +27,8 @@
 
   STATUS: OPEN surfaces, NOT bricks. SORRY: 0.
   Axiom footprint: classical trio {propext, Classical.choice, Quot.sound}.
-  Namespace: TheoremaAureum.BSD.
+  Namespace: TheoremaAureum.Towers.BSD.
 -/
-
-import BSD.B01_EllipticCurve
 
 namespace TheoremaAureum
 namespace Towers
@@ -54,7 +54,7 @@ open Towers.BSD
 
     DO NOT discharge with `trivial`, `fun _ => trivial`, or `sorry`.
     BSD stays OPEN. -/
-def MordellWeil : Prop :=
+def MordellWeil_OPEN : Prop :=
   ∀ (E : WeierstrassCurve ℚ),
     MWRank E = VanishingOrder (EllipticLFunction E) 1
 
@@ -69,7 +69,7 @@ def MordellWeil : Prop :=
 def IsLFunctionOf (E : WeierstrassCurve ℚ) (f : ℂ → ℂ) : Prop :=
   f = EllipticLFunction E
 
-/-- BSD rank statement via `IsLFunctionOf` (equivalent to `MordellWeil`).
+/-- BSD rank statement via `IsLFunctionOf` (equivalent to `MordellWeil_OPEN`).
 
     Anchored: `IsLFunctionOf E L` forces `L = EllipticLFunction E`, so
     the conclusion `MWRank E = VanishingOrder L 1` is the real BSD claim.
