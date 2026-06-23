@@ -1,3 +1,7 @@
+import Towers.BSD.BSD_ClassNumberLowerProof
+import Towers.BSD.BSD_ClassNumberBounds
+import Towers.BSD.BSD_FormIdeal
+
 /-!
 # BSD_Certificate — All proved results for h(ℚ(√-143)) = 10
 
@@ -31,11 +35,7 @@ Mathlib v4.12.0).
 SORRY: 0.  Axiom footprint: classical trio.
 -/
 
-import BSD.BSD_ClassNumberLowerProof
-import BSD.BSD_ClassNumberBounds
-import BSD.BSD_FormIdeal
-
-namespace BSD
+namespace Towers.BSD
 
 open NumberField
 
