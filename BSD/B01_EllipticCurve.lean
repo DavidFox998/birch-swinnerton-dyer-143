@@ -1,3 +1,8 @@
+import Mathlib.Analysis.SpecialFunctions.Sqrt
+import Mathlib.Analysis.SpecialFunctions.Log.Basic
+import Mathlib.Data.Complex.Basic
+import Mathlib.AlgebraicGeometry.EllipticCurve.Weierstrass
+
 /-
   # B01 — Elliptic Curve Scaffold for BSD Tower
 
@@ -13,13 +18,8 @@
   the Mordell-Weil theorem itself is not formalized at this depth.
 
   STATUS: scaffold, NOT a brick. SORRY: 0. Axiom footprint: classical trio.
-  Namespace: BSD.
+  Namespace: Towers.BSD.
 -/
-
-import Mathlib.Analysis.SpecialFunctions.Sqrt
-import Mathlib.Analysis.SpecialFunctions.Log.Basic
-import Mathlib.Data.Complex.Basic
-import Mathlib.AlgebraicGeometry.EllipticCurve.Weierstrass
 
 namespace Towers.BSD
 
@@ -110,7 +110,7 @@ noncomputable opaque BSD_LeadingCoeff (N : ℕ) : ℝ
 /-- Named OPEN surface: the BSD L-function has an analytic continuation to all of ℂ.
     Required before stating the rank formula. Not in Mathlib v4.12.0.
     STATUS: OPEN.  def Prop — NOT an axiom, NOT proved. -/
-def BSD_Analytic : Prop :=
+def BSD_Analytic_OPEN : Prop :=
   ∀ N : ℕ, AnalyticOn ℂ (BSDLFunction N) Set.univ
 
 end Towers.BSD
