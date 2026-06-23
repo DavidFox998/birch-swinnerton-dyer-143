@@ -1,3 +1,9 @@
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+import Mathlib.Analysis.SpecialFunctions.Sqrt
+import Mathlib.NumberTheory.LSeries.RiemannZeta
+import Mathlib.Analysis.Asymptotics.Asymptotics
+import Mathlib.RingTheory.Algebraic
+
 /-
   # BSD_TranscendentalSieve — Tier 2 Track B: α = 299 + π/10, sieve, zeta bound
 
@@ -20,19 +26,19 @@
   • α_BSD_period_bounds    : 299 < α_BSD_period ∧ α_BSD_period < 300
 
   ── OPEN SURFACES (named Prop, NOT axioms) ──────────────────────────────────
-  • BSD_Pi_Transcendental
+  • BSD_Pi_Transcendental_OPEN
       π is transcendental over ℚ (Hermite–Lindemann; not in Mathlib v4.12.0).
-  • BSD_Alpha_Transcendental
+  • BSD_Alpha_Transcendental_OPEN
       α_BSD_period = 299 + π/10 is transcendental over ℚ.
-      Derives from BSD_Pi_Transcendental: if α were algebraic, then
+      Derives from BSD_Pi_Transcendental_OPEN: if α were algebraic, then
       π/10 = α − 299 algebraic, then π = (π/10) · 10 algebraic, contradiction.
-  • BSD_IrrMeasure (μ)
+  • BSD_IrrMeasure_OPEN (μ)
       The irrationality measure μ of α_BSD_period is finite, 2 < μ < ∞.
-  • BSD_SchmidtCount
+  • BSD_SchmidtCount_OPEN
       #{p ≤ x prime : ‖pα‖ < p^{-δ}} ≪ x^{1−δ/(μ−1)}   (Schmidt 1964 type).
-  • BSD_SieveDensity
+  • BSD_SieveDensity_OPEN
       The Dirichlet density D(S) of S = {p : ‖pα‖ < p⁻¹} satisfies D(S) < 1.
-  • BSD_ZetaBound
+  • BSD_ZetaBound_OPEN
       ∀ ε > 0, ∃ C, ∀ t ≥ 2, ‖ζ(1/2 + it)‖ ≤ C · t^{1+ε}
       Unconditional; weaker than RH (O(t^{1/6})) or best known
       unconditional (O(t^{13/84+ε})); achieved via Dirichlet density < 1.
@@ -42,12 +48,6 @@
 
   SORRY: 0 in proved results.  Classical trio axiom footprint.
 -/
-
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
-import Mathlib.Analysis.SpecialFunctions.Sqrt
-import Mathlib.NumberTheory.LSeries.RiemannZeta
-import Mathlib.Analysis.Asymptotics.Asymptotics
-import Mathlib.RingTheory.Algebraic
 
 namespace Towers.BSD
 
@@ -112,7 +112,7 @@ def S_BSD_sieve : Set ℕ :=
 
 /-! ### Named open surfaces -/
 
-/-- **BSD_Pi_Transcendental**: Real.pi is transcendental over ℚ.
+/-- **BSD_Pi_Transcendental_OPEN**: Real.pi is transcendental over ℚ.
 
     Mathematical content: Hermite–Lindemann theorem.
     Lindemann 1882 proved e^{iπ} = -1 forces π ∉ ℚ̄.
@@ -121,33 +121,33 @@ def S_BSD_sieve : Set ℕ :=
     It was added in a later Mathlib version.
 
     STATUS: OPEN.  def Prop — NOT proved, NOT an axiom. -/
-def BSD_Pi_Transcendental : Prop := Transcendental ℚ Real.pi
+def BSD_Pi_Transcendental_OPEN : Prop := Transcendental ℚ Real.pi
 
-/-- **BSD_Alpha_Transcendental**: α_BSD_period = 299 + π/10 is transcendental.
+/-- **BSD_Alpha_Transcendental_OPEN**: α_BSD_period = 299 + π/10 is transcendental.
 
-    Mathematical derivation (conditional on BSD_Pi_Transcendental):
+    Mathematical derivation (conditional on BSD_Pi_Transcendental_OPEN):
     If α were algebraic over ℚ, then:
     · π/10 = α − 299 would be algebraic (algebraic numbers closed under subtraction)
     · π = (π/10) · 10 would be algebraic (closed under multiplication by ℚ)
-    · This contradicts BSD_Pi_Transcendental.
+    · This contradicts BSD_Pi_Transcendental_OPEN.
 
     Formal gap: Mathlib v4.12.0 lacks IsAlgebraic.sub and IsAlgebraic.mul
     for ℝ/ℚ.  The argument above is mathematically standard; the Lean
     proof requires ~25 lines of algebraic closure API.
 
-    STATUS: OPEN (depends on BSD_Pi_Transcendental + algebraic closure).
+    STATUS: OPEN (depends on BSD_Pi_Transcendental_OPEN + algebraic closure).
     def Prop — NOT proved here, NOT an axiom. -/
-def BSD_Alpha_Transcendental : Prop := Transcendental ℚ α_BSD_period
+def BSD_Alpha_Transcendental_OPEN : Prop := Transcendental ℚ α_BSD_period
 
 /-- The transcendence of α_BSD_period follows from the transcendence of π,
     given closure of IsAlgebraic under addition and multiplication.
     The three closure hypotheses are the only Mathlib gap (v4.12.0). -/
 theorem BSD_alpha_transcendental_conditional
-    (hπ    : BSD_Pi_Transcendental)
+    (hπ    : BSD_Pi_Transcendental_OPEN)
     (hadd  : ∀ (x y : ℝ), IsAlgebraic ℚ x → IsAlgebraic ℚ y → IsAlgebraic ℚ (x + y))
     (hmul  : ∀ (x y : ℝ), IsAlgebraic ℚ x → IsAlgebraic ℚ y → IsAlgebraic ℚ (x * y))
     (hneg  : ∀ (x : ℝ), IsAlgebraic ℚ x → IsAlgebraic ℚ (-x)) :
-    BSD_Alpha_Transcendental := by
+    BSD_Alpha_Transcendental_OPEN := by
   intro h_alg
   -- All integers are algebraic over ℚ
   have h299 : IsAlgebraic ℚ (299 : ℝ) := isAlgebraic_int 299
@@ -159,14 +159,14 @@ theorem BSD_alpha_transcendental_conditional
     have heq : α_BSD_period + -(299 : ℝ) = Real.pi / 10 := by
       unfold α_BSD_period; ring
     rwa [heq] at hsum
-  -- π = (π/10) * 10 is algebraic, contradicting BSD_Pi_Transcendental
+  -- π = (π/10) * 10 is algebraic, contradicting BSD_Pi_Transcendental_OPEN
   have hpi : IsAlgebraic ℚ Real.pi := by
     have hprod := hmul _ _ hpi_div h10
     have heq : Real.pi / 10 * 10 = Real.pi := by ring
     rwa [heq] at hprod
   exact hπ hpi
 
-/-- **BSD_IrrMeasure** (parameter μ): the irrationality measure of α_BSD_period
+/-- **BSD_IrrMeasure_OPEN** (parameter μ): the irrationality measure of α_BSD_period
     is a finite real number μ with 2 < μ.
 
     Mathematical content: by the Nesterenko–Ramachandra theorem,
@@ -175,9 +175,9 @@ theorem BSD_alpha_transcendental_conditional
     The current best bound: μ(π) ≤ 7.606... (Salikhov 2008).
 
     STATUS: OPEN.  We work with an abstract μ > 2. -/
-def BSD_IrrMeasure (μ : ℝ) : Prop := 2 < μ
+def BSD_IrrMeasure_OPEN (μ : ℝ) : Prop := 2 < μ
 
-/-- **BSD_SchmidtCount** (for irrationality measure μ and exponent δ > 0):
+/-- **BSD_SchmidtCount_OPEN** (for irrationality measure μ and exponent δ > 0):
     #{p ≤ x prime : ‖p · α‖ < p^{-δ}} ≪_δ x^{1 − δ/(μ−1)}
 
     Mathematical content: a prime-counting variant of the Schmidt subspace
@@ -185,7 +185,7 @@ def BSD_IrrMeasure (μ : ℝ) : Prop := 2 < μ
     For δ = 1 this gives N_S(x) ≪ x^{1−1/(μ−1)}.
 
     STATUS: OPEN.  Research-grade; not in Mathlib v4.12.0. -/
-def BSD_SchmidtCount (μ δ : ℝ) : Prop :=
+def BSD_SchmidtCount_OPEN (μ δ : ℝ) : Prop :=
   ∃ C : ℝ, ∀ᶠ x in atTop,
     (Finset.card (Finset.filter
       (fun p => p.Prime ∧
@@ -193,23 +193,23 @@ def BSD_SchmidtCount (μ δ : ℝ) : Prop :=
           (p : ℝ) ^ (-δ))
       (Finset.range (⌊x⌋₊ + 1))) : ℝ) ≤ C * x ^ (1 - δ / (μ - 1))
 
-/-- **BSD_SieveDensity**: the Dirichlet density of S_BSD_sieve is < 1.
+/-- **BSD_SieveDensity_OPEN**: the Dirichlet density of S_BSD_sieve is < 1.
 
-    Derives from BSD_SchmidtCount with δ = 1:
+    Derives from BSD_SchmidtCount_OPEN with δ = 1:
     N_S(x) ≪ x^{1−1/(μ−1)} where 1−1/(μ−1) < 1 since μ > 2.
     So Σ_{p ∈ S, p ≤ x} p⁻¹ / (log log x) → θ < 1, giving D(S) = θ < 1.
 
-    STATUS: OPEN (depends on BSD_SchmidtCount + analytic number theory). -/
-def BSD_SieveDensity : Prop :=
+    STATUS: OPEN (depends on BSD_SchmidtCount_OPEN + analytic number theory). -/
+def BSD_SieveDensity_OPEN : Prop :=
   ∃ θ : ℝ, θ < 1 ∧
     ∀ᶠ x in atTop,
       (∑ p ∈ Finset.filter (fun p => p ∈ S_BSD_sieve)
          (Finset.range (⌊x⌋₊ + 1)), (1 : ℝ) / p) ≤ θ * Real.log (Real.log x)
 
-/-- **BSD_ZetaBound**: ζ(1/2 + it) = O_ε(t^{1+ε}) for t ≥ 2.
+/-- **BSD_ZetaBound_OPEN**: ζ(1/2 + it) = O_ε(t^{1+ε}) for t ≥ 2.
 
     Mathematical route:
-    1. BSD_SieveDensity: D(S) < 1, so Σ_{p∈S} p^{-1/2-it} = O(t^{1/(1-D(S))+ε})
+    1. BSD_SieveDensity_OPEN: D(S) < 1, so Σ_{p∈S} p^{-1/2-it} = O(t^{1/(1-D(S))+ε})
     2. Euler product truncation:
        |∏_{p∈S} (1 − p^{-1/2-it})⁻¹| ≪ exp(O(t^{1+ε}))
     3. ζ(s) = ∏_{p prime} (1−p^{-s})⁻¹ (for Re s > 1, then analytic continuation):
@@ -221,17 +221,17 @@ def BSD_SieveDensity : Prop :=
     It is the β / BKM control for the NS vorticity argument (finite ∫‖ω(t)‖∞ dt),
     not a competitive bound for analytic number theory itself.
 
-    STATUS: OPEN (research-grade; depends on BSD_SieveDensity). -/
-def BSD_ZetaBound : Prop :=
+    STATUS: OPEN (research-grade; depends on BSD_SieveDensity_OPEN). -/
+def BSD_ZetaBound_OPEN : Prop :=
   ∀ ε > (0 : ℝ), ∃ C : ℝ, ∀ t : ℝ, 2 ≤ t →
     ‖riemannZeta (1/2 + I * t)‖ ≤ C * t ^ (1 + ε)
 
 /-! ### Combinator chain -/
 
 /-- BSD_ZetaBound_chain: the chain
-    BSD_Pi_Transcendental → BSD_Alpha_Transcendental
-    → BSD_IrrMeasure → BSD_SchmidtCount
-    → BSD_SieveDensity → BSD_ZetaBound
+    BSD_Pi_Transcendental_OPEN → BSD_Alpha_Transcendental_OPEN
+    → BSD_IrrMeasure_OPEN → BSD_SchmidtCount_OPEN
+    → BSD_SieveDensity_OPEN → BSD_ZetaBound_OPEN
 
     accepts all open surfaces as explicit hypotheses and yields the
     conditional conclusion.  0 sorry, classical trio only.
@@ -239,12 +239,12 @@ def BSD_ZetaBound : Prop :=
 
     The conditional is honest: each arrow is a named gap. -/
 theorem BSD_ZetaBound_chain
-    (_ : BSD_Pi_Transcendental)
-    (_ : BSD_Alpha_Transcendental)
-    (μ : ℝ) (_ : BSD_IrrMeasure μ)
-    (_ : BSD_SchmidtCount μ 1)
-    (_ : BSD_SieveDensity)
-    (h_zeta : BSD_ZetaBound) :
+    (_ : BSD_Pi_Transcendental_OPEN)
+    (_ : BSD_Alpha_Transcendental_OPEN)
+    (μ : ℝ) (_ : BSD_IrrMeasure_OPEN μ)
+    (_ : BSD_SchmidtCount_OPEN μ 1)
+    (_ : BSD_SieveDensity_OPEN)
+    (h_zeta : BSD_ZetaBound_OPEN) :
     ∀ ε > (0 : ℝ), ∃ C : ℝ, ∀ t : ℝ, 2 ≤ t →
       ‖riemannZeta (1/2 + I * t)‖ ≤ C * t ^ (1 + ε) :=
   h_zeta
