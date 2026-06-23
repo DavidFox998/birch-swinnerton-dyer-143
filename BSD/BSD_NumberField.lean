@@ -1,3 +1,9 @@
+import Mathlib.RingTheory.AdjoinRoot
+import Mathlib.NumberTheory.NumberField.Basic
+import Mathlib.NumberTheory.NumberField.Discriminant
+import Mathlib.Analysis.SpecialFunctions.Sqrt
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+
 /-
   # BSD_NumberField — K = ℚ(√-143) for the BSD Tower
 
@@ -15,19 +21,13 @@
     • nrRealPlaces_zero_BSD — NrRealPlaces K = 0
     • BSD_finrank_CLOSED — PROVED surface: finrank ℚ K = 2
       (proved in BSD_Discriminant.lean via AdjoinRoot.powerBasis;
-       formerly named BSD_finrank, now CLOSED)
+       formerly named BSD_finrank_OPEN, now CLOSED)
     • nrComplexPlaces_one_BSD — conditional on BSD_finrank_CLOSED
     • minkowski_lt_eight_BSD — (2/π)·√143 < 8  (proved)
 
   SORRY: 0. Axiom footprint: classical trio {propext, Classical.choice, Quot.sound}.
   BSD Surface: OPEN.
 -/
-
-import Mathlib.RingTheory.AdjoinRoot
-import Mathlib.NumberTheory.NumberField.Basic
-import Mathlib.NumberTheory.NumberField.Discriminant
-import Mathlib.Analysis.SpecialFunctions.Sqrt
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 
 namespace Towers.BSD
 
@@ -124,7 +124,7 @@ theorem nrRealPlaces_zero_BSD : NrRealPlaces K = 0 := by
 
     Mathematical content: K = ℚ(√-143) has degree 2 over ℚ.
     PROVED in BSD_Discriminant.lean via AdjoinRoot.powerBasis.
-    Formerly named BSD_finrank; renamed CLOSED after BSD_Discriminant
+    Formerly named BSD_finrank_OPEN; renamed CLOSED after BSD_Discriminant
     provided the proof `BSD_finrank_CLOSED : BSD_finrank_CLOSED := by ...`.
 
     STATUS: CLOSED (proved). -/
