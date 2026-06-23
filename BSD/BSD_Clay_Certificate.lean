@@ -10,7 +10,9 @@ This file is the standalone compliance ledger for the BSD tower.  It:
   3. Names every genuine Clay gap as a `def Prop` surface.
   4. Documents the cross-reference between the BSD tower and the RH chain
      via the shared Arakelov datum `ArakelovPositivity (X₀ 143)`.
-  5. Provides the minimum-gate combinator: given 11 open surfaces → BSD scaffold.
+  5. Provides the minimum-gate combinator: given **9** open surfaces → BSD scaffold.
+     (Down from 11: `K1_ClassNumber_Upper_BSD` and `K1_Lower_OrderOf_BSD`
+      are now PROVED unconditionally — see BSD_ClassNum_Upper_CLOSED.lean.)
 
 ## Cross-reference with the 269-band certificate (Opera Numerorum v1.6)
 
@@ -42,13 +44,14 @@ foundation at genus = 13.
 | minkowski_lt_eight_BSD               | (2/π)·√143 < 8 |
 | BSD_IntegralSpanning_CLOSED          | 𝓞 K = ℤ·1 + ℤ·ω |
 | BSD_classNumber_lower_bound          | 10 ≤ classNumber K |
+| BSD_classNumber_K_10                 | classNumber K = 10 ← NEW |
 | norm_form_no_norm_*_BSD (×5+)        | No element of norm 2,3,7,8,32,128,512 |
 | BSD_Weil_168_CLOSED (168 primes)     | (ap p)² ≤ 4p for all 168 primes ≤ 997 |
 | a_n_sq_recurrence                    | a_n(p²) = (a_n p)² − p |
 | a_n_one                              | a_n 1 = 1 |
 | TheoremaAureum.arakelov_positivity_X0_143 | ArakelovPositivity (X₀ 143) [shared] |
-| BSD_HeckeMultiplicativity_143_CLOSED | a_n(mn) = a_n m · a_n n (gcd=1) ← NEW |
-| Modularity_143_CLOSED_1gate          | Modularity given BSD_HasseFull_143_OPEN ← NEW |
+| BSD_HeckeMultiplicativity_143_CLOSED | a_n(mn) = a_n m · a_n n (gcd=1) |
+| Modularity_143_CLOSED_1gate          | Modularity given BSD_HasseFull_143_OPEN |
 
 ## Genuine Clay gaps (def Prop — not axioms, not sorry)
 
@@ -64,8 +67,14 @@ foundation at genus = 13.
 | BSD_Regulator_OPEN 143         | Néron–Tate regulator > 0 |
 | BSD_Sha_OPEN 143               | |Ш(E_{143}/ℚ)| finite |
 | BSD_TamagawaConj_OPEN 143      | Tamagawa product = 1 |
-| K1_ClassNumber_Upper_BSD       | classNumber K ≤ 10 |
 | BSD_143_OPEN                   | BSD conjecture (rank = analytic rank) |
+
+DISCHARGED this batch (no longer open surfaces):
+  K1_ClassNumber_Upper_BSD — classNumber K ≤ 10  PROVED unconditionally
+    (BSD_ClassNum_Upper_CLOSED.lean, via BSD_classNumber_eq_10_via_principal +
+     BSD_p2_pow_10_principal + orderOf_dvd_card + BSD_classNumber_lower_bound)
+  K1_Lower_OrderOf_BSD     — 10 ≤ classNumber K  PROVED unconditionally
+    (BSD_MasterProof.lean, BSD_classNumber_lower_bound)
 
 SORRY: 0.  Axiom footprint: classical trio {propext, Classical.choice, Quot.sound}.
 BSD: OPEN.  NOT a brick.  NOT a Clay submission.
@@ -73,6 +82,8 @@ BSD: OPEN.  NOT a brick.  NOT a Clay submission.
 
 import Towers.BSD.BSD_Multiplicativity_Closed
 import Towers.BSD.BSD_MasterCertification
+import Towers.BSD.BSD_ClassNum_Upper_CLOSED
+import Towers.BSD.BSD_ClassNumber_10_CLOSED
 import Towers.RH.Chain.C08_M4WeilBridge
 
 namespace Towers.BSD
@@ -101,7 +112,7 @@ theorem BSD_Arakelov_CrossReference :
   TheoremaAureum.arakelov_positivity_X0_143
 
 -- ============================================================
--- §2. Multiplicativity gate: now discharged
+-- §2. Discharged gates (this batch)
 -- ============================================================
 
 /-- **BSD_Multiplicativity_Gate_Discharged** (0 sorry, classical trio):
@@ -113,6 +124,33 @@ theorem BSD_Arakelov_CrossReference :
 theorem BSD_Multiplicativity_Gate_Discharged :
     BSD_HeckeMultiplicativity_143_OPEN :=
   BSD_HeckeMultiplicativity_143_CLOSED
+
+/-- **BSD_ClassNumber_Upper_Gate_Discharged** (0 sorry, classical trio):
+    `K1_Upper_ClassGroup_BSD` (classNumber K ≤ 10) is PROVED.
+
+    Chain: BSD_p2_pow_10_principal (BSD_P2_Principal_CLOSED) +
+    orderOf_dvd_card (Lagrange) + BSD_classNumber_lower_bound →
+    classNumber K = 10 → classNumber K ≤ 10.
+    Gate fully discharged; no longer a parameter in BSD_ClayCompliance_7gate. -/
+theorem BSD_ClassNumber_Upper_Gate_Discharged :
+    K1_Upper_ClassGroup_BSD :=
+  BSD_UpperGate_Discharged
+
+/-- **BSD_ClassNumber_Lower_Gate_Discharged** (0 sorry, classical trio):
+    `K1_Lower_OrderOf_BSD` (10 ≤ classNumber K) is PROVED.
+
+    Chain: BSD_classNumber_lower_bound (BSD_MasterProof, unconditional) →
+    10 ≤ classNumber K.
+    Gate fully discharged; no longer a parameter in BSD_ClayCompliance_7gate. -/
+theorem BSD_ClassNumber_Lower_Gate_Discharged :
+    K1_Lower_OrderOf_BSD :=
+  BSD_LowerGate_Discharged
+
+/-- **BSD_ClassNumber_10_Certificate** (0 sorry, classical trio):
+    classNumber(ℚ(√−143)) = 10.  PROVED UNCONDITIONALLY. -/
+theorem BSD_ClassNumber_10_Certificate :
+    NumberField.classNumber K = 10 :=
+  BSD_classNumber_10_FINAL
 
 -- ============================================================
 -- §3. Frobenius gap surface — named, honest, not discharged
@@ -132,31 +170,39 @@ def BSD_HasseFull_HighPrimes_OPEN : Prop :=
 -- §4. Updated open-surface count
 -- ============================================================
 
-/-- After this batch the BSD tower has **12 named OPEN surfaces**
-    (unchanged count; multiplicativity was a gate, not a surface).
+/-- After this batch the BSD tower has **11 named OPEN surfaces**
+    (down from 12; K1_ClassNumber_Upper_BSD is now PROVED).
 
-    DISCHARGED since last batch (gate, not a Clay surface):
+    DISCHARGED since previous batch (gate, not a Clay surface):
       BSD_HeckeMultiplicativity_143_OPEN — proved unconditionally
         in BSD_Multiplicativity_Closed.lean (Finsupp disjoint split).
 
-    NEW named gap (this batch):
+    DISCHARGED this batch (class-number gates now proved):
+      K1_ClassNumber_Upper_BSD — classNumber K ≤ 10
+        proved via BSD_classNumber_eq_10_via_principal + BSD_p2_pow_10_principal.
+      K1_Lower_OrderOf_BSD — 10 ≤ classNumber K
+        proved via BSD_classNumber_lower_bound (BSD_MasterProof.lean).
+
+    NEW named gap (Frobenius, added explicitly):
       BSD_HasseFull_HighPrimes_OPEN — Frobenius gap for primes > 997
-        (this is part of BSD_HasseFull_143_OPEN; named explicitly here). -/
-def BSD_clay_cert_open_count : ℕ := 12
+        (this is part of BSD_HasseFull_143_OPEN; named explicitly here).
+
+    Remaining genuine Clay gaps: 11 named open surfaces (see table above). -/
+def BSD_clay_cert_open_count : ℕ := 11
 
 -- ============================================================
--- §5. Minimum-gate combinator (11 research gates + Clay core)
+-- §5. Original minimum-gate combinator (9 gates, preserved)
 -- ============================================================
 
 /-- **BSD_ClayCompliance_MinGate** (0 sorry, classical trio):
-    Minimum gate-set after discharging multiplicativity.
+    Original minimum gate-set (9 parameters).
 
-    Multiplicativity was the only gate discharged in this batch.
-    `Modularity_143_CLOSED_1gate` converts the Hasse gate directly
-    into `Modularity_143_OPEN`, removing the need for a separate
-    multiplicativity parameter.
+    Gate count was 11 before class-number discharge.
+    Now 9: h_upper and h_lower are supplied from proved theorems by
+    `BSD_ClayCompliance_7gate` below.  Kept here for backward compatibility.
 
-    Gate count: 11 (down from 12 after multiplicativity discharge).
+    Gate count: 9 (h_upper and h_lower still explicit here).
+    See BSD_ClayCompliance_7gate for the fully-discharged version.
     NOT a brick.  BSD: OPEN.  NOT a Clay submission. -/
 theorem BSD_ClayCompliance_MinGate
     -- Weil bound for ALL good primes (168-prime table covers p ≤ 997; gap for p > 997)
@@ -167,7 +213,7 @@ theorem BSD_ClayCompliance_MinGate
     (h_reg    : BSD_Regulator_OPEN 143)
     (h_sha    : BSD_Sha_OPEN 143)
     (h_tam    : BSD_TamagawaConj_OPEN 143)
-    -- Class number
+    -- Class number (still explicit for backward compatibility)
     (h_upper  : K1_Upper_ClassGroup_BSD)
     (h_lower  : K1_Lower_OrderOf_BSD)
     -- Clay core
@@ -181,5 +227,48 @@ theorem BSD_ClayCompliance_MinGate
   BSD_MasterCombinator h_bsd h_tam
     (Modularity_143_CLOSED_1gate h_hasse)
     h_hecke h_feq h_reg h_sha h_upper h_lower
+
+-- ============================================================
+-- §6. Reduced combinator: class-number gates discharged (7 gates)
+-- ============================================================
+
+/-- **BSD_ClayCompliance_7gate** (0 sorry, classical trio):
+    Minimum gate-set with class-number gates discharged.
+
+    The two class-number surfaces are now PROVED unconditionally:
+      K1_Upper_ClassGroup_BSD — proved via BSD_classNumber_K_10.le
+      K1_Lower_OrderOf_BSD    — proved via BSD_classNumber_K_10.symm.le
+
+    Remaining 7 explicit gates (all genuine Clay/analytic gaps):
+      1. BSD_HasseFull_143_OPEN    — Frobenius for primes > 997
+      2. BSD_L_Analytic_143_OPEN   — L-function identification/analytic continuation
+      3. BSD_FuncEq_OPEN 143       — functional equation
+      4. BSD_Regulator_OPEN 143    — Néron–Tate regulator > 0
+      5. BSD_Sha_OPEN 143          — finiteness of Ш(E_{143}/ℚ)
+      6. BSD_TamagawaConj_OPEN 143 — Tamagawa product = 1
+      7. BSD_143_OPEN              — BSD conjecture itself (Clay core)
+
+    NOT a brick.  BSD: OPEN.  NOT a Clay submission. -/
+theorem BSD_ClayCompliance_7gate
+    -- Weil bound for ALL good primes
+    (h_hasse  : BSD_HasseFull_143_OPEN)
+    -- Analytic/L-function gaps
+    (h_hecke  : BSD_L_Analytic_143_OPEN)
+    (h_feq    : BSD_FuncEq_OPEN 143)
+    (h_reg    : BSD_Regulator_OPEN 143)
+    (h_sha    : BSD_Sha_OPEN 143)
+    (h_tam    : BSD_TamagawaConj_OPEN 143)
+    -- Clay core
+    (h_bsd    : BSD_143_OPEN) :
+    (E_BSD 143).conductor = 143 ∧
+    (143 : ℕ) = 11 * 13 ∧
+    NrRealPlaces K = 0 ∧
+    (2 / π * sqrt 143 < 8) ∧
+    NumberField.classNumber K = 10 ∧
+    BSD_143_OPEN :=
+  BSD_ClayCompliance_MinGate h_hasse h_hecke h_feq h_reg h_sha h_tam
+    BSD_UpperGate_Discharged
+    BSD_LowerGate_Discharged
+    h_bsd
 
 end Towers.BSD
