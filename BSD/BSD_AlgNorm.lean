@@ -1,3 +1,7 @@
+import Towers.BSD.BSD_NormBridge
+import Mathlib.NumberTheory.NumberField.Norm
+import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+
 /-
   Towers/BSD/BSD_AlgNorm.lean
 
@@ -15,10 +19,6 @@
   SORRY: 0.  Classical trio {propext, Classical.choice, Quot.sound}.
   NOT a brick.  BSD class number: OPEN (Phase 2 still needs ideal bridge).
 -/
-
-import BSD.BSD_NormBridge
-import Mathlib.NumberTheory.NumberField.Norm
-import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 
 namespace Towers.BSD
 
