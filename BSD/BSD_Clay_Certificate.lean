@@ -60,6 +60,16 @@ foundation at genus = 13.
 | BSD_quadratic_pos_CLOSED             | ∀ x:ℚ, x²+x+1>0 (disc=−3, positive definite) ← M5.4 |
 | BSD_y_zero_unique_CLOSED             | x=2 is unique rational y=0 solution ← M5.4 |
 | BSD_semistable_cert_CLOSED           | Combined semistability certificate ← M5.4 |
+| coordMap_kills_ideal_CLOSED          | ∀ x ∈ 𝔞_Q, coordMap a b x = 0 ← M5.5 |
+| coordMap_ker_eq_ideal_CLOSED         | ker(coordMap a b) = idealOfForm a b ← M5.5 |
+| idealOfForm_absNorm_CLOSED           | absNorm(𝔞_Q) = a for each BQF ← M5.5 |
+| idealOfForm_classGroup_bridge_CLOSED | absNorm = a for all 10 reduced BQFs ← M5.5 |
+| BSD_ClassNumber_Upper_CLOSED         | classNumber K ≤ 10 (from K = 10) ← M5.5 |
+| BSD_ClassNumber_Lower_CLOSED         | 10 ≤ classNumber K (from K = 10) ← M5.5 |
+| BSD_classGroupCard_le_10_CLOSED      | classNumber K ≤ 10 (ClassNumberBounds) ← M5.5 |
+| BSD_BQF_ClassNumber_bridge_CLOSED    | classNumber K = reducedForms143.length (both=10) ← M5.5 |
+| K1_Upper_Gate_CLOSED                 | K1_ClassNumber_Upper_BSD gate discharged ← M5.5 |
+| K1_Lower_Gate_CLOSED                 | K1_ClassNumber_Lower_BSD gate discharged ← M5.5 |
 
 ## Genuine Clay gaps (def Prop — not axioms, not sorry)
 
