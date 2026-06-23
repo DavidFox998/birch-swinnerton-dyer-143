@@ -1,3 +1,12 @@
+import Towers.BSD.BSD_Discriminant
+import Mathlib.NumberTheory.NumberField.Norm
+import Mathlib.LinearAlgebra.Dimension.Free
+import Mathlib.LinearAlgebra.Matrix.Basis
+import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
+import Mathlib.RingTheory.Discriminant
+import Mathlib.Algebra.Squarefree.Basic
+import Mathlib.Data.Nat.Squarefree
+
 /-
   # BSD_IntBasis — Integral basis {1, ω} for 𝓞 K, K = ℚ(√-143)
 
@@ -18,15 +27,6 @@
   NOT a brick (BSD surfaces #2, #3 still OPEN).
   Axiom footprint: classical trio only.
 -/
-
-import BSD.BSD_Discriminant
-import Mathlib.NumberTheory.NumberField.Norm
-import Mathlib.LinearAlgebra.Dimension.Free
-import Mathlib.LinearAlgebra.Matrix.Basis
-import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
-import Mathlib.RingTheory.Discriminant
-import Mathlib.Algebra.Squarefree.Basic
-import Mathlib.Data.Nat.Squarefree
 
 namespace Towers.BSD
 
