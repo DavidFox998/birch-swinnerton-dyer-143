@@ -56,7 +56,7 @@ open Towers.BSD
     BSD stays OPEN. -/
 def MordellWeil_OPEN : Prop :=
   ∀ (E : WeierstrassCurve ℚ),
-    MWRank E = VanishingOrder (EllipticLFunction E) 1
+    _root_.Towers.BSD.MWRank E = _root_.Towers.BSD.VanishingOrder (_root_.Towers.BSD.EllipticLFunction E) 1
 
 /-- Genuine predicate: `f` is the L-function of `E`.
 
@@ -67,7 +67,7 @@ def MordellWeil_OPEN : Prop :=
     Any two functions satisfying `IsLFunctionOf E ·` are equal to each
     other (propositional uniqueness follows from transitivity). -/
 def IsLFunctionOf (E : WeierstrassCurve ℚ) (f : ℂ → ℂ) : Prop :=
-  f = EllipticLFunction E
+  f = _root_.Towers.BSD.EllipticLFunction E
 
 /-- BSD rank statement via `IsLFunctionOf` (equivalent to `MordellWeil_OPEN`).
 
@@ -78,7 +78,7 @@ def IsLFunctionOf (E : WeierstrassCurve ℚ) (f : ℂ → ℂ) : Prop :=
     future formalization that constructs L from the Euler product. -/
 def BSD_rank_statement : Prop :=
   ∀ (E : WeierstrassCurve ℚ) (L : ℂ → ℂ),
-    IsLFunctionOf E L → MWRank E = VanishingOrder L 1
+    IsLFunctionOf E L → _root_.Towers.BSD.MWRank E = _root_.Towers.BSD.VanishingOrder L 1
 
 end BSD
 end Towers
