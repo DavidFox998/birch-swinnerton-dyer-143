@@ -2,6 +2,9 @@ import Towers.BSD.BSD_MasterCertification
 import Towers.BSD.BSD_ClassNumberLowerProof
 import Towers.BSD.BSD_C22b_LowerBound
 import Towers.BSD.BSD_AnalyticRank
+import Towers.BSD.BSD_ClassNumberBounds
+import Towers.BSD.BSD_FormIdeal
+import Towers.BSD.BSD_AlgNorm
 import Mathlib.RingTheory.ClassGroup
 import Mathlib.NumberTheory.NumberField.ClassNumber
 import Mathlib.GroupTheory.OrderOfElement
@@ -113,7 +116,7 @@ SORRY: 0. Axiom footprint: classical trio only.
 
 namespace Towers.BSD
 
-open NumberField
+open NumberField NumberField.InfinitePlace
 
 /-! ## §1. Number field and arithmetic results (all proved, 0 sorry) -/
 
@@ -122,7 +125,7 @@ section ArithmeticResults
 theorem master_irred : Irreducible (Polynomial.X ^ 2 + Polynomial.C (143 : ℚ)) :=
   X_sq_add_143_irred_BSD
 
-theorem master_finrank : FiniteDimensional.finrank ℚ K = 2 := BSD_finrank_CLOSED
+theorem master_finrank : FiniteDimensional.finrank ℚ K = 2 := BSD_finrank_proved
 
 theorem master_nrRealPlaces : NrRealPlaces K = 0 := nrRealPlaces_zero_BSD
 
@@ -204,10 +207,10 @@ private theorem p2_ne_bot : (p2_OK : Ideal (𝓞 K)) ≠ 0 := by
     `instFintypeClassGroup` (NumberField/ClassNumber.lean:29). -/
 theorem BSD_classNumber_lower_bound : 10 ≤ NumberField.classNumber K := by
   -- Step 1: place p₂_OK in the nonzero-divisor submonoid
-  have hp₂_mem : p2_OK ∈ (Ideal (𝓞 K))⁰ :=
-    mem_nonZeroDivisors_iff_ne_zero.mpr p2_ne_bot
+  have hp₂_mem : p2_OK ∈ nonZeroDivisors (Ideal (𝓞 K)) :=
+    mem_nonZeroDivisors_of_ne_zero p2_ne_bot
   -- Step 2: define g = [p₂] ∈ ClassGroup(𝓞 K)
-  let I₂ : (Ideal (𝓞 K))⁰ := ⟨p2_OK, hp₂_mem⟩
+  let I₂ : nonZeroDivisors (Ideal (𝓞 K)) := ⟨p2_OK, hp₂_mem⟩
   let g : ClassGroup (𝓞 K) := ClassGroup.mk0 I₂
   -- Step 3: g^k ≠ 1 for k = 1…9
   have hpow_ne_one : ∀ k : ℕ, 1 ≤ k → k ≤ 9 → g ^ k ≠ 1 := by
@@ -347,9 +350,9 @@ theorem BSD_arithmetic_complete :
     (∃ x : ZMod 7, x ^ 2 - x + 36 = 0) ∧
     -- Lower bound
     10 ≤ NumberField.classNumber K :=
-  ⟨BSD_finrank_CLOSED,
+  ⟨BSD_finrank_proved,
    nrRealPlaces_zero_BSD,
-   nrComplexPlaces_one_BSD BSD_finrank_CLOSED,
+   nrComplexPlaces_one_BSD BSD_finrank_proved,
    minkowski_lt_eight_BSD,
    ω_sq_eq_BSD,
    BSD_absNorm_gen_CLOSED,
