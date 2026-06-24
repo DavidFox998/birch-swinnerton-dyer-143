@@ -1,4 +1,5 @@
 import Towers.BSD.B06_BSDCollection
+import Towers.BSD.BSD_Discriminant
 import Towers.BSD.MordellWeil
 
 /-
