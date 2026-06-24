@@ -172,7 +172,7 @@ theorem BSD_TermBound_CLOSED : BSD_TermBound_OPEN := by
   -- Denominator: ‖(↑r : ℂ)^s‖ = r^s.re for positive real r
   have h_den : ‖(n : ℂ) ^ s‖ = (n.val : ℝ) ^ s.re := by
     have : (n : ℂ) = ((n.val : ℝ) : ℂ) := by push_cast; rfl
-    rw [this, norm_eq_abs, abs_cpow_eq_rpow_re_of_pos hn_pos]
+    rw [this, Complex.norm_eq_abs, abs_cpow_eq_rpow_re_of_pos hn_pos]
   -- Reassemble and apply the coefficient bound
   rw [h_num, h_den]
   exact (div_le_div_right (Real.rpow_pos_of_pos hn_pos _)).mpr h_bound
