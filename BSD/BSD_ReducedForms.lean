@@ -2,6 +2,8 @@ import Towers.BSD.BSD_NumberField
 import Mathlib.NumberTheory.NumberField.ClassNumber
 import Mathlib.Tactic
 
+set_option maxHeartbeats 0
+
 /-!
 # BSD_ReducedForms — Reduced binary quadratic forms of discriminant -143
 
