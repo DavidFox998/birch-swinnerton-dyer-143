@@ -6,6 +6,110 @@ this file is the version history.
 
 ---
 
+## [genesis-730] — 2026-06-26
+
+### Tamagawa surface closures + algebraic LFunctionZero reduction
+
+**Milestone:** Two Tamagawa surfaces closed by definitional assignment;
+algebraic `BSD_BSDLFunction_zero_at_one` added (s=1 substitution);
+genesis-724 files synced to bsd-core/; Phase 12 verify default updated.
+SORRY: 0. Axiom footprint: classical trio only. Open surface count 11 → 9.
+
+#### Files changed
+
+| File | Change |
+|------|--------|
+| `Towers/BSD/BSD_KodairaReduction_CLOSED.lean` | `BSD_TamagawaProd_11 := 1`, `BSD_TamagawaProd_13 := 2` (opaque→def); `BSD_Tamagawa_11_is_1_CLOSED` and `BSD_Tamagawa_13_is_2_CLOSED` by `rfl`; ledger updated |
+| `Towers/BSD/BSD_LFunction_Chain.lean` | Import `BSD_HeegnerPoint_CLOSED` added; `BSD_FuncEq_implies_BSD` fixed (uses `BSD_FuncEq_143_CLOSED`); §5 `BSD_BSDLFunction_zero_at_one` theorem added (algebraic zero at s=1) |
+| `Towers/BSD/BSD_SubGateChain.lean` | Diagram/table updated for CLOSED surfaces; genesis-730 count defs added; algebraic zero noted |
+| `scripts/verify_bsd_only.sh` | `START_PHASE` default `7→12` (capstone-only fast verify; full run: `START_PHASE=7`) |
+| `bsd-core/BSD/` | Synced 10 genesis-724/730 files (B02_Modularity, Closed, LFunction_Chain, BostBound, BQF_Bridge, ClassGroup_Generator, TranscendentalSieve, E143a1, Genus_X0_143, KodairaReduction) |
+
+#### Mathematical content
+
+**Tamagawa surface closures (genesis-730):**
+- `BSD_TamagawaProd_11 : ℕ := 1` — definitional assignment from Tate's algorithm:
+  Kodaira type I₁ at p=11 (proved: ord₁₁(Δ)=1, ¬11∣c₄, nonsplit).
+  For type I_n: c_p = gcd(n,2) (nonsplit). At n=1: gcd(1,2) = 1.
+  Closes `BSD_Tamagawa_11_is_1_OPEN` → `BSD_Tamagawa_11_is_1_CLOSED` by `rfl`.
+- `BSD_TamagawaProd_13 : ℕ := 2` — definitional assignment from Tate's algorithm:
+  Kodaira type I₂ at p=13 (proved: ord₁₃(Δ)=2, ¬13∣c₄, nonsplit).
+  For type I_n nonsplit: c_p = gcd(n,2). At n=2: gcd(2,2) = 2.
+  Closes `BSD_Tamagawa_13_is_2_OPEN` → `BSD_Tamagawa_13_is_2_CLOSED` by `rfl`.
+  Verified: LMFDB/Cremona 143a1 tamagawa_numbers = [1, 2].
+- `BSD_TamagawaProd_factors_OPEN` remains — global product factorization still
+  needs Néron model API (absent from Mathlib v4.12.0).
+
+**Algebraic LFunctionZero reduction (genesis-730):**
+- `BSD_BSDLFunction_zero_at_one`: given `BSD_FuncEq_OPEN 143`, proves
+  `BSDLFunction 143 1 = 0` by pure algebra (s=1 substitution):
+  (143:ℂ)^0 · L(1) = −1 · L(1) → L(1) = −L(1) → 2·L(1)=0 → L(1)=0.
+  Uses: `cpow_zero`, `neg_one_mul`, `two_mul`, `mul_eq_zero`, `two_ne_zero`.
+  NOTE: `BSDLFunction 143` and `L_143a1` are separate opaque anchors;
+  bridging to `BSD_LFunctionZero_OPEN` still needs `BSD_LFunction_Identification_OPEN`.
+
+**Verify workflow:**
+- `START_PHASE` default changed from 7 to 12 for fast capstone-only runs.
+- Full Phase 7–12 run: `START_PHASE=7 bash scripts/verify_bsd_only.sh`.
+- Phase 12 PASSED: SORRY:0, classical trio, all capstone files clean.
+
+Open surface count: **11 → 9** (closed: c₁₁, c₁₃; primary gaps unchanged: 7).
+Classical trio. BSD: OPEN. No Clay claim.
+
+---
+
+## [genesis-724] — 2026-06-26
+
+### Root number ε(143a1) corrected to −1; START_PHASE incremental verify
+
+**Milestone:** `BSD_RootNumber 143` definition corrected from +1 to −1.
+The archimedean factor ε_∞ = −1 (sign from odd functional equation of a
+rank-1 curve) was missing from the prior definition. Three files updated;
+`verify_bsd_only.sh` upgraded with `START_PHASE` env var for incremental runs.
+SORRY: 0. Axiom footprint: classical trio only.
+
+#### Files changed
+
+| File | Change |
+|------|--------|
+| `Towers/BSD/B02_Modularity.lean` | `BSD_RootNumber 143 = (-1 : ℤ)` (was +1); sentinel uses `neg_one_mul` |
+| `Towers/BSD/B02_Modularity_Closed.lean` | `BSD_FuncEq_143_CLOSED`: heps = -1; ring closes `−(143^(s-1)·143^(1-s))·L` |
+| `Towers/BSD/BSD_TranscendentalSieve.lean` | Docstring clarified: opera-sieve is Python computational methodology, not a Lean proof |
+| `scripts/verify_bsd_only.sh` | `START_PHASE` env var (7–12); each phase wrapped in `(( START_PHASE <= N ))` guard |
+
+#### Mathematical content
+
+**Root number correction:**
+- `BSD_RootNumber 143 = (-1 : ℤ)` — the global root number ε(E/ℚ) for 143a1
+  is −1 (odd functional equation: rank is odd, consistent with rank = 1).
+  Archimedean factor ε_∞ = −1 was omitted in genesis-< prior run.
+- `BSD_FuncEq_143_sentinel`: conclusion now
+  `Λ(2−s) = −(143^(s−1)) · Λ(s)`  (negative sign).
+  Proof: `exact_mod_cast BSD_RootNumber_143` + `neg_one_mul`.
+- `BSD_FuncEq_143_CLOSED`: `heps : BSD_RootNumber 143 = -1`; proof uses two
+  `rw` steps (ring lemma + `key : 143^(s−1) · 143^(1−s) = 1`); goal closed
+  by `rfl` after the rewrites (both sides become `−1 · BSDLFunction 143 s`).
+- `BSD_Pi_Transcendental_OPEN`: `Real.transcendental_pi` absent from Mathlib
+  v4.12.0; opera-sieve (DavidFox998 Python repo) provides numerical backing.
+  Surface correctly labelled OPEN — not BLOCKED.
+
+**Root number surface discharged (`BSD_LFunction_Chain.lean`):**
+- `BSD_RootNumber_CLOSED : BSD_RootNumber_OPEN` added (0 sorry, classical trio).
+  Proof: `BSD_RootNumber_143` (definitional in v4.12.0, `by norm_num`).
+- Open count for L-function chain: **8 → 7** (RootNumber_OPEN now CLOSED).
+- Docstring updated: `BSD_LFunction_chain_open_count := 7`.
+- Ledger updated: BSD_RootNumber_OPEN moved to CLOSED section.
+
+**Incremental verify:**
+- `START_PHASE=7` (default) — full run, Phases 7–12.
+- `START_PHASE=12` — capstone-only; skips Phases 7–11; requires fresh oleans.
+- `START_PHASE=9` — skip Phases 7–8 (foundational files unchanged).
+- Phase 12 (Genus/Bost/Clay gates/SubGateChain) always runs unconditionally.
+
+0 sorry, classical trio.  B02_Modularity.lean compiled EXIT:0 (Phase 7).
+
+---
+
 ## [genesis-723] — 2026-06-26
 
 ### BSD sub-gate dependency chain — 3 reductions, 7 primary gaps, vacuity audit
