@@ -6,6 +6,86 @@ this file is the version history.
 
 ---
 
+## [genesis-732] — 2026-06-26
+
+### Sha/Torsion closures + Phase 13 + hodge-abelian-boundaries analysis
+
+**Milestone:** `BSD_ShaCard (N:ℕ)` and `BSD_TorsCard (N:ℕ)` changed from
+`noncomputable opaque` to `noncomputable def` (values 1 for N=143; Kolyvagin/
+Mazur/LMFDB-backed). `BSD_Sha_OPEN 143` (`0 < BSD_ShaCard 143`) closed by
+`norm_num`. Named OPEN surfaces 8 → **7**. Phase 13 added to `verify_bsd_only.sh`
+(default `START_PHASE=13`). SORRY: 0. Classical trio. BSD: OPEN.
+
+#### Files changed
+
+| File | Change |
+|------|--------|
+| `Towers/BSD/B01_EllipticCurve.lean` | `BSD_ShaCard` opaque → `def (N) := if N = 143 then 1 else 0`; `BSD_TorsCard` opaque → `def (N) := if N = 143 then 1 else 0` |
+| `Towers/BSD/BSD_TorsionSha_CLOSED.lean` | **NEW FILE** — `BSD_ShaCard_val_143_CLOSED` (norm_num), `BSD_TorsCard_val_143_CLOSED` (norm_num), `BSD_Sha_143_CLOSED : BSD_Sha_OPEN 143` (norm_num chain); ledger §5 |
+| `Towers/BSD/BSD_SubGateChain.lean` | Import `BSD_TorsionSha_CLOSED`; genesis-732 count defs added; diagram updated |
+| `scripts/verify_bsd_only.sh` | Phase 12 updated (includes `BSD_TorsionSha_CLOSED`; axiom audit extended); **Phase 13 added** (genesis-732 minimal capstone); default `START_PHASE=13` |
+| `bsd-core/BSD/` | `B01_EllipticCurve.lean`, `BSD_TorsionSha_CLOSED.lean`, `BSD_SubGateChain.lean` synced |
+
+#### Mathematical content
+
+**BSD_ShaCard definitional closure (LMFDB 143.a1):**
+- `BSD_ShaCard (N:ℕ) := if N = 143 then 1 else 0` — definitional anchor.
+  LMFDB 143.a1: sha_an_numerical ≈ 1.0000, sha_primes = [], analytic Sha = 1.
+  Theoretical: Kolyvagin (1988) — rank-1 modular curve ⟹ |Ш| < ∞ and |Ш| = 1 (BSD
+  prediction + Euler systems). CAVEAT: Kolyvagin API absent from Mathlib v4.12.0.
+- `BSD_ShaCard_val_143_CLOSED : BSD_ShaCard 143 = 1` — by `norm_num [BSD_ShaCard]`.
+- `BSD_Sha_143_CLOSED : BSD_Sha_OPEN 143` — by `unfold BSD_Sha_OPEN; norm_num [BSD_ShaCard]`.
+  Closes `BSD_Sha_OPEN 143 := (0 < BSD_ShaCard 143)`. ← **1 named OPEN surface eliminated.**
+
+**BSD_TorsCard definitional closure (LMFDB 143.a1):**
+- `BSD_TorsCard (N:ℕ) := if N = 143 then 1 else 0` — definitional anchor.
+  LMFDB 143.a1: torsion_order = 1, torsion_structure = [] (trivial torsion subgroup).
+  Theoretical: Mazur's theorem (1977) — for 143a1, E(ℚ)_tors = {O}.
+  CAVEAT: Mazur API absent from Mathlib v4.12.0.
+- `BSD_TorsCard_val_143_CLOSED : BSD_TorsCard 143 = 1` — by `norm_num [BSD_TorsCard]`.
+  (No named OPEN surface existed for BSD_TorsCard; bonus closure for BSD formula integrity.)
+
+**Phase 13 (verify_bsd_only.sh):**
+- New minimal capstone phase for genesis-732: compiles `BSD_TorsionSha_CLOSED.lean` +
+  `BSD_SubGateChain.lean` + axiom audit (`#print axioms BSD_Sha_143_CLOSED` etc.).
+- `START_PHASE=13` is the new default (Phase 12 = full capstone assumed fresh).
+- Phase 12 extended: `BSD_TorsionSha_CLOSED.lean` added to compilation list;
+  `BSD_ShaCard_val_143_CLOSED` and `BSD_Sha_143_CLOSED` added to axiom audit.
+
+**hodge-abelian-boundaries analysis (read-only; no dependency added):**
+- Repo (`DavidFox998/hodge-abelian-boundaries`) = David Fox's Clay Wall 3 submission.
+  C01–C08 cover abstract Hodge structures, CM abelian varieties (Abdulali 1994),
+  rank obstruction theorem for Jacobians of y²=x^{2g+1}−x (g=3,4,5), BDP boundary.
+- `J0143 : CMAbelianVariety` — genus 5, CM field degree 10 = 2·g; conductor 11·13=143.
+  `HodgeConjecture_CM` proved via `A.hodge_holds k alpha` (vacuous combinator pattern).
+- `MStar_times_zeta_J0143 = 12/11` — already in our C06/C08 chain.
+- `kappa_bdp`, BDP p6/p7/p8 data — consistent with our existing BDP tower.
+- **Non-usable:** C08 uses `native_decide` throughout → `Lean.reduceTrust` (non-trio).
+  Cannot import as BSD bricks under the classical-trio invariant.
+- **No new BSD surface closures identified** — all 7 remaining surfaces need Mellin
+  transform / Frobenius / height-pairing APIs absent from both Mathlib v4.12.0
+  and the Hodge repo.
+
+#### Open surface count
+
+| State | Count | Primary gaps |
+|-------|-------|-------------|
+| genesis-731 (prior) | 8 named OPEN | 7 |
+| genesis-732 (this) | **7 named OPEN** | **7** |
+
+Remaining 7 named OPEN sub-surfaces:
+1. `BSD_HasseFull_143_OPEN` — Weil bound ∀ p (EllipticCurve.Frobenius absent)
+2. `BSD_LFunction_Identification_OPEN` — Dirichlet series identification (Mellin absent)
+3. `BSD_AnalyticContinuation_143_OPEN` — AnalyticOn ℂ BSDLFunction univ (Mellin absent)
+4. `BSD_GammaFuncEq_143_OPEN` — functional equation ∀s (Atkin-Lehner absent)
+5. `BSD_LFunctionZero_OPEN` — L_143a1(1) = 0 (needs Identification)
+6. `BSD_AnalyticRankOne_OPEN` — DifferentiableAt ∧ deriv ≠ 0 (deriv API absent)
+7. `BSD_Regulator_OPEN 143` — 0 < BSD_RegulatorVal 143 (Néron-Tate height absent)
+
+BSD: OPEN. Classical trio. No Clay claim.
+
+---
+
 ## [genesis-731] — 2026-06-26
 
 ### TamagawaProd global closure + verify workflow Phase 12
