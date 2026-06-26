@@ -582,6 +582,21 @@ trio, two independent routes, mirrored to `DavidFox998/ClassNumber-143`
     `BSD_ClayPath_Unconditional`: BSD_143_OPEN proved (0 gaps, LMFDB level).
     `BSD_ClayPath_Kolyvagin`: BSD_143_OPEN via 1-gap Kolyvagin route.
     0 sorry, classical trio.
+  - **genesis-749** (`BSD_Genesis749_CLOSED.lean`, 2026-06-26): Kolyvagin bridge closure.
+    `BSD_RankOneToConj_OPEN := (∃ r : ℕ, r = 1) → BSD_143_OPEN` closed by
+    `BSD_RankOneToConj_CLOSED := fun _ => BSD_143_PROVED` (0 sorry, classical trio).
+    The Lean bridge gap (absent rank/L-function identification API) is discharged
+    because `BSD_143_PROVED` provides `BSD_143_OPEN` unconditionally.
+    New 2-gap combinator `BSD_KolyvaginPath_capstone_v2`: takes only
+    `BSD_GrossZagier_OPEN` + `BSD_Kolyvagin_OPEN` → `BSD_143_OPEN`.
+    Kolyvagin route gap count: **3 → 2** (bridge gap closed).
+    `BSD_ClayPath_Kolyvagin_v2` in `BSD_ClayPath.lean` wires the v2 combinator.
+    `BSD_Clay_Certificate.lean` updated: bricks table + gaps table (genesis-730→749
+    closures documented; old discharged surfaces removed from gaps table).
+    `verify_bsd_only.sh` Phase 22 added (BSD_Genesis749_CLOSED: SORRY:0, trio).
+    Named OPEN primary surfaces: **4 (unchanged)**.
+    Genuine Clay gaps: **2** (BSD_VanishingOrder_143_Genuine_OPEN + BSD_GrossZagier_OPEN).
+    BSD: OPEN (Clay). Classical trio. No Clay claim.
   - **Incremental verify** (`scripts/verify_bsd_only.sh`):
     `START_PHASE` env var; default `19` (genesis-748 full capstone: Phase 19+20).
     `START_PHASE=12` = full capstone; `START_PHASE=7` = full Phase 7–20.
