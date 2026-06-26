@@ -1,73 +1,55 @@
+import Towers.BSD.BSD_ClassNum_Upper_CLOSED
+import Towers.BSD.BSD_ClassNum_Unconditional_CLOSED
+import Mathlib.Algebra.Group.Subgroup.Finite
+import Mathlib.Data.ZMod.Quotient
+
 /-!
 # BSD_ClassGroup_Generator_CLOSED
 
-Proves `BSD_classGroup_gen_by_p2_CLOSED : BSD_classGroup_gen_by_p2_hyp`.
+Proves `BSD_classGroup_gen_by_p2_hyp`:
+  every element of ClassGroup(𝓞 K) lies in `Subgroup.zpowers p2_class_gen`.
 
-`BSD_classGroup_gen_by_p2_hyp` is the named Prop (defined in
-`BSD_ClassNum_Upper_CLOSED`) asserting that `[p₂]` generates `ClassGroup(𝓞 K)`:
-```
-∀ x : ClassGroup (𝓞 K), x ∈ Subgroup.zpowers (ClassGroup.mk0 ⟨p2_OK, _⟩)
-```
+## Proof outline
 
-## Proof sketch
+  1. `classNumber K = 10`   (unconditional, BSD_classNumber_eq_10_via_principal
+                             + BSD_ClassNum_Unconditional)
+  2. `orderOf p2_class_gen = 10`  (BSD_orderOf_p2_eq_10 + BSD_p2_pow_10_principal)
+  3. `|zpowers p2_class_gen| = orderOf p2_class_gen = 10 = classNumber K
+                             = |ClassGroup(𝓞 K)|`   (Nat.card_zpowers + Fintype.card)
+  4. `Subgroup.zpowers p2_class_gen = ⊤`   (Subgroup.eq_top_of_card_eq)
+  5. Every x is in ⊤, hence in zpowers p2_class_gen.
 
-We already know (both unconditionally proved):
-- `BSD_orderOf_p2_eq_10 BSD_p2_pow_10_principal : orderOf [p₂] = 10`
-- `BSD_classNumber_eq_10_via_principal BSD_p2_pow_10_principal : classNumber K = 10`
-
-Hence:
-1. `orderOf [p₂] = 10 = classNumber K = Fintype.card (ClassGroup (𝓞 K)) = Nat.card G`
-2. `Nat.card (Subgroup.zpowers [p₂]) = orderOf [p₂] = Nat.card G`  (`Nat.card_zpowers`)
-3. `Subgroup.zpowers [p₂] = ⊤`  (`Subgroup.eq_top_of_card_eq`)
-4. `∀ x, x ∈ Subgroup.zpowers [p₂]`  (`Subgroup.mem_top`)
-
-SORRY: 0.  Axiom footprint: classical trio `{propext, Classical.choice, Quot.sound}`.
+SORRY: 0.  Axiom footprint: classical trio {propext, Classical.choice, Quot.sound}.
 -/
 
-import BSD.BSD_ClassNum_Upper_CLOSED
+set_option maxHeartbeats 800000
 
-set_option maxHeartbeats 400000
-
-namespace BSD
+namespace Towers.BSD
 
 open NumberField
 
 /-- **BSD_classGroup_gen_by_p2_CLOSED** (0 sorry, classical trio):
-    `[p₂]` generates `ClassGroup(𝓞 K)`.
-
-    Proof: `orderOf [p₂] = 10 = classNumber K = |ClassGroup(𝓞 K)|`.
-    A subgroup of finite cardinality equal to the ambient group must be the
-    whole group (`Subgroup.eq_top_of_card_eq`), so `Subgroup.zpowers [p₂] = ⊤`,
-    and every element lies in it.
-
-    Key Mathlib lemmas used:
-    - `Nat.card_zpowers : Nat.card (zpowers a) = orderOf a`
-    - `Subgroup.eq_top_of_card_eq [Finite H] (h : Nat.card H = Nat.card G) : H = ⊤`
-
-    Discharges the last named open surface of `BSD_classGroup_gen_by_p2_hyp`. -/
+    [p₂] generates ClassGroup(𝓞 K) — every element is an integer power of [p₂]. -/
 theorem BSD_classGroup_gen_by_p2_CLOSED : BSD_classGroup_gen_by_p2_hyp := by
-  have hp2ne : p2_OK ≠ 0 := by
-    intro h
-    have := absNorm_p2_eq_2
-    rw [h, Ideal.zero_eq_bot, Ideal.absNorm_bot] at this
-    norm_num at this
-  let I₂ : (Ideal (𝓞 K))⁰ := ⟨p2_OK, mem_nonZeroDivisors_iff_ne_zero.mpr hp2ne⟩
-  let g : ClassGroup (𝓞 K) := ClassGroup.mk0 I₂
-  -- Step 1: orderOf g = 10  (from p₂^10 principal, proved unconditionally)
-  have hord : orderOf g = 10 := BSD_orderOf_p2_eq_10 BSD_p2_pow_10_principal
-  -- Step 2: classNumber K = 10  (proved unconditionally)
+  -- Step 1: classNumber K = 10  (unconditional)
   have hcn : NumberField.classNumber K = 10 :=
-    BSD_classNumber_eq_10_via_principal BSD_p2_pow_10_principal
-  -- Step 3: Nat.card (zpowers g) = Nat.card (ClassGroup (𝓞 K))
-  --   Nat.card_zpowers : Nat.card (zpowers g) = orderOf g = 10
-  --   Nat.card_eq_fintype_card : Nat.card G = Fintype.card G = classNumber K = 10
-  have hcard : Nat.card ↥(Subgroup.zpowers g) = Nat.card (ClassGroup (𝓞 K)) := by
-    rw [Nat.card_zpowers, hord, Nat.card_eq_fintype_card]
+    BSD_classNumber_eq_10_via_principal BSD_p2_pow_10_principal BSD_ClassNum_Unconditional
+  -- Step 2: orderOf p2_class_gen = 10
+  -- BSD_orderOf_p2_eq_10 defines an internal g = ClassGroup.mk0 ⟨p2_OK, _⟩;
+  -- p2_class_gen = ClassGroup.mk0 ⟨p2_OK, p2_nzd⟩ is definitionally equal
+  -- (same value, proof-irrelevant membership).
+  have hord : orderOf p2_class_gen = 10 :=
+    BSD_orderOf_p2_eq_10 BSD_p2_pow_10_principal
+  -- Step 3: |zpowers p2_class_gen| = |ClassGroup(𝓞 K)|
+  have hcard : Nat.card ↥(Subgroup.zpowers p2_class_gen) = Nat.card (ClassGroup (𝓞 K)) := by
+    rw [Nat.card_zpowers, hord, ← Fintype.card_eq_nat_card]
+    -- goal: 10 = Fintype.card (ClassGroup (𝓞 K)) = classNumber K
     exact hcn.symm
-  -- Step 4: zpowers g = ⊤  (subgroup of same finite cardinality as the group)
-  have htop : Subgroup.zpowers g = ⊤ := Subgroup.eq_top_of_card_eq hcard
-  -- Step 5: every element is in zpowers g
+  -- Step 4: the subgroup is the whole group
+  have htop : Subgroup.zpowers p2_class_gen = ⊤ :=
+    Subgroup.eq_top_of_card_eq (Subgroup.zpowers p2_class_gen) hcard
+  -- Step 5: every element lies in zpowers p2_class_gen
   intro x
   exact htop ▸ Subgroup.mem_top x
 
-end BSD
+end Towers.BSD
