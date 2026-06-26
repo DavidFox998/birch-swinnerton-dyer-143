@@ -163,6 +163,9 @@ BSD/BSD_ReducedForms.lean               Tier 3  10 reduced BQFs (Option B base)
 BSD/BSD_ClassNumberLowerProof.lean      Tier 4  10 ≤ h(K), p₂^k non-principal
 BSD/BSD_P2_Principal_CLOSED.lean        Tier 5  Option A: p₂^10 principal → h(K)=10
 BSD/BSD_ClassNum_Upper_CLOSED.lean      Tier 6  h(K) ≤ 10 combinator
+BSD/BSD_ClassNumber_UpperBound_CLOSED.lean Tier 6  Minkowski witness (span{3+ω},span{4+ω})
+BSD/BSD_SurfaceClose_CLOSED.lean        Tier 6  closes w3/w4 ideal equalities + small-norm-in-zpowers
+BSD/BSD_KodairaReduction_CLOSED.lean    Tier 6  c₄=64, singular nodes, tangent cone anisotropy (nonsplit)
 BSD/BSD_BQF_Bridge_Closed.lean          Tier 6  Option B: BQF bridge → h(K)=10
 BSD/BSD_ClassGroup_Generator_CLOSED.lean Tier 7  ClassGroup = ⟨[p₂]⟩
 BSD/BSD_HeegnerPoint_CLOSED.lean        Tier 5  rational point (4,6) on E
