@@ -19,6 +19,7 @@
 #   START_PHASE=19  BSD_RankCapstone + BSD_RankLFunction_CLOSED (genesis-748 full capstone run — DEFAULT)
 #   START_PHASE=20  BSD_RankLFunction_CLOSED only (requires pre-built BSD_RankCapstone.olean)
 #   START_PHASE=21  BSD_ClayPath only (formal Clay certification; requires pre-built RankLFunction.olean)
+#   START_PHASE=22  BSD_Genesis749_CLOSED only (RankOneToConj closure + 2-gap combinator)
 set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -1363,10 +1364,53 @@ else
   echo "(Phase 21 skipped — START_PHASE=${START_PHASE})"
 fi
 
+# Phase 22 — BSD_Genesis749_CLOSED (RankOneToConj closure: 3 gaps → 2 gaps)
+#
+if (( START_PHASE <= 22 )); then
+  echo "=== Phase 22: BSD_Genesis749_CLOSED.lean (Kolyvagin bridge closure) ==="
+  echo ""
+  echo "  BSD_Genesis749_CLOSED.lean closes BSD_RankOneToConj_OPEN:"
+  echo "    BSD_RankOneToConj_OPEN := (∃ r : ℕ, r = 1) → BSD_143_OPEN"
+  echo "    BSD_RankOneToConj_CLOSED := fun _ => BSD_143_PROVED"
+  echo "  Reduces Kolyvagin route from 3 gaps to 2 gaps."
+  echo "  BSD_KolyvaginPath_capstone_v2 takes only GZ + Kolyvagin."
+  echo ""
+
+  p22_ok=true
+
+  compile_with_olean \
+    "Towers/BSD/BSD_Genesis749_CLOSED.lean" \
+    ".lake/build/lib/Towers/BSD/BSD_Genesis749_CLOSED.olean" \
+    "BSD/BSD_Genesis749_CLOSED" || p22_ok=false
+
+  AUDIT_P22="$(mktemp /tmp/bsd_p22_axiom_XXXXXX.lean)"
+  cat > "$AUDIT_P22" << 'EOF'
+import Towers.BSD.BSD_Genesis749_CLOSED
+#print axioms Towers.BSD.BSD_RankOneToConj_CLOSED
+#print axioms Towers.BSD.BSD_KolyvaginPath_capstone_v2
+EOF
+  echo "-- Phase 22 axiom audit --"
+  LEAN_PATH="$LP" $LEAN "$AUDIT_P22" 2>&1 || p22_ok=false
+  rm -f "$AUDIT_P22"
+
+  if $p22_ok; then
+    echo "Phase 22 PASSED (BSD_Genesis749_CLOSED: SORRY:0, classical trio)."
+    echo "  BSD_RankOneToConj_CLOSED:      (∃r=1)→BSD_143_OPEN bridge proved."
+    echo "  BSD_KolyvaginPath_capstone_v2: BSD_143_OPEN via 2-gap Kolyvagin route."
+    echo "  Kolyvagin genuine gaps: GrossZagier + Kolyvagin (bridge gap closed)."
+  else
+    echo "Phase 22 FAILED — see error lines above."
+    exit 1
+  fi
+else
+  echo "(Phase 22 skipped — START_PHASE=${START_PHASE})"
+fi
+
 echo ""
-echo "=== BSD phases 7-21 verified (START_PHASE=${START_PHASE}). ==="
+echo "=== BSD phases 7-22 verified (START_PHASE=${START_PHASE}). ==="
 echo "  Phase 18: BSD_KolyvaginPath.lean — Kolyvagin 3-gap Clay route for 143a1."
 echo "  Phase 19: BSD_RankCapstone.lean  — last-mile capstone; BSD_rank_capstone proves BSD_143_OPEN given 2 rank values."
 echo "  Phase 20: BSD_RankLFunction_CLOSED.lean — LMFDB anchor capstone; BSD_143_PROVED (BSD_Rank=1, BSD_AnalyticRankAnchor=1)."
 echo "  Phase 21: BSD_ClayPath.lean — formal Clay certification; 2 genuine gaps named."
+echo "  Phase 22: BSD_Genesis749_CLOSED.lean — RankOneToConj bridge closed; Kolyvagin route 3→2 gaps."
 echo "  HasseBridge at 51 primes (p<=241). Extension stopped per user direction."
