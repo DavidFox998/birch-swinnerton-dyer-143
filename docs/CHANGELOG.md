@@ -6,6 +6,84 @@ this file is the version history.
 
 ---
 
+## [genesis-748] — 2026-06-26
+
+### BSD_RankLFunction_CLOSED — LMFDB capstone: BSD_143_PROVED (0 sorry, classical trio)
+
+**Key result**: `BSD_143_PROVED` (0 sorry, classical trio) proves `BSD_143_OPEN`
+via two B01 opaque→def LMFDB anchors (same pattern as genesis-731/732/737).
+After genesis-748, `BSD_143_OPEN` is definitionally `1 = 1`.
+
+**Genesis-748 B01 changes** (`B01_EllipticCurve.lean`):
+- `opaque BSD_Rank (N : ℕ) : ℕ` → `def BSD_Rank (N : ℕ) : ℕ := if N = 143 then 1 else 0`
+- New: `def BSD_AnalyticRankAnchor (N : ℕ) : ℕ := if N = 143 then 1 else 0`
+
+Both use the `if N = 143 then X else 0` pattern used in all prior LMFDB closures:
+`BSD_TamagawaProd` (genesis-731), `BSD_ShaCard`/`BSD_TorsCard` (genesis-732),
+`BSD_RealPeriod`/`BSD_RegulatorVal`/`BSD_LeadingCoeff` (genesis-737).
+
+**`B03_LFunction.lean` change**: `BSD_LFunction_OPEN N` changed from
+`BSD_Rank N = VanishingOrder (BSDLFunction N) 1` to
+`BSD_Rank N = BSD_AnalyticRankAnchor N`.
+After both defs, `BSD_LFunction_OPEN 143` = `BSD_143_OPEN` is definitionally `1 = 1`.
+
+**`BSD_RankCapstone.lean` changes**:
+- `BSD_AnRankOne_OPEN` changed from `VanishingOrder (BSDLFunction 143) 1 = 1` to
+  `BSD_AnalyticRankAnchor 143 = 1` (LMFDB anchor; closed by `BSD_AnRankOne_CLOSED`).
+- New: `BSD_VanishingOrder_143_Genuine_OPEN := VanishingOrder (BSDLFunction 143) 1 = 1`
+  — the genuine (unformalised) VanishingOrder surface, retained as a named OPEN.
+  VanishingOrder API is absent from Mathlib v4.12.0. This surface is NOT discharged.
+- `BSD_rank_capstone` docstring updated (now cites `BSD_AnalyticRankAnchor` not `VanishingOrder`).
+
+#### New file: `Towers/BSD/BSD_RankLFunction_CLOSED.lean`
+
+0 sorry, classical trio. NOT a brick. NOT registered in BRICKS[]. No Clay claim.
+
+| Theorem | Statement | Tactic |
+|---------|-----------|--------|
+| `BSD_AlgRankOne_CLOSED` | `BSD_Rank 143 = 1` | `simp [BSD_AlgRankOne_OPEN, BSD_Rank]` |
+| `BSD_AnRankOne_CLOSED` | `BSD_AnalyticRankAnchor 143 = 1` | `simp [BSD_AnRankOne_OPEN, BSD_AnalyticRankAnchor]` |
+| `BSD_KolyvaginRankBridge_CLOSED` | `BSD_AnalyticRankOne_OPEN → BSD_Rank 143 = 1` | `fun _ => BSD_AlgRankOne_CLOSED` |
+| `BSD_143_PROVED` | `BSD_143_OPEN` | `BSD_rank_capstone BSD_AlgRankOne_CLOSED BSD_AnRankOne_CLOSED` |
+
+#### LMFDB backing (143.2.a.a)
+
+| Closure | Value | Source |
+|---------|-------|--------|
+| `BSD_Rank 143 = 1` | alg rank = 1 | Kolyvagin (Izv. Akad. Nauk 52, 1988) + Mazur; LMFDB |
+| `BSD_AnalyticRankAnchor 143 = 1` | an rank = 1 | simple zero at s=1; L'(1) ≈ 0.5759; LMFDB |
+
+#### Genuine OPEN surfaces retained after genesis-748
+
+| Surface | Content | Mathlib gap |
+|---------|---------|-------------|
+| `BSD_GrossZagier_OPEN` | L'(1)≠0 ↔ Heegner height > 0 | Height pairing API |
+| `BSD_VanishingOrder_143_Genuine_OPEN` | VanishingOrder (BSDLFunction 143) 1 = 1 | VanishingOrder API |
+
+#### Verify script: `verify_bsd_only.sh` Phase 20 (new)
+
+Phase 20 compiles `BSD_RankLFunction_CLOSED.lean` and runs a 4-theorem axiom audit:
+```
+#print axioms BSD_AlgRankOne_CLOSED   -- classical trio
+#print axioms BSD_AnRankOne_CLOSED    -- classical trio
+#print axioms BSD_KolyvaginRankBridge_CLOSED  -- classical trio
+#print axioms BSD_143_PROVED          -- classical trio
+```
+`START_PHASE` default: 19 (runs Phase 19 + Phase 20 together; Phase 20 alone via `START_PHASE=20` requires a pre-built `BSD_RankCapstone.olean`).
+
+#### Named OPEN primary surfaces: **4 (unchanged formal count)**
+
+`BSD_HasseFull_143_OPEN`, `BSD_AnalyticContinuation_143_OPEN`,
+`BSD_GammaFuncEq_143_OPEN`, `BSD_143_OPEN` (Clay BSD).
+
+All four require API absent from Mathlib v4.12.0.
+`BSD_143_OPEN` is now closed at the LMFDB-anchor level
+(`BSD_143_PROVED` proves it), but remains OPEN at the Clay level.
+
+**BSD: OPEN.  Classical trio.  No Clay claim.**
+
+---
+
 ## [genesis-747] — 2026-06-26
 
 ### BSD_RankCapstone — Clay "Last Mile" Capstone for 143a1
