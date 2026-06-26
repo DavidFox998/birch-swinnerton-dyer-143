@@ -6,6 +6,71 @@ this file is the version history.
 
 ---
 
+## [genesis-723] — 2026-06-26
+
+### BSD sub-gate dependency chain — 3 reductions, 7 primary gaps, vacuity audit
+
+**Milestone:** `BSD_SubGateChain.lean` documents the logical dependency chain from
+the 11 named OPEN sub-surfaces to the 6 gate parameters of `BSD_ClayCompliance_6gate`.
+Three reductions are proved (0 sorry, classical trio). Compiled EXIT:0.
+Added to Phase 12 of both verify scripts.
+
+#### File added
+
+| File | Content |
+|------|---------|
+| `Towers/BSD/BSD_SubGateChain.lean` | 3 reductions + meta-combinator + vacuity audit |
+
+#### Mathematical content — three proved reductions (genesis-723)
+
+**R1 — `BSD_Cont_to_L_Analytic`:**
+`BSD_AnalyticContinuation_143_OPEN → BSD_L_Analytic_143_OPEN`
+Via `BSD_Hecke_143_CLOSED` (B02_Modularity_Closed.lean); definitional unfolding.
+
+**R2 — `BSD_Gamma_to_FuncEq_gate`:**
+`BSD_GammaFuncEq_143_OPEN → BSD_FuncEq_OPEN 143`
+Via `BSD_FuncEq_143_CLOSED`; multiply by 143^(s-1) and use 143^(s-1)·143^(1-s)=1.
+
+**R3 — `BSD_TamProd_from_subs`:**
+`BSD_TamagawaProd_factors_OPEN ∧ BSD_Tamagawa_11_is_1_OPEN ∧ BSD_Tamagawa_13_is_2_OPEN → BSD_TamagawaProd 143 = 2`
+Cross-reference of `BSD_TamagawaProd_eq_2` (BSD_KodairaReduction_CLOSED.lean).
+
+**Meta-combinator `BSD_SubGate_MetaCombinator`:**
+Takes all 11 named OPEN sub-surfaces + BSD_TamagawaConj_OPEN + BSD_143_OPEN.
+Applies R1+R2 internally; Gate 6 (TamagawaConj full formula) still required directly.
+Returns the full 6-gate compliance bundle.
+
+#### Vacuity audit
+
+`BSD_Kolyvagin_OPEN := BSD_AnalyticRankOne_OPEN → ∃ r : ℕ, r = 1` is technically
+dischargeable by `fun _ => ⟨1, rfl⟩` (trivial conclusion). **Discharge REFUSED.**
+The actual Kolyvagin content (`→ BSD_Rank 143 = 1 ∧ 0 < BSD_ShaCard 143`)
+references opaque constants; cannot be proved. Definition strengthening deferred.
+
+#### Gap analysis — required Mathlib additions per surface
+
+| Surface | Required theorem | Literature | Mathlib gap |
+|---------|-----------------|------------|-------------|
+| BSD_HasseFull_143_OPEN | Hasse-Weil ∀ p (via modularity) | Wiles-Taylor (Ann. Math. 141, 1995) | EllipticCurve.Frobenius |
+| BSD_LFunction_Identification_OPEN | L(E,s) = Σ aₙ/nˢ Re>3/2 | Hecke (1936) | Mellin identification |
+| BSD_AnalyticContinuation_143_OPEN | Analytic continuation via Mellin | Hecke + modularity | Complex.MellinTransform |
+| BSD_GammaFuncEq_143_OPEN | Functional equation | Hecke (1936) + Atkin-Lehner | AtkinLehner operators |
+| BSD_LFunctionZero_OPEN | L(E_{143},1) = 0 | Gross-Zagier + sign | L-function at s=1 |
+| BSD_AnalyticRankOne_OPEN | ord_{s=1} L = 1 | Gross-Zagier (Invent. Math. 84, 1986) | L-function deriv API |
+| BSD_Regulator_OPEN 143 | R(E/ℚ) > 0 | Néron (1965) | Néron-Tate height |
+| BSD_Sha_OPEN 143 | |Ш(E/ℚ)| < ∞ | Kolyvagin (Izv. 52, 1988) | Euler systems |
+| BSD_Tamagawa_11_is_1_OPEN | c₁₁ = 1 (type I₁) | Tate (1975) | Tate algorithm |
+| BSD_Tamagawa_13_is_2_OPEN | c₁₃ = 2 (type I₂ split) | Tate (1975) | Tate algorithm |
+| BSD_TamagawaConj_OPEN 143 | Full leading term formula | BSD conjecture | All of the above |
+
+#### Minimum primary gap count
+
+7 independent primary gaps (down from 11 named sub-surfaces):
+HasseFull · AnalyticContinuation [→ Gate 2] · GammaFuncEq [→ Gate 3] ·
+Regulator · Sha · TamagawaConj [full] · BSD_143_OPEN itself.
+
+---
+
 ## [genesis-722] — 2026-06-26
 
 ### BSD Clay 6-gate combinator — two Clay gates discharged unconditionally
