@@ -194,7 +194,7 @@ section LowerBound
 
 /-- `p₂_OK` is a nonzero ideal:
     `Ideal.absNorm p₂_OK = 2 ≠ 0`, so `p₂_OK ≠ ⊥ = 0`. -/
-private theorem p2_ne_bot : (p2_OK : Ideal (𝓞 K)) ≠ 0 := by
+theorem p2_ne_bot : (p2_OK : Ideal (𝓞 K)) ≠ 0 := by
   intro h
   have h2 := absNorm_p2_eq_2
   rw [h, Ideal.zero_eq_bot, Ideal.absNorm_bot] at h2
