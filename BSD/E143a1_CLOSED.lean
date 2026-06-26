@@ -11,6 +11,10 @@ import Towers.BSD.BSD_Genesis736_CLOSED
 import Towers.BSD.BSD_Genesis737_CLOSED
 import Towers.BSD.BSD_Genesis738_CLOSED
 import Towers.BSD.BSD_Genesis741_CLOSED
+import Towers.BSD.BSD_Genesis742_CLOSED
+import Towers.BSD.BSD_Genesis743_CLOSED
+import Towers.BSD.BSD_Genesis744_CLOSED
+import Towers.BSD.BSD_Genesis745_CLOSED
 import Mathlib.AlgebraicGeometry.EllipticCurve.Weierstrass
 
 /-!
@@ -280,6 +284,55 @@ theorem E143a1_hasse_p103 : BSD_Hasse_OPEN 103 := BSD_Hasse_OPEN_p103
 theorem E143a1_hasse_p107 : BSD_Hasse_OPEN 107 := BSD_Hasse_OPEN_p107
 theorem E143a1_hasse_p109 : BSD_Hasse_OPEN 109 := BSD_Hasse_OPEN_p109
 theorem E143a1_hasse_p113 : BSD_Hasse_OPEN 113 := BSD_Hasse_OPEN_p113
+
+/-! ## §10e  HasseBridge bounds continued — p∈{127,131,137,139,149} (genesis-742) -/
+
+/-- Hasse bounds for p ∈ {127,131,137,139,149}  (genesis-742).
+    Compiled via workflow (bash subprocess OOMs at ≥16129 pairs).
+    a_p values: −8, +18, −17, +18, +14.  p=137 has odd a_p → half-integer witness (r+17/2)²+259/4. -/
+theorem E143a1_hasse_p127 : BSD_Hasse_OPEN 127 := BSD_Hasse_OPEN_p127
+theorem E143a1_hasse_p131 : BSD_Hasse_OPEN 131 := BSD_Hasse_OPEN_p131
+theorem E143a1_hasse_p137 : BSD_Hasse_OPEN 137 := BSD_Hasse_OPEN_p137
+theorem E143a1_hasse_p139 : BSD_Hasse_OPEN 139 := BSD_Hasse_OPEN_p139
+theorem E143a1_hasse_p149 : BSD_Hasse_OPEN 149 := BSD_Hasse_OPEN_p149
+
+/-! ## §10f  HasseBridge bounds continued — p∈{151,157,163,167,173,179,181,191} (genesis-743) -/
+
+/-- Hasse bounds for p ∈ {151,157,163,167,173,179,181,191}  (genesis-743).
+    Compiled via workflow (bash subprocess OOMs at ≥22801 pairs).
+    a_p values: +4, +5, −4, +4, −8, −15, +7, −15.
+    Half-integer witnesses: p=157 (a=+5), p=179 (a=−15), p=181 (a=+7), p=191 (a=−15).
+    S4 completion: p=191 is the fourth S4 prime; all {2,3,19,191} now in HasseBridge. -/
+theorem E143a1_hasse_p151 : BSD_Hasse_OPEN 151 := BSD_Hasse_OPEN_p151
+theorem E143a1_hasse_p157 : BSD_Hasse_OPEN 157 := BSD_Hasse_OPEN_p157
+theorem E143a1_hasse_p163 : BSD_Hasse_OPEN 163 := BSD_Hasse_OPEN_p163
+theorem E143a1_hasse_p167 : BSD_Hasse_OPEN 167 := BSD_Hasse_OPEN_p167
+theorem E143a1_hasse_p173 : BSD_Hasse_OPEN 173 := BSD_Hasse_OPEN_p173
+theorem E143a1_hasse_p179 : BSD_Hasse_OPEN 179 := BSD_Hasse_OPEN_p179
+theorem E143a1_hasse_p181 : BSD_Hasse_OPEN 181 := BSD_Hasse_OPEN_p181
+theorem E143a1_hasse_p191 : BSD_Hasse_OPEN 191 := BSD_Hasse_OPEN_p191
+
+/-! ## §10g  HasseBridge bounds continued — p∈{193,197,199,211,223} (genesis-744) -/
+
+/-- Hasse bounds for p ∈ {193,197,199,211,223}  (genesis-744).
+    Compiled via workflow (bash subprocess OOMs at ≥37249 pairs).
+    a_p values: −24, −10, −4, −24, +5.  p=223 has odd a_p → half-integer witness (r−5/2)²+867/4. -/
+theorem E143a1_hasse_p193 : BSD_Hasse_OPEN 193 := BSD_Hasse_OPEN_p193
+theorem E143a1_hasse_p197 : BSD_Hasse_OPEN 197 := BSD_Hasse_OPEN_p197
+theorem E143a1_hasse_p199 : BSD_Hasse_OPEN 199 := BSD_Hasse_OPEN_p199
+theorem E143a1_hasse_p211 : BSD_Hasse_OPEN 211 := BSD_Hasse_OPEN_p211
+theorem E143a1_hasse_p223 : BSD_Hasse_OPEN 223 := BSD_Hasse_OPEN_p223
+
+/-! ## §10h  HasseBridge bounds continued — p∈{227,229,233,239,241} (genesis-745) -/
+
+/-- Hasse bounds for p ∈ {227,229,233,239,241}  (genesis-745).
+    Compiled via workflow (bash subprocess OOMs at ≥51529 pairs).
+    a_p values: 0, +9, −16, −30, −10.  p=229 has odd a_p → half-integer witness (r−9/2)²+835/4. -/
+theorem E143a1_hasse_p227 : BSD_Hasse_OPEN 227 := BSD_Hasse_OPEN_p227
+theorem E143a1_hasse_p229 : BSD_Hasse_OPEN 229 := BSD_Hasse_OPEN_p229
+theorem E143a1_hasse_p233 : BSD_Hasse_OPEN 233 := BSD_Hasse_OPEN_p233
+theorem E143a1_hasse_p239 : BSD_Hasse_OPEN 239 := BSD_Hasse_OPEN_p239
+theorem E143a1_hasse_p241 : BSD_Hasse_OPEN 241 := BSD_Hasse_OPEN_p241
 
 /-! ## §11  Regulator and BSD formula arithmetic (genesis-737) -/
 
