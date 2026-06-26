@@ -6,6 +6,77 @@ this file is the version history.
 
 ---
 
+## [genesis-734] — 2026-06-26
+
+### BSD_HasseBridge_CLOSED.lean — Option A + B: unconditional Hasse bounds p∈{2,3,5,7}
+
+**Milestone:** New file `BSD_HasseBridge_CLOSED.lean` (0 sorry, classical trio).
+For each prime p ∈ {2, 3, 5, 7}: unconditional `BSD_Hasse_OPEN p` proved via the
+§V.5 algebraic bridge (genesis-733) plus `ap = a_p` compatibility (Option B).
+Named OPEN surfaces: 7 (unchanged). BSD: OPEN.
+
+#### Files changed
+
+| File | Change |
+|------|--------|
+| `Towers/BSD/BSD_HasseBridge_CLOSED.lean` | **New file** — §1 point counts by `decide`, §2 a_p values by `omega`, §3 degree non-negativity by `ring`+`linarith` (completing-the-square witnesses), §4 unconditional `BSD_Hasse_OPEN_pN` via `BSD_hasse_of_degree_nonneg`, §5 `BSD_ApCompat_pN` compatibility bridge |
+| `bsd-core/BSD/BSD_HasseBridge_CLOSED.lean` | Synced |
+| `bsd-core/BSD/BSD_Frobenius_Certificate.lean` | Synced (genesis-733 version) |
+
+#### Mathematical content
+
+**§1 — Point counts by `decide` (ZMod p × ZMod p):**
+`E143_point_decidable` instance (BSD_LFunction.lean) makes the Weierstrass
+`y*y+y = x*x*x-x*x-x-2` predicate decidable over ZMod p.
+- `BSD_E143_card_p2 : (E143_Finset 2).card = 2` — 2 affine 𝔽₂-points
+- `BSD_E143_card_p3 : (E143_Finset 3).card = 4` — 4 affine 𝔽₃-points
+- `BSD_E143_card_p5 : (E143_Finset 5).card = 6` — 6 affine 𝔽₅-points
+- `BSD_E143_card_p7 : (E143_Finset 7).card = 9` — 9 affine 𝔽₇-points
+
+**§2 — Exact a_p values by `omega`:**
+From `a_p p := (p:ℤ) − (E143_Finset p).card` and the §1 counts:
+`a_p 2 = 0`, `a_p 3 = −1`, `a_p 5 = −1`, `a_p 7 = −2`.
+Matches the LMFDB trace table for 143a1.
+
+**§3 — Degree non-negativity by completing the square:**
+`BSD_FrobeniusDegreeNonneg_OPEN p = ∀ r:ℝ, r²−(a_p p:ℝ)·r+p ≥ 0`.
+All four discriminants are negative (no real Frobenius eigenvalues):
+- p=2, Δ=0−8=−8:   `r²+2 = r²+2` (witness `sq_nonneg r`)
+- p=3, Δ=1−12=−11: `r²+r+3 = (r+½)²+11/4` (witness `sq_nonneg (r+1/2)`)
+- p=5, Δ=1−20=−19: `r²+r+5 = (r+½)²+19/4` (witness `sq_nonneg (r+1/2)`)
+- p=7, Δ=4−28=−24: `r²+2r+7 = (r+1)²+6` (witness `sq_nonneg (r+1)`)
+Proof technique: `key` lemma keeps the **same atoms** as the goal
+(`(a_p p:ℝ)` + ℕ-cast `↑p` unsubstituted) so `linarith` can use it directly;
+`push_cast; ring` normalises inside the `key` proof only.
+
+**§4 — BSD_Hasse_OPEN (Option A, unconditional):**
+`BSD_hasse_of_degree_nonneg p : BSD_FrobeniusDegreeNonneg_OPEN p → BSD_Hasse_OPEN p`
+(genesis-733, §V.5). Applied to each of the four DegreeNonneg theorems, giving
+`BSD_Hasse_OPEN_p2/3/5/7` with 0 sorry, no Frobenius API needed.
+First concrete use of the §V.5 bridge on specific primes.
+
+**§5 — ap = a_p compatibility bridge (Option B):**
+`BSD_ApCompat_pN : E1859.ap p = a_p p`
+Proves the LMFDB trace table `E1859.ap` matches the geometric count `a_p` for each prime.
+Proof: `(show E1859.ap p = c from rfl).trans BSD_ap_pN.symm` — pattern-match `rfl`
+combined with the §2 geometric value.
+
+**Compile status (LEAN_PATH bypass — 4850 oleans intact):**
+`BSD_Frobenius_Certificate.olean` rebuilt (genesis-733 edit); `BSD_HasseBridge_CLOSED.olean`
+produced. `0 errors, 0 warnings, 0 sorry`.
+
+**Axiom audit:**
+```
+'Towers.BSD.BSD_Hasse_OPEN_p2' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Towers.BSD.BSD_Hasse_OPEN_p7' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Towers.BSD.BSD_ApCompat_p3' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Towers.BSD.BSD_DegreeNonneg_p5' depends on axioms: [propext, Classical.choice, Quot.sound]
+```
+
+**SORRY: 0. Axiom footprint: classical trio. NOT a brick. Named OPEN: 7 (unchanged). BSD: OPEN.**
+
+---
+
 ## [genesis-733] — 2026-06-26
 
 ### BSD_Frobenius_Certificate.lean — §V.5 skeleton + honesty fixes
