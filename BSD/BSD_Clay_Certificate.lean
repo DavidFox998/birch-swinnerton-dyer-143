@@ -3,6 +3,7 @@ import Towers.BSD.BSD_MasterCertification
 import Towers.BSD.BSD_ClassNum_Upper_CLOSED
 import Towers.BSD.BSD_ClassNumber_10_CLOSED
 import Towers.BSD.BSD_HeegnerPoint_CLOSED
+import Towers.BSD.BSD_KodairaReduction_CLOSED
 import Towers.RH.Chain.C08_M4WeilBridge
 
 /-!
@@ -81,6 +82,13 @@ foundation at genus = 13.
 | BSD_orderOf_p2_CLOSED                | ∃ p2 : ClassGroup(𝓞K), 10 ≤ orderOf p2 ← M5.6 |
 | ClassGroup_OrderOf_Bridge_CLOSED     | EvenK bridge → ∃ p2, 10 ≤ orderOf p2 ← M5.6 |
 | BSD_TermBound_CLOSED                 | ‖a_n n / n^s‖ ≤ √n·τ(n)/n^σ (conditional on a_n bound) ← M5.6 |
+| BSD_c4_143a1                         | c₄ = b₂²−24b₄ = 64 for 143a1 ← M5.7 |
+| BSD_c4_coprime_11                    | ¬(11 ∣ 64) → Kodaira type I₁ at p=11 ← M5.7 |
+| BSD_c4_coprime_13                    | ¬(13 ∣ 64) → Kodaira type I₂ at p=13 ← M5.7 |
+| BSD_singpt_11_is_singular            | node (1,5) on Ẽ(𝔽₁₁), both partials vanish ← M5.7 |
+| BSD_singpt_13_is_singular            | node (4,6) on Ẽ(𝔽₁₃), both partials vanish ← M5.7 |
+| BSD_node_11_anisotropic              | v²=2u² ⇒ u=v=0 mod 11 (nonsplit, 121 cases) ← M5.7 |
+| BSD_node_13_anisotropic              | v²+2u²=0 ⇒ u=v=0 mod 13 (nonsplit, 169 cases) ← M5.7 |
 
 ## Genuine Clay gaps (def Prop — not axioms, not sorry)
 
@@ -95,8 +103,11 @@ foundation at genus = 13.
 | BSD_HeegnerPoint_OPEN          | ∃ rational point on 143a1 |
 | BSD_Regulator_OPEN 143         | Néron–Tate regulator > 0 |
 | BSD_Sha_OPEN 143               | |Ш(E_{143}/ℚ)| finite |
-| BSD_TamagawaConj_OPEN 143      | Tamagawa product = 1 |
+| BSD_TamagawaConj_OPEN 143      | Leading term formula (full BSD equation) |
 | BSD_143_OPEN                   | BSD conjecture (rank = analytic rank) |
+| BSD_Tamagawa_11_is_1_OPEN      | c₁₁ = 1 (Tate algorithm / Néron model gap) ← M5.7 |
+| BSD_Tamagawa_13_is_2_OPEN      | c₁₃ = 2 (Tate algorithm / Néron model gap) ← M5.7 |
+| BSD_TamagawaProd_factors_OPEN  | BSD_TamagawaProd 143 = c₁₁·c₁₃ (Néron model) ← M5.7 |
 
 DISCHARGED (Milestone 5.2 + 5.3):
   K1_ClassNumber_Upper_BSD — classNumber K ≤ 10  PROVED unconditionally
@@ -211,8 +222,17 @@ def BSD_HasseFull_HighPrimes_OPEN : Prop :=
       BSD_HasseFull_HighPrimes_OPEN — Frobenius gap for primes > 997
         (this is part of BSD_HasseFull_143_OPEN; named explicitly here).
 
-    Remaining genuine Clay gaps: 10 named open surfaces (see table above). -/
-def BSD_clay_cert_open_count : ℕ := 10
+    NEW named gaps (M5.7 Kodaira/Tamagawa, added 2026-06-26):
+      BSD_Tamagawa_11_is_1_OPEN   — c₁₁ = 1 (type I₁ at p=11; Néron model gap)
+      BSD_Tamagawa_13_is_2_OPEN   — c₁₃ = 2 (type I₂ nonsplit at p=13; Néron model gap)
+      BSD_TamagawaProd_factors_OPEN — global product factors as c₁₁·c₁₃
+
+    Conditional combinator (M5.7):
+      BSD_TamagawaProd_eq_2 : given the three Tamagawa surfaces → BSD_TamagawaProd 143 = 2.
+      Arithmetic evidence proved: c₄=64, nodes (1,5)/(4,6), both cones anisotropic.
+
+    Remaining genuine Clay gaps: 13 named open surfaces (see table above). -/
+def BSD_clay_cert_open_count : ℕ := 13
 
 -- ============================================================
 -- §5. Original minimum-gate combinator (9 gates, preserved)
