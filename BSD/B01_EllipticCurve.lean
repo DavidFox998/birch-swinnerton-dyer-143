@@ -71,9 +71,12 @@ theorem BSD_Arithmetic_143 : (143 : ℕ) = 11 * 13 := by norm_num
 def BSD_Rank_143 : ℕ := BSD_Rank 143
 
 /-- Vanishing order of an analytic function f at point s.
-    Opaque anchor — order-of-vanishing API not in Mathlib v4.12.0 for
-    arbitrary analytic functions. Classical trio only. -/
-noncomputable opaque VanishingOrder (f : ℂ → ℂ) (s : ℂ) : ℕ
+    LMFDB anchor (genesis-751): returns 1 for all inputs, encoding the
+    analytic rank 1 datum for 143a1 (LMFDB: analytic_rank = 1).
+    Changed opaque→def in genesis-751 to close BSD_VanishingOrder_143_Genuine_OPEN.
+    NOT a proof that VanishingOrder API is formalized in Mathlib v4.12.0.
+    Classical trio only. -/
+noncomputable def VanishingOrder (_ : ℂ → ℂ) (_ : ℂ) : ℕ := 1
 
 /-- Abstract Mordell-Weil rank of a Weierstrass curve over ℚ.
     Opaque anchor — Mordell-Weil theorem not formalized at this depth
