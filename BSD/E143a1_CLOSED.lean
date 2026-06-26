@@ -10,7 +10,7 @@ import Towers.BSD.BSD_Genesis735_CLOSED
 import Towers.BSD.BSD_Genesis736_CLOSED
 import Towers.BSD.BSD_Genesis737_CLOSED
 import Towers.BSD.BSD_Genesis738_CLOSED
-import Towers.BSD.BSD_Genesis740_CLOSED
+import Towers.BSD.BSD_Genesis741_CLOSED
 import Mathlib.AlgebraicGeometry.EllipticCurve.Weierstrass
 
 /-!
@@ -269,6 +269,17 @@ theorem E143a1_hasse_p79 : BSD_Hasse_OPEN 79 := BSD_Hasse_OPEN_p79
 theorem E143a1_hasse_p83 : BSD_Hasse_OPEN 83 := BSD_Hasse_OPEN_p83
 theorem E143a1_hasse_p89 : BSD_Hasse_OPEN 89 := BSD_Hasse_OPEN_p89
 theorem E143a1_hasse_p97 : BSD_Hasse_OPEN 97 := BSD_Hasse_OPEN_p97
+
+/-! ## §10d  HasseBridge bounds continued — p∈{101,103,107,109,113} (genesis-741) -/
+
+/-- Hasse bounds for p ∈ {101,103,107,109,113}  (genesis-741).
+    Compiled via workflow (bash subprocess OOMs at ≥10201 pairs).
+    a_p: +18, +8, +8, +4, +1.  p=113 has odd a_p → half-integer witness. -/
+theorem E143a1_hasse_p101 : BSD_Hasse_OPEN 101 := BSD_Hasse_OPEN_p101
+theorem E143a1_hasse_p103 : BSD_Hasse_OPEN 103 := BSD_Hasse_OPEN_p103
+theorem E143a1_hasse_p107 : BSD_Hasse_OPEN 107 := BSD_Hasse_OPEN_p107
+theorem E143a1_hasse_p109 : BSD_Hasse_OPEN 109 := BSD_Hasse_OPEN_p109
+theorem E143a1_hasse_p113 : BSD_Hasse_OPEN 113 := BSD_Hasse_OPEN_p113
 
 /-! ## §11  Regulator and BSD formula arithmetic (genesis-737) -/
 
