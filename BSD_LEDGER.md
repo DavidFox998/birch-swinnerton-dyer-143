@@ -703,3 +703,53 @@ spectral geometry of X₀(143)), nor any of the two remaining primary Clay gaps:
 - `BSD_LFunctionIsLinFunc_OPEN` (Mellin/Hecke identification absent)
 
 **Genuine Clay gaps: 2 (unchanged). BSD: OPEN. No Clay claim.**
+
+---
+
+## genesis-760 — Discriminant Equivalence + L-function Consequence (2026-06-27)
+
+**File:** `BSD_Genesis760_CLOSED.lean` · SORRY: 0 · Axiom footprint: classical trio
+
+### Gate 1 refinement: BSD_HasseBound_Discriminant_OPEN
+
+New EQUIVALENT form of Gate 1 (replaces `BSD_EndomorphismDegree_OPEN` as the primary name):
+
+```lean
+def BSD_HasseBound_Discriminant_OPEN : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime], ¬(p ∣ 143) → (a_p p : ℝ) ^ 2 ≤ 4 * (p : ℝ)
+```
+
+The discriminant inequality Δ = a_p² − 4p ≤ 0 for the quadratic r ↦ r² − a_p·r + p.
+
+**Proved equivalent** to `BSD_EndomorphismDegree_OPEN`:
+
+| Theorem | Statement | Proved by |
+|---------|-----------|-----------|
+| `BSD_EndDeg_from_DiscBound` | Discriminant → Degree form | `nlinarith [sq_nonneg (2r − a_p)]` |
+| `BSD_DiscBound_from_EndDeg` | Degree form → Discriminant | specialize at r = a_p/2, `nlinarith` |
+| `BSD_HasseBound_Discriminant_iff_EndDeg` | `↔` theorem | `⟨fwd, bwd⟩` |
+
+Both surfaces name the SAME mathematical gap (Hasse bound for E_{143a1}):
+- `BSD_EndomorphismDegree_OPEN` = "degree quadratic ≥ 0 ∀ r:ℝ" (§V.5 form)
+- `BSD_HasseBound_Discriminant_OPEN` = "(a_p p)² ≤ 4p" (discriminant form)
+Mathlib API gap for both: `EllipticCurve.Frobenius + Isogeny.degree + Rosati`.
+
+### Gate 2 consequences: proved conditionally on BSD_LFunctionIsLinFunc_OPEN
+
+| Theorem | Statement | Proved by |
+|---------|-----------|-----------|
+| `BSD_LFunction_zero_at_one_from_LinFunc` | `BSDLFunction 143 (1:ℂ) = 0` | `rw [h]; simp [L_143a1]; ring` |
+| `BSD_BSDFunction_nonzero_from_LinFunc` | `∀ s≠1, BSDLFunction 143 s ≠ 0` | `rw [h]; norm_num; sub_ne_zero` |
+| `BSD_LFunction_simple_zero_from_LinFunc` | conjunction of both | `⟨zero, nonzero⟩` |
+
+These show that closing `BSD_LFunctionIsLinFunc_OPEN` gives L(E_{143a1}, 1) = 0
+(analytic rank ≥ 1) and a simple zero structure — consistent with BSD for rank-1 curves.
+
+### Updated gate table
+
+| Combinator | Gate 1 | Gate 2 |
+|-----------|--------|--------|
+| genesis-759 `BSD_Genesis759_Combinator` | `BSD_EndomorphismDegree_OPEN` | `BSD_LFunctionIsLinFunc_OPEN` |
+| genesis-760 `BSD_Genesis760_Combinator` | `BSD_HasseBound_Discriminant_OPEN` | `BSD_LFunctionIsLinFunc_OPEN` |
+
+**Genuine Clay gaps: 2 (unchanged). BSD: OPEN. No Clay claim.**
