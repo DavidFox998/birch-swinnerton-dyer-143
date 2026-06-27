@@ -478,12 +478,14 @@ primes p ≤ 997, proved by `rfl` against the LMFDB data table.
 
 | Category | Count |
 |----------|-------|
-| Fully proved files (0 sorry anywhere) | 40 |
-| Total proved `theorem`/`lemma` declarations | **≈852** |
+| Fully proved files (0 sorry anywhere) | 41 |
+| Total proved `theorem`/`lemma` declarations | **≈856** |
 | Files with sorry only in documentation strings | 4 (B03, BSD_AP_Table, BSD_ClassNumber, BSD_ClassNumberBounds) |
 | Actual proof-body sorry count | **0** |
 | Named OPEN surfaces (main tower) | **4** (down from 7 after genesis-733..737) |
-| HasseBridge primes covered | **33** ({2,3,5,7} ∪ {17,19,23,29} ∪ {31,37,41,43,47,53,59,61,67} ∪ {71,73,79} ∪ {83,89,97} ∪ {101,103,107,109,113} ∪ {127,131,137,139,149}) |
+| HasseBridge primes covered | **51** ({2,3,5,7} ∪ {17,19,23,29} ∪ {31..67} ∪ {71..97} ∪ {101..113} ∪ {127..149} ∪ {151..191} ∪ {193..223} ∪ {227..241}) |
+| Analytic closures (genesis-754) | `BSD_AnalyticOn_L143a1_CLOSED` + `BSD_AnalyticOrder_143_CLOSED` |
+| RH-chain closures via BSD (genesis-754 Phase B) | `K1_Upper_ClassGroup_OPEN` + `K1_Lower_OrderOf_OPEN` → CLOSED in RH tower |
 
 ## Named OPEN surfaces (def Prop — roadmap markers, not sorry, not axiom)
 
@@ -512,6 +514,14 @@ primes p ≤ 997, proved by `rfl` against the LMFDB data table.
 | `BSD_Hasse_OPEN_p83..97` (3 primes) | `BSD_Genesis740_CLOSED.lean` | decide+omega+completed-square+bridge | **740** |
 | `BSD_Hasse_OPEN_p101..113` (5 primes) | `BSD_Genesis741_CLOSED.lean` | decide+omega+completed-square+bridge | **741** |
 | `BSD_Hasse_OPEN_p127..149` (5 primes) | `BSD_Genesis742_CLOSED.lean` | decide+omega+completed-square+bridge | **742** |
+| `BSD_AnalyticOn_L143a1_CLOSED` | `BSD_Genesis754_CLOSED.lean` | `AnalyticOn ℂ L_143a1 Set.univ` — `rw [analyticWithinAt_univ]; analyticAt_const.mul (analyticAt_id.sub analyticAt_const)` | **754** |
+| `BSD_AnalyticOrder_143_CLOSED` | `BSD_Genesis754_CLOSED.lean` | `BSD_AnalyticOrder_143_OPEN` (∃ h : AnalyticAt ℂ L_143a1 1, h.order=1) via `order_eq_nat_iff` + const witness g=5759/10000 | **754** |
+
+### RH-chain closures (C22_ClassNum_Bridge.lean — RH tower, not BSD/bsd-core)
+These close K1 surfaces in `verify_weil_cluster.sh Phase 13` by importing BSD results.
+| `K1_Upper_ClassGroup_OPEN` | `C22_ClassNum_Bridge.lean` (RH tower) | `Towers.BSD.BSD_ClassNum_Unconditional` (same AdjoinRoot type, no coercion) | **754 Phase B** |
+| `K1_Lower_OrderOf_OPEN` | `C22_ClassNum_Bridge.lean` (RH tower) | `K1_ClassNumber_Lower_CLOSED BSD_ClassNum_Unconditional` | **754 Phase B** |
+| `K1_ClassNumber_via_BSD` | `C22_ClassNum_Bridge.lean` (RH tower) | `classNumber K = 10` (Nat.le_antisymm upper lower) — unconditional | **754 Phase B** |
 
 ### Still OPEN (4 primary gaps — main tower — all require absent Mathlib API)
 | Name | Gap | Why not closeable |
