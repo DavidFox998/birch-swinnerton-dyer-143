@@ -625,6 +625,22 @@ trio, two independent routes, mirrored to `DavidFox998/ClassNumber-143`
     Genuine Clay gaps: **1 unconditional** (BSD_VanishingOrder_143_Genuine_OPEN) +
     **1 LMFDB-level** (BSD_L143a1_HasDerivAt_OPEN) + **1 research-grade** (BSD_Kolyvagin_OPEN).
     BSD: OPEN (Clay). Classical trio. No Clay claim.
+  - **genesis-758** (`BSD_Genesis758_CLOSED.lean`, 2026-06-27): **Frobenius-Analytic Combinator.**
+    `BSD_FrobeniusAnalytic_Combinator`: same 2 gates as genesis-757 but Gate 1 is now
+    **atomic** — `BSD_HasseFull_143_OPEN` (Frobenius sub-gap) replaces `Modularity_143_OPEN`.
+    Key: `BSD_HeckeMultiplicativity_143_CLOSED` (Milestone 5.1, 2026-06-23) is PROVED
+    unconditionally via Finsupp disjoint-support split. `Modularity_143_CLOSED_1gate`
+    then supplies `Modularity_143_OPEN` from just `BSD_HasseFull_143_OPEN`.
+    Modularity_143_OPEN now fully decomposed: 3 of 4 conditions proved (a_f 1=1,
+    multiplicativity, Hecke-recurrence); only Weil bound ∀ p prime remains.
+    `verify_bsd_only.sh` Phase 31 added.
+    `BSD_MasterCertification.lean` updated: genesis-758 import + ledger entry.
+    Remaining 2 Clay gaps (more atomic names):
+      (1) `BSD_HasseFull_143_OPEN` — Frobenius degree theory (Silverman AEC §V.2;
+          EllipticCurve.Frobenius absent from Mathlib v4.12.0). 168 primes ≤ 997
+          have integer-bound evidence; ap=a_p bridge also open.
+      (2) `BSD_L_Analytic_143_OPEN` — Mellin transform + Hecke L-function API (absent)
+    BSD: OPEN (Clay). Classical trio. No Clay claim. Pushed to `DavidFox998/ClassNumber-143`.
   - **genesis-757** (`BSD_Genesis757_CLOSED.lean`, 2026-06-27): **Two-Gate Clay Combinator.**
     `BSD_TwoGateCombinator`: accepts only 2 open hypotheses —
     `Modularity_143_OPEN` and `BSD_L_Analytic_143_OPEN` — and internally supplies all 7 gates.
