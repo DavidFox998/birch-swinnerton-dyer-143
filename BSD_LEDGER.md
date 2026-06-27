@@ -583,6 +583,25 @@ determinant or the actual BSD leading coefficient. The genuine Clay content — 
 these constants to the elliptic curve via height theory, BSD formula, and Hecke L-functions —
 is what `BSD_TamagawaConj_OPEN` and `BSD_Regulator_OPEN` represent as remaining gaps.
 
+**genesis-758 (2026-06-27) — Frobenius-Analytic Combinator:**
+
+`BSD_FrobeniusAnalytic_Combinator` replaces the opaque `Modularity_143_OPEN` gate
+with its atomic sub-gap `BSD_HasseFull_143_OPEN`, using:
+- `BSD_HeckeMultiplicativity_143_CLOSED` (Milestone 5.1, proved unconditionally)
+- `Modularity_143_CLOSED_1gate` (1-gate: HasseFull → Modularity_143_OPEN)
+
+Decomposition of `Modularity_143_OPEN` conditions:
+| Condition | Status |
+|-----------|--------|
+| `a_f 1 = 1` | ✓ PROVED (a_n_one) |
+| Multiplicativity | ✓ PROVED (BSD_HeckeMultiplicativity_143_CLOSED) |
+| Hecke recurrence `a_n(p²)=(a_n p)²−p` | ✓ PROVED (a_n_sq_recurrence) |
+| Weil bound `∀ p prime good, \|a_p p\|≤2√p` | **OPEN** (BSD_HasseFull_143_OPEN) |
+
+Remaining 2 Clay gaps (post genesis-758):
+1. `BSD_HasseFull_143_OPEN` — Frobenius degree theory for all good primes
+2. `BSD_L_Analytic_143_OPEN` — Analytic continuation (Mellin/Hecke API)
+
 CAVEAT: `BSD_143_OPEN` (rank = analytic rank) remains a Clay Millennium Problem.
 No Clay submission has been made or is implied by any file in this repository.
 
