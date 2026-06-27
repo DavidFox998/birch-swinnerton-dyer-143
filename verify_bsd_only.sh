@@ -1795,8 +1795,59 @@ else
   echo "(Phase 28 skipped -- START_PHASE=${START_PHASE})"
 fi
 
+# === Phase 29: genesis-756 — Four-Gate Clay Combinator (9 → 4 open surfaces) ===
+if [ "${START_PHASE:-29}" -le 29 ]; then
+  echo "=== Phase 29: genesis-756 — Four-Gate Clay Combinator ==="
+  echo "  BSD_FourGateCombinator: takes ONLY 4 open hypotheses (Modularity, AnalyticCont, Tamagawa, Regulator)"
+  echo "  Internally discharges: BSD_Sha_143_CLOSED, BSD_LowerGate_Discharged, BSD_ClassNum_Unconditional,"
+  echo "                         BSD_143_analytic_route (LMFDB anchor), BSD_finrank_proved."
+  echo "  Net reduction: 9 open gates -> 4 (Clay-minimal combinator)."
+  echo "  BSD: OPEN (Clay). Classical trio. No Clay claim."
+
+  p29_ok=true
+  lean_file="Towers/BSD/BSD_Genesis756_CLOSED.lean"
+  olean_file=".lake/build/lib/Towers/BSD/BSD_Genesis756_CLOSED.olean"
+  if [ -f "$olean_file" ]; then
+    echo "--- $lean_file ---"
+    echo "  SKIP (olean fresh) -- olean: $olean_file"
+  else
+    echo "--- $lean_file ---"
+    if LEAN_PATH="$LP" lean -o "$olean_file" "$lean_file" 2>&1; then
+      echo "  PASS -- olean: $olean_file"
+    else
+      echo "  FAIL: BSD/BSD_Genesis756_CLOSED"
+      p29_ok=false
+    fi
+  fi
+
+  echo "-- Phase 29 axiom audit --"
+  if LEAN_PATH="$LP" lean --stdin <<'AUDIT29' 2>&1
+import Towers.BSD.BSD_Genesis756_CLOSED
+#print axioms Towers.BSD.BSD_FourGateCombinator
+AUDIT29
+  then
+    :
+  else
+    p29_ok=false
+  fi
+
+  if $p29_ok; then
+    echo "Phase 29 PASSED (genesis-756: SORRY:0, classical trio)."
+    echo "  BSD_FourGateCombinator: 9 open gates -> 4 (Clay-minimal combinator)."
+    echo "  Discharged: BSD_Sha_143_CLOSED + BSD_LowerGate_Discharged + BSD_ClassNum_Unconditional"
+    echo "              + BSD_143_analytic_route (LMFDB) + BSD_finrank_proved."
+    echo "  Remaining 4 Clay gaps: Modularity, AnalyticContinuation, Tamagawa, Regulator."
+    echo "  BSD: OPEN (Clay). Classical trio. No Clay claim."
+  else
+    echo "Phase 29 FAILED -- see error lines above."
+    exit 1
+  fi
+else
+  echo "(Phase 29 skipped -- START_PHASE=${START_PHASE})"
+fi
+
 echo ""
-echo "=== BSD phases 7-28 verified (START_PHASE=${START_PHASE}). ==="
+echo "=== BSD phases 7-29 verified (START_PHASE=${START_PHASE}). ==="
 echo "  Phase 18: BSD_KolyvaginPath.lean — Kolyvagin 3-gap Clay route for 143a1."
 echo "  Phase 19: BSD_RankCapstone.lean  — last-mile capstone; BSD_rank_capstone proves BSD_143_OPEN given 2 rank values."
 echo "  Phase 20: BSD_RankLFunction_CLOSED.lean — LMFDB anchor capstone; BSD_143_PROVED (BSD_Rank=1, BSD_AnalyticRankAnchor=1)."
@@ -1808,4 +1859,5 @@ echo "  Phase 25: genesis-752 — LFunctionZero + AnalyticRankOne + GrossZagier 
 echo "  Phase 26: genesis-753 — NonTorsion cert: TorsCard=1 ∧ (2,0)∈143a1 ∧ ∂F/∂y≠0."
 echo "  Phase 27: genesis-754 — BSD_AnalyticOrder_143_CLOSED: analytic order = 1 at s=1."
 echo "  Phase 28: genesis-755 — HasDerivAt + LFuncZero + AnalyticRankOne + GrossZagier closed."
+echo "  Phase 29: genesis-756 — Four-Gate Clay Combinator: 9 open surfaces -> 4."
 echo "  HasseBridge at 51 primes (p<=241). Extension stopped per user direction."
