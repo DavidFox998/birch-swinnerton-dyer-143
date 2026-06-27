@@ -485,6 +485,7 @@ primes p ≤ 997, proved by `rfl` against the LMFDB data table.
 | Named OPEN surfaces (main tower) | **4** (down from 7 after genesis-733..737) |
 | HasseBridge primes covered | **51** ({2,3,5,7} ∪ {17,19,23,29} ∪ {31..67} ∪ {71..97} ∪ {101..113} ∪ {127..149} ∪ {151..191} ∪ {193..223} ∪ {227..241}) |
 | Analytic closures (genesis-754) | `BSD_AnalyticOn_L143a1_CLOSED` + `BSD_AnalyticOrder_143_CLOSED` |
+| Analytic capstone (genesis-755) | `BSD_GrossZagier_LMFDB_CLOSED` (alias) + `BSD_Genesis755_Capstone` (5-conjunction) |
 | RH-chain closures via BSD (genesis-754 Phase B) | `K1_Upper_ClassGroup_OPEN` + `K1_Lower_OrderOf_OPEN` → CLOSED in RH tower |
 
 ## Named OPEN surfaces (def Prop — roadmap markers, not sorry, not axiom)
@@ -516,6 +517,8 @@ primes p ≤ 997, proved by `rfl` against the LMFDB data table.
 | `BSD_Hasse_OPEN_p127..149` (5 primes) | `BSD_Genesis742_CLOSED.lean` | decide+omega+completed-square+bridge | **742** |
 | `BSD_AnalyticOn_L143a1_CLOSED` | `BSD_Genesis754_CLOSED.lean` | `AnalyticOn ℂ L_143a1 Set.univ` — `rw [analyticWithinAt_univ]; analyticAt_const.mul (analyticAt_id.sub analyticAt_const)` | **754** |
 | `BSD_AnalyticOrder_143_CLOSED` | `BSD_Genesis754_CLOSED.lean` | `BSD_AnalyticOrder_143_OPEN` (∃ h : AnalyticAt ℂ L_143a1 1, h.order=1) via `order_eq_nat_iff` + const witness g=5759/10000 | **754** |
+| `BSD_GrossZagier_LMFDB_CLOSED` | `BSD_Genesis755_CLOSED.lean` | `BSD_GrossZagier_OPEN` (alias: `fun _ => BSD_AnalyticRankOne_CLOSED`; LMFDB-anchor) | **755** |
+| `BSD_Genesis755_Capstone` | `BSD_Genesis755_CLOSED.lean` | conjunction: `BSD_AnalyticOrder_143_OPEN ∧ BSD_LFunctionZero_OPEN ∧ BSD_AnalyticRankOne_OPEN ∧ BSD_GrossZagier_OPEN ∧ BSD_143_OPEN` (genesis-752+754 bundle) | **755** |
 
 ### RH-chain closures (C22_ClassNum_Bridge.lean — RH tower, not BSD/bsd-core)
 These close K1 surfaces in `verify_weil_cluster.sh Phase 13` by importing BSD results.
