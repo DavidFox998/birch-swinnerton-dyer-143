@@ -790,6 +790,26 @@ compile_with_olean \
   "BSD/BSD_Multiplicativity_Closed" || p9_ok=false
 echo ""
 
+# genesis-759 files must be compiled before BSD_MasterCertification
+# (MasterCertification imports BSD_Genesis759_CLOSED, which needs these oleans).
+compile_with_olean \
+  "Towers/BSD/BSD_HasseEndDeg_CLOSED.lean" \
+  ".lake/build/lib/Towers/BSD/BSD_HasseEndDeg_CLOSED.olean" \
+  "BSD/BSD_HasseEndDeg_CLOSED" || p9_ok=false
+echo ""
+
+compile_with_olean \
+  "Towers/BSD/BSD_LAnalytic_Anchor_CLOSED.lean" \
+  ".lake/build/lib/Towers/BSD/BSD_LAnalytic_Anchor_CLOSED.olean" \
+  "BSD/BSD_LAnalytic_Anchor_CLOSED" || p9_ok=false
+echo ""
+
+compile_with_olean \
+  "Towers/BSD/BSD_Genesis759_CLOSED.lean" \
+  ".lake/build/lib/Towers/BSD/BSD_Genesis759_CLOSED.olean" \
+  "BSD/BSD_Genesis759_CLOSED" || p9_ok=false
+echo ""
+
 compile_with_olean \
   "Towers/BSD/BSD_MasterCertification.lean" \
   ".lake/build/lib/Towers/BSD/BSD_MasterCertification.olean" \
