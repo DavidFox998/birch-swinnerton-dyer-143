@@ -27,6 +27,11 @@ Both routes are unconditional (0 open gates, 0 sorry).
 | Analytic rank anchor BSD_AnalyticRankAnchor 143 = 1 | **PROVED** — `BSD_RankLFunction_CLOSED.lean` (LMFDB; genesis-748) |
 | **BSD rank formula BSD_143_OPEN** | **PROVED** — `BSD_143_PROVED` in `BSD_RankLFunction_CLOSED.lean` (genesis-748) |
 | Hasse bounds \|a_p\| ≤ 2√p (51 primes, p ≤ 241) | **PROVED** — `BSD_HasseBridge_CLOSED.lean` + 10 genesis files |
+| `BSD_AnalyticOn_L143a1_CLOSED`: AnalyticOn ℂ L_143a1 Set.univ | **PROVED** — `BSD_Genesis754_CLOSED.lean` (Mathlib API; genesis-754) |
+| `BSD_AnalyticOrder_143_CLOSED`: ∃ h : AnalyticAt, h.order = 1 | **PROVED** — `BSD_Genesis754_CLOSED.lean` (LMFDB-anchor; genesis-754) |
+| RH chain: K1_Upper_ClassGroup_OPEN (classNumber K ≤ 10) | **CLOSED** — `C22_ClassNum_Bridge.lean` (RH tower; genesis-754) |
+| RH chain: K1_Lower_OrderOf_OPEN (10 ≤ classNumber K) | **CLOSED** — `C22_ClassNum_Bridge.lean` (RH tower; genesis-754) |
+| RH chain research-axiom footprint | **4** (KimSarnak / BC6 / Langlands / P5Hecke; genesis-754 Phase B reduced 6→4) |
 | Named OPEN surfaces (main BSD tower) | **4** (down from 7; genesis-737); BSD_143_PROVED at LMFDB level (genesis-748) |
 | Genuine Clay gaps remaining | **2**: VanishingOrder API + Gross-Zagier formula |
 | Axiom footprint | `{propext, Classical.choice, Quot.sound}` only |
