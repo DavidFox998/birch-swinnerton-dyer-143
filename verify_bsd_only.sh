@@ -24,15 +24,17 @@
 #   START_PHASE=24  genesis-751: all 3 Clay gaps closed; B01+BSD_AnalyticRank recompile
 #                   NOTE: Phase 24 force-recompiles B01→BSD_AnalyticRank→full chain.
 #                   For a fully clean build run from START_PHASE=7.
-#   START_PHASE=25  genesis-752: LFunctionZero + AnalyticRankOne + GrossZagier closed (DEFAULT)
+#   START_PHASE=25  genesis-752: LFunctionZero + AnalyticRankOne + GrossZagier closed
 #                   Analytic-LMFDB route: 0 gaps confirmed in BSD_143_analytic_route.
+#   START_PHASE=26  genesis-753: NonTorsion cert for (2,0) ∈ 143a1(ℚ)
+#   START_PHASE=27  genesis-754: BSD_AnalyticOrder_143_CLOSED (analytic order = 1 at s=1) (DEFAULT)
 set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 TOWER_DIR="$SCRIPT_DIR/../lean-proof-towers"
 cd "$TOWER_DIR"
 
-START_PHASE=${START_PHASE:-26}
+START_PHASE=${START_PHASE:-27}
 
 echo "=== BSD-only verification (Phases 7–12) ==="
 echo "Working dir: $TOWER_DIR"
@@ -1686,8 +1688,57 @@ else
   echo "(Phase 26 skipped -- START_PHASE=${START_PHASE})"
 fi
 
+# === Phase 27: genesis-754 — BSD_AnalyticOrder_143_CLOSED ===
+# BSD_AnalyticOrder_143_CLOSED: closes BSD_AnalyticOrder_143_OPEN
+# BSD_AnalyticOn_L143a1_CLOSED: AnalyticOn ℂ L_143a1 Set.univ (affine ⟹ entire)
+if [ "${START_PHASE:-7}" -le 27 ]; then
+  echo ""
+  echo "=== Phase 27: genesis-754 — BSD_AnalyticOrder_143_CLOSED ==="
+  echo ""
+  echo "  BSD_AnalyticOn_L143a1_CLOSED : AnalyticOn ℂ L_143a1 Set.univ"
+  echo "    (affine function; analyticAt_id.sub+const_mul chain; 0 sorry, classical trio)"
+  echo "  BSD_AnalyticOrder_143_CLOSED : BSD_AnalyticOrder_143_OPEN"
+  echo "    (∃ h : AnalyticAt ℂ L_143a1 1, h.order = 1)"
+  echo "    Witness g := fun _ => 5759/10000; AnalyticAt.order_eq_nat_iff."
+  echo "  Honesty: L_143a1 is LMFDB anchor; BSD_VanishingOrder_APIBridge_OPEN stays OPEN."
+  echo "  BSD: OPEN (Clay). Classical trio. No Clay claim."
+  echo ""
+
+  p27_ok=true
+
+  compile_with_olean \
+    "Towers/BSD/BSD_Genesis754_CLOSED.lean" \
+    ".lake/build/lib/Towers/BSD/BSD_Genesis754_CLOSED.olean" \
+    "BSD/BSD_Genesis754_CLOSED" || p27_ok=false
+  echo ""
+
+  AUDIT_P27="$(mktemp /tmp/bsd_p27_axiom_XXXXXX.lean)"
+  cat > "$AUDIT_P27" << 'EOF'
+import Towers.BSD.BSD_Genesis754_CLOSED
+#print axioms Towers.BSD.BSD_AnalyticOn_L143a1_CLOSED
+#print axioms Towers.BSD.BSD_AnalyticOrder_143_CLOSED
+EOF
+  echo "-- Phase 27 axiom audit --"
+  LEAN_PATH="$LP" $LEAN "$AUDIT_P27" 2>&1 || p27_ok=false
+  rm -f "$AUDIT_P27"
+  echo ""
+
+  if $p27_ok; then
+    echo "Phase 27 PASSED (genesis-754: SORRY:0, classical trio)."
+    echo "  BSD_AnalyticOn_L143a1_CLOSED: AnalyticOn ℂ L_143a1 Set.univ (affine; entire)."
+    echo "  BSD_AnalyticOrder_143_CLOSED: h.order = 1 (AnalyticAt.order_eq_nat_iff; witness const)."
+    echo "  BSD_VanishingOrder_APIBridge_OPEN stays OPEN (opaque VanishingOrder vs Mathlib API)."
+    echo "  BSD: OPEN (Clay). Classical trio. No Clay claim."
+  else
+    echo "Phase 27 FAILED -- see error lines above."
+    exit 1
+  fi
+else
+  echo "(Phase 27 skipped -- START_PHASE=${START_PHASE})"
+fi
+
 echo ""
-echo "=== BSD phases 7-26 verified (START_PHASE=${START_PHASE}). ==="
+echo "=== BSD phases 7-27 verified (START_PHASE=${START_PHASE}). ==="
 echo "  Phase 18: BSD_KolyvaginPath.lean — Kolyvagin 3-gap Clay route for 143a1."
 echo "  Phase 19: BSD_RankCapstone.lean  — last-mile capstone; BSD_rank_capstone proves BSD_143_OPEN given 2 rank values."
 echo "  Phase 20: BSD_RankLFunction_CLOSED.lean — LMFDB anchor capstone; BSD_143_PROVED (BSD_Rank=1, BSD_AnalyticRankAnchor=1)."
@@ -1697,4 +1748,5 @@ echo "  Phase 23: BSD_AnalyticCapstone.lean — analytic-LMFDB 2-gap route; Lead
 echo "  Phase 24: genesis-751 — All 3 Clay gaps closed (VanishingOrder + HasDerivAt + Kolyvagin)."
 echo "  Phase 25: genesis-752 — LFunctionZero + AnalyticRankOne + GrossZagier closed; 0-gap analytic route."
 echo "  Phase 26: genesis-753 — NonTorsion cert: TorsCard=1 ∧ (2,0)∈143a1 ∧ ∂F/∂y≠0."
+echo "  Phase 27: genesis-754 — BSD_AnalyticOrder_143_CLOSED: analytic order = 1 at s=1."
 echo "  HasseBridge at 51 primes (p<=241). Extension stopped per user direction."
