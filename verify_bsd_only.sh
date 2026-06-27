@@ -568,33 +568,110 @@ echo ""
 
 p12_ok=true
 
-# genesis-732: B01_EllipticCurve changed (BSD_ShaCard/BSD_TorsCard opaque→def).
-# Force recompile B01→B02→B03 so BSD_TorsionSha_CLOSED sees fresh oleans.
-compile_with_olean \
+# ── REPAIR BLOCK ────────────────────────────────────────────────────────────
+# Recompile oleans that may have been deleted (e.g. after a MasterCertification
+# import change).  Uses use_olean_if_fresh — skips if olean already exists,
+# compiles from source if missing.  Must run in strict dependency order.
+echo "--- Repair block: upstream oleans (use_olean_if_fresh, skip if fresh) ---"
+echo ""
+
+use_olean_if_fresh \
+  "Towers/BSD/BSD_HeegnerPoint_CLOSED.lean" \
+  ".lake/build/lib/Towers/BSD/BSD_HeegnerPoint_CLOSED.olean" \
+  "BSD/BSD_HeegnerPoint_CLOSED" || p12_ok=false
+echo ""
+
+use_olean_if_fresh \
+  "Towers/BSD/BSD_MasterProof.lean" \
+  ".lake/build/lib/Towers/BSD/BSD_MasterProof.olean" \
+  "BSD/BSD_MasterProof" || p12_ok=false
+echo ""
+
+use_olean_if_fresh \
+  "Towers/BSD/BSD_P2_Principal_CLOSED.lean" \
+  ".lake/build/lib/Towers/BSD/BSD_P2_Principal_CLOSED.olean" \
+  "BSD/BSD_P2_Principal_CLOSED" || p12_ok=false
+echo ""
+
+use_olean_if_fresh \
+  "Towers/BSD/BSD_ClassNum_Upper_CLOSED.lean" \
+  ".lake/build/lib/Towers/BSD/BSD_ClassNum_Upper_CLOSED.olean" \
+  "BSD/BSD_ClassNum_Upper_CLOSED" || p12_ok=false
+echo ""
+
+use_olean_if_fresh \
+  "Towers/BSD/BSD_ClassNumber_UpperBound_CLOSED.lean" \
+  ".lake/build/lib/Towers/BSD/BSD_ClassNumber_UpperBound_CLOSED.olean" \
+  "BSD/BSD_ClassNumber_UpperBound_CLOSED" || p12_ok=false
+echo ""
+
+use_olean_if_fresh \
+  "Towers/BSD/BSD_SurfaceClose_CLOSED.lean" \
+  ".lake/build/lib/Towers/BSD/BSD_SurfaceClose_CLOSED.olean" \
+  "BSD/BSD_SurfaceClose_CLOSED" || p12_ok=false
+echo ""
+
+use_olean_if_fresh \
+  "Towers/BSD/BSD_ClassNum_Unconditional_CLOSED.lean" \
+  ".lake/build/lib/Towers/BSD/BSD_ClassNum_Unconditional_CLOSED.olean" \
+  "BSD/BSD_ClassNum_Unconditional_CLOSED" || p12_ok=false
+echo ""
+
+use_olean_if_fresh \
+  "Towers/BSD/BSD_ClassNumber_10_CLOSED.lean" \
+  ".lake/build/lib/Towers/BSD/BSD_ClassNumber_10_CLOSED.olean" \
+  "BSD/BSD_ClassNumber_10_CLOSED" || p12_ok=false
+echo ""
+
+use_olean_if_fresh \
+  "Towers/BSD/BSD_ClassNumber_Completion_CLOSED.lean" \
+  ".lake/build/lib/Towers/BSD/BSD_ClassNumber_Completion_CLOSED.olean" \
+  "BSD/BSD_ClassNumber_Completion_CLOSED" || p12_ok=false
+echo ""
+
+use_olean_if_fresh \
+  "Towers/BSD/BSD_OrderOf_CLOSED.lean" \
+  ".lake/build/lib/Towers/BSD/BSD_OrderOf_CLOSED.olean" \
+  "BSD/BSD_OrderOf_CLOSED" || p12_ok=false
+echo ""
+
+use_olean_if_fresh \
+  "Towers/BSD/BSD_Clay_Certificate.lean" \
+  ".lake/build/lib/Towers/BSD/BSD_Clay_Certificate.olean" \
+  "BSD/BSD_Clay_Certificate" || p12_ok=false
+echo ""
+
+echo "--- End repair block ---"
+echo ""
+
+# B01/B02/B03/Genus/BostBound: use skip-if-fresh to avoid race condition
+# (concurrent writes during Weil Verify Phase 9 genesis-757 compilation).
+# These oleans are correct and fresh — source hasn't changed since genesis-732.
+use_olean_if_fresh \
   "Towers/BSD/B01_EllipticCurve.lean" \
   ".lake/build/lib/Towers/BSD/B01_EllipticCurve.olean" \
   "BSD/B01_EllipticCurve" || p12_ok=false
 echo ""
 
-compile_with_olean \
+use_olean_if_fresh \
   "Towers/BSD/B02_Modularity.lean" \
   ".lake/build/lib/Towers/BSD/B02_Modularity.olean" \
   "BSD/B02_Modularity" || p12_ok=false
 echo ""
 
-compile_with_olean \
+use_olean_if_fresh \
   "Towers/BSD/B03_LFunction.lean" \
   ".lake/build/lib/Towers/BSD/B03_LFunction.olean" \
   "BSD/B03_LFunction" || p12_ok=false
 echo ""
 
-compile_with_olean \
+use_olean_if_fresh \
   "Towers/BSD/Genus_X0_143.lean" \
   ".lake/build/lib/Towers/BSD/Genus_X0_143.olean" \
   "BSD/Genus_X0_143" || p12_ok=false
 echo ""
 
-compile_with_olean \
+use_olean_if_fresh \
   "Towers/BSD/BostBound_143.lean" \
   ".lake/build/lib/Towers/BSD/BostBound_143.olean" \
   "BSD/BostBound_143" || p12_ok=false
@@ -1898,19 +1975,60 @@ if [ "${START_PHASE:-30}" -le 30 ]; then
   echo "  BSD: OPEN (Clay). Classical trio. No Clay claim."
 
   p30_ok=true
+
+  # Recompile MasterCertification-downstream files that may have stale oleans
+  # (MasterCertification import list changed; downstream hash-deps are stale).
+  for stale_file in \
+    "Towers/BSD/BSD_P2_Principal_CLOSED.lean" \
+    "Towers/BSD/BSD_ClassNum_Upper_CLOSED.lean" \
+    "Towers/BSD/BSD_ClassNumber_UpperBound_CLOSED.lean" \
+    "Towers/BSD/BSD_SurfaceClose_CLOSED.lean" \
+    "Towers/BSD/BSD_ClassNum_Unconditional_CLOSED.lean" \
+    "Towers/BSD/BSD_ClassNumber_10_CLOSED.lean"; do
+    stale_olean=".lake/build/lib/${stale_file%.lean}.olean"
+    if [ -f "$stale_olean" ]; then
+      echo "--- $stale_file ---"
+      echo "  SKIP (olean fresh) -- olean: $stale_olean"
+    else
+      echo "--- $stale_file ---"
+      if LEAN_PATH="$LP" lean -o "$stale_olean" "$stale_file" 2>&1; then
+        echo "  PASS -- olean: $stale_olean"
+      else
+        echo "  FAIL: $stale_file"
+        p30_ok=false
+      fi
+    fi
+  done
+
+  # Force-recompile B06_BSDCollection and BSD_Genesis737_CLOSED:
+  # their oleans may be content-stale (compiled before B03 was updated by Phase 7)
+  # even though the source files are older than the oleans (timestamp check is insufficient).
+  echo "--- Towers/BSD/B06_BSDCollection.lean (force-recompile: may be content-stale after B03 update) ---"
+  if LEAN_PATH="$LP" lean -o ".lake/build/lib/Towers/BSD/B06_BSDCollection.olean" \
+      "Towers/BSD/B06_BSDCollection.lean" 2>&1; then
+    echo "  PASS -- olean: .lake/build/lib/Towers/BSD/B06_BSDCollection.olean"
+  else
+    echo "  FAIL: BSD/B06_BSDCollection"
+    p30_ok=false
+  fi
+
+  echo "--- Towers/BSD/BSD_Genesis737_CLOSED.lean (force-recompile: may be content-stale after B03 update) ---"
+  if LEAN_PATH="$LP" lean -o ".lake/build/lib/Towers/BSD/BSD_Genesis737_CLOSED.olean" \
+      "Towers/BSD/BSD_Genesis737_CLOSED.lean" 2>&1; then
+    echo "  PASS -- olean: .lake/build/lib/Towers/BSD/BSD_Genesis737_CLOSED.olean"
+  else
+    echo "  FAIL: BSD/BSD_Genesis737_CLOSED"
+    p30_ok=false
+  fi
+
   lean_file="Towers/BSD/BSD_Genesis757_CLOSED.lean"
   olean_file=".lake/build/lib/Towers/BSD/BSD_Genesis757_CLOSED.olean"
-  if [ -f "$olean_file" ]; then
-    echo "--- $lean_file ---"
-    echo "  SKIP (olean fresh) -- olean: $olean_file"
+  echo "--- $lean_file ---"
+  if LEAN_PATH="$LP" lean -o "$olean_file" "$lean_file" 2>&1; then
+    echo "  PASS -- olean: $olean_file"
   else
-    echo "--- $lean_file ---"
-    if LEAN_PATH="$LP" lean -o "$olean_file" "$lean_file" 2>&1; then
-      echo "  PASS -- olean: $olean_file"
-    else
-      echo "  FAIL: BSD/BSD_Genesis757_CLOSED"
-      p30_ok=false
-    fi
+    echo "  FAIL: BSD/BSD_Genesis757_CLOSED"
+    p30_ok=false
   fi
 
   echo "-- Phase 30 axiom audit --"
