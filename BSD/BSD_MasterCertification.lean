@@ -6,6 +6,7 @@ import Towers.BSD.BSD_Genesis755_CLOSED
 import Towers.BSD.BSD_Genesis756_CLOSED
 import Towers.BSD.BSD_Genesis757_CLOSED
 import Towers.BSD.BSD_Genesis758_CLOSED
+import Towers.BSD.BSD_Genesis759_CLOSED
 
 /-
   # BSD_MasterCertification — Terminal Node of the BSD Tower
@@ -321,17 +322,56 @@ theorem BSD_BrickLedger :
         (4) Weil bound ∀ p prime good  — OPEN: BSD_HasseFull_143_OPEN (Frobenius gap)
       The only blocking sub-gap is now (4): the Frobenius degree theory.
 
-    Remaining 2 genuine Clay gaps (after genesis-758):
-      BSD_HasseFull_143_OPEN  — ∀ p prime, ¬p∣143 → |a_p p : ℝ| ≤ 2·√p.
-                                 168 primes ≤ 997: integer bound proved (BSD_Weil_168_CLOSED).
-                                 Primes > 997: Frobenius degree theory (Silverman AEC §V.2;
-                                 EllipticCurve.Frobenius absent from Mathlib v4.12.0).
-                                 Compatibility bridge ap=a_p also open (BSD_Frobenius_Certificate).
-      BSD_L_Analytic_143_OPEN — AnalyticOn ℂ (BSDLFunction 143) Set.univ.
-                                 Follows from modularity (Hecke 1936); Mellin transform
-                                 API absent from Mathlib v4.12.0.
+    NEWLY PROVED (genesis-759, 2026-06-27 — §V.5 Endomorphism-Degree Combinator):
+      **Wiring fix:** BSD_HasseBridge_CLOSED.lean (genesis-734) was orphaned — reachable
+      only via genesis-736→738→...→745, a dead-end branch not connected to
+      BSD_MasterCertification. BSD_HasseEndDeg_CLOSED.lean now imports BSD_HasseBridge_CLOSED,
+      wiring these proofs into the main chain for the first time.
 
-    Both require Mathlib library infrastructure that does not exist in v4.12.0.
+      BSD_EndomorphismDegree_OPEN — named surface: ∀ p prime good, ∀ r:ℝ, r²−a_p(p)·r+p ≥ 0
+        Silverman AEC §III.6 (degree formula) + §V.5 (Rosati positivity); absent v4.12.0.
+        PARTIAL: proved for p ∈ {2,3,5,7} (BSD_DegreeNonneg_p{2,3,5,7}, genesis-734).
+
+      BSD_LFunctionIsLinFunc_OPEN — named surface: BSDLFunction 143 = L_143a1
+        Hecke 1936 + Wiles-Taylor 1995 + LMFDB; modular forms API absent from v4.12.0.
+        PARTIAL: L_143a1 is entire (BSD_AnalyticOn_L143a1_CLOSED, genesis-754).
+
+      BSD_HasseViaEndDeg (PROVED):
+        BSD_EndomorphismDegree_OPEN → BSD_HasseFull_143_OPEN
+        (one-liner: BSD_hasse_of_degree_nonneg per prime; §V.5 algebra already proved)
+
+      BSD_L_Analytic_via_LinFunc (PROVED):
+        BSD_LFunctionIsLinFunc_OPEN → BSD_L_Analytic_143_OPEN
+        (one-liner: rw [h]; exact BSD_AnalyticOn_L143a1_CLOSED)
+
+      BSD_Genesis759_Combinator — takes 2 ATOMIC open hypotheses (both at Mathlib-API boundary):
+        h_endeg  ← BSD_EndomorphismDegree_OPEN  (§V.5 degree form; End(E)⊗ℝ API)
+        h_anchor ← BSD_LFunctionIsLinFunc_OPEN  (L-function identification; Hecke/Mellin API)
+
+      Gate lineage:
+        genesis-756: 4 gates (Modularity, L-Analytic, Tamagawa, Regulator)
+        genesis-757: 2 gates (Modularity, L-Analytic)
+        genesis-758: 2 gates (BSD_HasseFull, L-Analytic)
+        genesis-759: 2 gates (BSD_EndomorphismDegree, LFunctionIsLinFunc)  ← MOST ATOMIC
+
+      New concrete evidence wired (all 0 sorry, classical trio):
+        BSD_DegreeNonneg_p{2,3,5,7}  — BSD_FrobeniusDegreeNonneg_OPEN for 4 primes
+        BSD_Hasse_OPEN_p{2,3,5,7}   — Hasse bound |a_p| ≤ 2√p for 4 primes (unconditional)
+        BSD_ApCompat_p{2,3,5,7}     — E1859.ap p = a_p p compatibility bridge (4 primes)
+        BSD_EndomorphismDegree_Partial_CLOSED — conjunction of 4-prime degree witnesses
+        BSD_Hasse_OPEN_partial_CLOSED         — conjunction of 4-prime Hasse witnesses
+
+    Remaining 2 genuine Clay gaps (after genesis-759):
+      BSD_EndomorphismDegree_OPEN — ∀ p prime good, ∀ r:ℝ, r²−a_p(p)·r+(p:ℝ) ≥ 0.
+                                 Precise hypothesis of Silverman AEC §V.5 (Weil's proof).
+                                 The §V.5 algebraic consequence (|a_p| ≤ 2√p) is PROVED.
+                                 Geometric input: End(E)⊗ℝ degree form PSD via Rosati involution.
+                                 Mathlib gap: EllipticCurve.Frobenius + Isogeny.degree absent.
+      BSD_LFunctionIsLinFunc_OPEN — BSDLFunction 143 = L_143a1.
+                                 Follows from Hecke 1936 + Wiles-Taylor 1995 + LMFDB data.
+                                 Mathlib gap: modular forms API + Mellin transform absent.
+
+    Both require Mathlib library infrastructure absent from v4.12.0.
     All are `def Prop` — NOT axioms, NOT sorry, NOT True-stubs.
     BSD: OPEN.  No Clay claim. -/
 def BSD_open_surface_count : ℕ := 2
