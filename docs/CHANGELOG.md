@@ -6,6 +6,90 @@ this file is the version history.
 
 ---
 
+## [genesis-760] — 2026-06-27
+
+**BSD_Genesis760_CLOSED.lean — Discriminant Equivalence + L-function Consequence**
+
+Four new algebraic completions within the existing 2-gate structure (0 sorry, classical trio):
+
+### Gate 1: Discriminant ↔ EndDeg (proved EQUIVALENT)
+
+New definition:
+- `BSD_HasseBound_Discriminant_OPEN` = `∀ (p:ℕ) [Fact p.Prime], ¬(p∣143) → (a_p p:ℝ)^2 ≤ 4*(p:ℝ)`
+
+The **discriminant form** of the Hasse bound — states exactly that the discriminant
+Δ = a_p² − 4p ≤ 0 of the quadratic r ↦ r² − a_p·r + p. More transparent than
+the degree-form surface since it names the exact algebraic quantity needed.
+
+Three proved theorems (0 sorry, classical trio):
+
+| Theorem | Statement | Tactic |
+|---------|-----------|--------|
+| `BSD_EndDeg_from_DiscBound` | `BSD_HasseBound_Discriminant_OPEN → BSD_EndomorphismDegree_OPEN` | `nlinarith [sq_nonneg (2r − a_p)]` |
+| `BSD_DiscBound_from_EndDeg` | `BSD_EndomorphismDegree_OPEN → BSD_HasseBound_Discriminant_OPEN` | specialize at r=a_p/2, `nlinarith` |
+| `BSD_HasseBound_Discriminant_iff_EndDeg` | `BSD_HasseBound_Discriminant_OPEN ↔ BSD_EndomorphismDegree_OPEN` | `⟨EndDeg_from_Disc, Disc_from_EndDeg⟩` |
+
+Algebraic core: 4·(r² − a·r + p) = (2r−a)² + (4p−a²) ≥ 0 when a² ≤ 4p (nlinarith).
+Reverse: specialise at r = a_p/2 gives p − a_p²/4 ≥ 0 → a_p² ≤ 4p (nlinarith).
+
+### Gate 2: L-function consequences (PROVED conditionally)
+
+Two new proved theorems conditional on `BSD_LFunctionIsLinFunc_OPEN` (0 sorry, classical trio):
+
+| Theorem | Statement | Tactic |
+|---------|-----------|--------|
+| `BSD_LFunction_zero_at_one_from_LinFunc` | `BSD_LFunctionIsLinFunc_OPEN → BSDLFunction 143 (1:ℂ) = 0` | `rw [h]; simp [L_143a1]; ring` |
+| `BSD_BSDFunction_nonzero_from_LinFunc` | `BSD_LFunctionIsLinFunc_OPEN → ∀ s≠1, BSDLFunction 143 s ≠ 0` | `rw [h]; norm_num; sub_ne_zero` |
+| `BSD_LFunction_simple_zero_from_LinFunc` | conjunction of the two above | `⟨zero, nonzero⟩` |
+
+Mathematical significance: closing `BSD_LFunctionIsLinFunc_OPEN` would immediately
+yield L(E_{143a1}, 1) = 0 (analytic rank ≥ 1; consistent with BSD for rank-1 curve).
+
+### Gate table — genesis chain
+
+| Combinator | Gate 1 | Gate 2 |
+|-----------|--------|--------|
+| genesis-759 `BSD_Genesis759_Combinator` | `BSD_EndomorphismDegree_OPEN` | `BSD_LFunctionIsLinFunc_OPEN` |
+| **genesis-760** `BSD_Genesis760_Combinator` | **`BSD_HasseBound_Discriminant_OPEN`** | `BSD_LFunctionIsLinFunc_OPEN` |
+
+Gate 1 equivalence proved: `BSD_HasseBound_Discriminant_iff_EndDeg` (iff theorem).
+
+### Local tower: C23_RHAtomization.lean (NOT pushed to ClassNumber-143)
+
+Sub-atomization of the two remaining RH research-axiom surfaces into their
+most atomic sub-gaps at the Mathlib v4.12.0 API boundary:
+
+**P5_HeckeTransfer_14_OPEN** → two sub-surfaces:
+- `P5_BostConnesHecke6_OPEN`: BC 1995 Theorem 6 spectral gap step (~20 pages)
+- `P5_LanglandsDescent_OPEN`: Langlands functoriality descent → RH (~20 pages)
+- Combinator: `P5_HeckeTransfer_from_BostConnes_Langlands` — PROVED (composition)
+
+**BC6_Mechanism_proved** → two sub-surfaces:
+- `BC6_HeckeTraceStep_OPEN`: Selberg trace formula for Γ₀(143) — BC95 §3 (~20 pages)
+- `BC6_WeilExplicitStep_OPEN`: Weil explicit formula → C_S14_143 constant — BC95 §4–5 (~20 pages)
+- Combinator: `BC6_Mechanism_from_HeckeTrace_WeilExplicit` — PROVED (assumption chain)
+
+### Why no further atomization is possible
+
+`P5_HeckeTransfer_14_OPEN` is logically equivalent to `_root_.RiemannHypothesis`
+(both proved hypotheses 143×13=1859 and ArakelovPositivity collapse the implication).
+Closing P5 = proving RH. Not possible without new axioms.
+
+`BC6SelbergTrace_OPEN` requires the Selberg TRACE FORMULA for Γ₀(143) (BC95 §3,
+~40 pages of automorphic forms; absent from Mathlib v4.12.0). No further
+sub-atomization is feasible without new Mathlib infrastructure.
+
+### Summary
+
+**Genuine Clay gaps: 2 (unchanged). BSD: OPEN. No Clay claim.**
+
+Gate 1 renamed: `BSD_EndomorphismDegree_OPEN` → `BSD_HasseBound_Discriminant_OPEN`
+(logically equivalent; discriminant form is more transparent at the API boundary).
+New proved theorems: 6 (discriminant ↔ EndDeg ×3, L-function consequences ×3).
+verify_bsd_only.sh: Phase 33 added (default START_PHASE=33).
+
+---
+
 ## [polymath8b-ref] — 2026-06-27
 
 ### Polymath8b prime gap reference: C09b_PrimeGapRef.lean
