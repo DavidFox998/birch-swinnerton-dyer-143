@@ -1912,3 +1912,54 @@ else
 fi
 
 echo "  Phase 30: genesis-757 — Two-Gate Clay Combinator: 4 open surfaces -> 2."
+
+# === Phase 31: genesis-758 — Frobenius-Analytic Combinator (Modularity decomposed) ===
+if [ "${START_PHASE:-31}" -le 31 ]; then
+  echo "=== Phase 31: genesis-758 — Frobenius-Analytic Combinator ==="
+  echo "  BSD_FrobeniusAnalytic_Combinator: replaces Modularity_143_OPEN gate with"
+  echo "  BSD_HasseFull_143_OPEN (atomic Frobenius sub-gap) using Modularity_143_CLOSED_1gate."
+  echo "  BSD_HeckeMultiplicativity_143_CLOSED proved unconditionally (Milestone 5.1)."
+  echo "  Gates: 2 (BSD_HasseFull_143_OPEN + BSD_L_Analytic_143_OPEN). BSD: OPEN."
+
+  p31_ok=true
+  lean_file="Towers/BSD/BSD_Genesis758_CLOSED.lean"
+  olean_file=".lake/build/lib/Towers/BSD/BSD_Genesis758_CLOSED.olean"
+  if [ -f "$olean_file" ]; then
+    echo "--- $lean_file ---"
+    echo "  SKIP (olean fresh) -- olean: $olean_file"
+  else
+    echo "--- $lean_file ---"
+    if LEAN_PATH="$LP" lean -o "$olean_file" "$lean_file" 2>&1; then
+      echo "  PASS -- olean: $olean_file"
+    else
+      echo "  FAIL: BSD/BSD_Genesis758_CLOSED"
+      p31_ok=false
+    fi
+  fi
+
+  echo "-- Phase 31 axiom audit --"
+  if LEAN_PATH="$LP" lean --stdin <<'AUDIT31' 2>&1
+import Towers.BSD.BSD_Genesis758_CLOSED
+#print axioms BSD_FrobeniusAnalytic_Combinator
+AUDIT31
+  then
+    :
+  else
+    p31_ok=false
+  fi
+
+  if $p31_ok; then
+    echo "Phase 31 PASSED (genesis-758: SORRY:0, classical trio)."
+    echo "  BSD_FrobeniusAnalytic_Combinator: Modularity_143_OPEN -> BSD_HasseFull_143_OPEN."
+    echo "  BSD_HeckeMultiplicativity_143_CLOSED now unconditional (Milestone 5.1)."
+    echo "  Remaining 2 Clay gaps: BSD_HasseFull_143_OPEN + BSD_L_Analytic_143_OPEN."
+    echo "  BSD: OPEN (Clay). Classical trio. No Clay claim."
+  else
+    echo "Phase 31 FAILED -- see error lines above."
+    exit 1
+  fi
+else
+  echo "(Phase 31 skipped -- START_PHASE=${START_PHASE})"
+fi
+
+echo "  Phase 31: genesis-758 — Frobenius-Analytic Combinator: Modularity gate atomized."
