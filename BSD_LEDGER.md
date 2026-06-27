@@ -664,4 +664,42 @@ No Clay submission has been made or is implied by any file in this repository.
 | `BSD_Kolyvagin` | Euler system machinery (not in Lean/Mathlib) |
 | `BSD_GrossZagier` | Gross-Zagier 1986 (not formalized in Lean) |
 | `BSD_LFunctionZero_OPEN` | Analytic continuation API missing |
-| `BSD_HeegnerPoint_OPEN` | Mordell-Weil group law over ℚ not formalized |
+
+---
+
+## External analytic references
+
+### Polymath8b — prime gap arithmetic for conductor primes of E_{143a1}
+
+**Paper:** DHJ Polymath, "Variants of the Selberg sieve, and bounded intervals containing
+many primes," arXiv:1407.4897v4 [math.NT], 2014.
+
+**Assessment date:** 2026-06-27.
+
+**Main results** (proved in literature; Lean formalization targets in `C09b_PrimeGapRef.lean`):
+
+| Result | Condition | Bound |
+|--------|-----------|-------|
+| Theorem 1.4(i) | Unconditional | H₁ ≤ 246 |
+| Theorem 1.4(xii) | Under GEH | H₁ ≤ 6 |
+| §8 parity obstruction | Sieve-theoretic floor | H₁ ≥ 6 (tight) |
+
+**Connection to E_{143a1}:** The conductor N = 143 = 11 × 13. The conductor prime
+pair (11, 13) has gap = 2, trivially satisfying both the unconditional (≤ 246) and
+GEH-conditional (≤ 6) bounds. Proved in `conductor_gap_within_polymath8b_bound`
+and `conductor_gap_within_polymath8b_GEH_bound` (0 sorry, classical trio, decide/norm_num).
+
+**Does NOT close any current gap.** Critical distinction:
+
+| Tool | Paper | Used in tower? |
+|------|-------|---------------|
+| Selberg SIEVE (combinatorial) | Polymath8b 2014 | No — not in any current surface |
+| Selberg TRACE FORMULA (spectral) | Bost-Connes 1995, §3 | Yes — `BC6SelbergTrace_OPEN` |
+
+Despite sharing the name "Selberg," these are completely different tools.
+Polymath8b cannot advance `BC6SelbergTrace_OPEN` (which needs BC95 §3, ~40 pages,
+spectral geometry of X₀(143)), nor any of the two remaining primary Clay gaps:
+- `BSD_EndomorphismDegree_OPEN` (EllipticCurve.Frobenius absent)
+- `BSD_LFunctionIsLinFunc_OPEN` (Mellin/Hecke identification absent)
+
+**Genuine Clay gaps: 2 (unchanged). BSD: OPEN. No Clay claim.**
