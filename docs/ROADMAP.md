@@ -625,6 +625,22 @@ trio, two independent routes, mirrored to `DavidFox998/ClassNumber-143`
     Genuine Clay gaps: **1 unconditional** (BSD_VanishingOrder_143_Genuine_OPEN) +
     **1 LMFDB-level** (BSD_L143a1_HasDerivAt_OPEN) + **1 research-grade** (BSD_Kolyvagin_OPEN).
     BSD: OPEN (Clay). Classical trio. No Clay claim.
+  - **genesis-757** (`BSD_Genesis757_CLOSED.lean`, 2026-06-27): **Two-Gate Clay Combinator.**
+    `BSD_TwoGateCombinator`: accepts only 2 open hypotheses —
+    `Modularity_143_OPEN` and `BSD_L_Analytic_143_OPEN` — and internally supplies all 7 gates.
+    Newly discharged vs genesis-756:
+      `BSD_TamagawaConj_CLOSED` (genesis-737, LMFDB-anchor) → discharges `BSD_TamagawaConj_OPEN 143`
+      `BSD_Regulator_CLOSED`    (genesis-737, LMFDB-anchor) → discharges `BSD_Regulator_OPEN 143`
+    Net reduction: **4 open gates → 2** (Clay-minimal combinator as of 2026-06-27).
+    `BSD_open_surface_count` updated: `4 → 2`.
+    `verify_bsd_only.sh` Phase 30 added.
+    `BSD_MasterCertification.lean` updated: genesis-757 import + ledger entry.
+    Remaining 2 Clay gaps:
+      (1) `Modularity_143_OPEN` — NewForm + modularity lifting (Mathlib project; E_{143a1}
+          IS semistable by Wiles-Taylor 1995 criteria — mathematically but not in Lean)
+      (2) `BSD_L_Analytic_143_OPEN` — Mellin transform + Hecke L-function API (absent)
+    Honesty: gaps 3 & 4 discharge at LMFDB-anchor level only; genuine Clay content remains.
+    BSD: OPEN (Clay). Classical trio. No Clay claim. Pushed to `DavidFox998/ClassNumber-143`.
   - **genesis-756** (`BSD_Genesis756_CLOSED.lean`, 2026-06-27): **Four-Gate Clay Combinator.**
     `BSD_FourGateCombinator`: accepts only 4 open hypotheses —
     `Modularity_143_OPEN`, `BSD_L_Analytic_143_OPEN`, `BSD_TamagawaConj_OPEN 143`,
