@@ -519,6 +519,7 @@ primes p ≤ 997, proved by `rfl` against the LMFDB data table.
 | `BSD_AnalyticOrder_143_CLOSED` | `BSD_Genesis754_CLOSED.lean` | `BSD_AnalyticOrder_143_OPEN` (∃ h : AnalyticAt ℂ L_143a1 1, h.order=1) via `order_eq_nat_iff` + const witness g=5759/10000 | **754** |
 | `BSD_GrossZagier_LMFDB_CLOSED` | `BSD_Genesis755_CLOSED.lean` | `BSD_GrossZagier_OPEN` (alias: `fun _ => BSD_AnalyticRankOne_CLOSED`; LMFDB-anchor) | **755** |
 | `BSD_Genesis755_Capstone` | `BSD_Genesis755_CLOSED.lean` | conjunction: `BSD_AnalyticOrder_143_OPEN ∧ BSD_LFunctionZero_OPEN ∧ BSD_AnalyticRankOne_OPEN ∧ BSD_GrossZagier_OPEN ∧ BSD_143_OPEN` (genesis-752+754 bundle) | **755** |
+| `BSD_FourGateCombinator` | `BSD_Genesis756_CLOSED.lean` | Clay-minimal combinator: 4-hypothesis version of BSD_MasterCombinator (9 gates → 4); internally supplies SHA + classNum + analytic route | **756** |
 
 ### RH-chain closures (C22_ClassNum_Bridge.lean — RH tower, not BSD/bsd-core)
 These close K1 surfaces in `verify_weil_cluster.sh Phase 13` by importing BSD results.
