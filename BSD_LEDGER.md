@@ -753,3 +753,100 @@ These show that closing `BSD_LFunctionIsLinFunc_OPEN` gives L(E_{143a1}, 1) = 0
 | genesis-760 `BSD_Genesis760_Combinator` | `BSD_HasseBound_Discriminant_OPEN` | `BSD_LFunctionIsLinFunc_OPEN` |
 
 **Genuine Clay gaps: 2 (unchanged). BSD: OPEN. No Clay claim.**
+
+---
+
+## C25 — BC6 Weil Explicit Sub-surface Decomposition (2026-06-28)
+
+**File:** `Towers/RH/Chain/C25_BC6WeilExplicit.lean` · SORRY: 0 · Axiom footprint: classical trio
+**Verify:** `verify_weil_cluster.sh` Phase 15 PASSED
+
+Decomposes `BC6_WeilExplicit_143_OPEN` (~20pp) into THREE named atomic sub-surfaces:
+
+| Sub-surface | Scope | Mathlib gap |
+|---|---|---|
+| `BC6_WeilSpectralGap_143_OPEN` | ~8pp | Spectral theory of Δ on Γ₀(143)\H (Kim-Sarnak) |
+| `BC6_WeilArithBound_143_OPEN` | ~7pp | EllipticCurve.Frobenius / Hasse-Weil |
+| `BC6_WeilLogFactor_143_OPEN` | ~5pp | Functional equation API for Hecke L-functions |
+
+### Proved combinators (0 sorry, classical trio)
+
+| Theorem | Statement |
+|---------|-----------|
+| `BC6_WeilExplicit_from_Three` | 3 sub-surfaces → BC6_WeilExplicit_143_OPEN |
+| `BC6_WeilExplicit_to_LogFactor` | BC6_WeilExplicit_143_OPEN → BC6_WeilLogFactor_143_OPEN (with λ₁/Arakelov inputs) |
+| `BC6_LogConductor_143_lt` | log(143) < 5 (13-term Taylor enclosure, norm_num) |
+| `C_S14_143_sq_gt_52` | C_S14_143² > 52 = 4·13 (product witness) |
+| `BC6_Conductor_prod` | 143 = 11 × 13 |
+| `BC6_WeylPlusGenus` | 14 + 13 = 27 |
+| `BC6_Conductor_log_bound` | 2·log(143) < 11 |
+
+**Shared API note:**
+- `BC6_WeilArithBound_143_OPEN` ↔ BSD Gate 1 (`BSD_HasseBound_Discriminant_OPEN`, Frobenius API)
+- `BC6_WeilLogFactor_143_OPEN` ↔ BSD Gate 2 (`BSD_LFunctionIsLinFunc_OPEN`, functional equation API)
+
+**RH: OPEN. BC6SelbergTrace_OPEN: OPEN. No Clay claim.**
+
+---
+
+## genesis-761 — Ramanujan Bound + L-Function Decomposition (2026-06-28)
+
+**File:** `BSD_Genesis761_CLOSED.lean` · SORRY: 0 · Axiom footprint: classical trio
+**Verify:** `verify_bsd_only.sh` Phase 34 PASSED
+**GitHub:** Pushed to DavidFox998/ClassNumber-143
+
+### Ramanujan ↔ Discriminant proved (both directions, classical trio)
+
+| Theorem | Statement | Tactic |
+|---------|-----------|--------|
+| `BSD_Ramanujan_from_Discriminant` | a_p² ≤ 4p → |a_p| ≤ 2√p | `sqrt_sq_eq_abs + sqrt_le_sqrt + sqrt_sq` |
+| `BSD_Discriminant_from_Ramanujan` | |a_p| ≤ 2√p → a_p² ≤ 4p | `sq_le_sq'` applied to |a_p| ≤ 2√p |
+| `BSD_RamanujanBound_iff_Discriminant` | |a_p| ≤ 2√p ↔ a_p² ≤ 4p | proved iff bridge |
+
+### Named surfaces
+
+```lean
+def BSD_RamanujanBound_143 : Prop := ∀ (p : ℕ) [Fact p.Prime], ¬(p ∣ 143) → |a_p p| ≤ 2 * Real.sqrt p
+def BSD_WilesTaylor_143_OPEN : Prop := BSD_LFunctionIsLinFunc_OPEN
+```
+
+- `BSD_LinFunc_from_WilesTaylor`: trivially wires both into `BSD_LFunctionIsLinFunc_OPEN`
+- `BSD_Genesis761_Combinator`: 2 gates → master cert ∧ `BSD_RamanujanBound_143`
+
+**Genuine Clay gaps: 2 (unchanged). BSD: OPEN. No Clay claim.**
+
+---
+
+## C26 — BC6 Weil Gap Reduction (2026-06-28)
+
+**File:** `Towers/RH/Chain/C26_BC6WeilGapReduce.lean` · SORRY: 0 · Axiom footprint: classical trio
+**Verify:** `verify_weil_cluster.sh` Phase 16 PASSED
+
+Closes the two trivially-satisfiable C25 sub-surfaces and reduces
+`BC6_WeilExplicit_143_OPEN` to a single concrete proposition.
+
+### Sub-surfaces closed (trivial witnesses, honest caveat)
+
+| Theorem | Witness | Honest note |
+|---------|---------|-------------|
+| `BC6_WeilArithBound_PROVED` | C=1, arith_sum=0 | Does NOT carry Hasse-Weil content; BSD Gate 1 still OPEN |
+| `BC6_WeilSpectralGap_PROVED` | spectral_bound=0 | Does NOT carry Kim-Sarnak content; KimSarnak_OPEN still OPEN |
+
+### Key reduction theorems (0 sorry, classical trio)
+
+| Theorem | Statement |
+|---------|-----------|
+| `BC6_WeilExplicit_from_LogFactor_direct` | `BC6_WeilLogFactor_143_OPEN → BC6_WeilExplicit_143_OPEN` |
+| `BC6_WeilLogFactor_from_Explicit` | `BC6_WeilExplicit_143_OPEN → BC6_WeilLogFactor_143_OPEN` (conditional on KimSarnak + Arakelov) |
+| `BC6_WeilExplicit_iff_LogFactor` | `BC6_WeilExplicit_143_OPEN ↔ BC6_WeilLogFactor_143_OPEN` (conditional) |
+| `BC6_WeilExplicit_from_SWeilBound` | `(∀ T>1, |S_weil T| ≤ C_S14_143·T/log T) → BC6_WeilExplicit_143_OPEN` |
+
+**Significance:** `BC6_WeilExplicit_143_OPEN` (~20pp) now reduces to a single
+concrete Lean inequality about the opaque `S_weil` function:
+```
+∀ T : ℝ, 1 < T → |S_weil T| ≤ 8.62925199 * T / Real.log T
+```
+
+The bound constant C_S14_143 = 8.62925199 satisfies C² > 52 = 4·13 (proved in C25).
+
+**RH: OPEN. BC6SelbergTrace_OPEN: OPEN. No Clay claim.**
