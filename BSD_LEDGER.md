@@ -982,3 +982,100 @@ set_option maxHeartbeats 0 added for large-prime decides (p^2 up to 994009 pairs
 Tier B is now fully absorbed into Tier A.
 Remaining: Tier C (infinitely many primes p > 997) and Gate 2.
 NOT a brick.  BSD: OPEN (Clay).  No Clay claim.
+
+## genesis-775 — Option C: WeierstrassCurve bridge (2026-06-28)
+
+**File**: `BSD/BSD_Genesis775_CLOSED.lean`
+**Imports**: `Towers.BSD.BSD_Genesis774_CLOSED` + `Mathlib.AlgebraicGeometry.EllipticCurve.Weierstrass`
+
+### What is proved (0 sorry, classical trio)
+
+**§1. Canonical Mathlib definition**
+
+  `def E143_Weierstrass : WeierstrassCurve ℤ := { a₁:=0, a₂:=-1, a₃:=1, a₄:=-1, a₆:=-2 }`
+
+  Model [0,−1,1,−1,−2]. Affine eq: y²+y = x³−x²−x−2 (= our E143_point). ✓
+
+**§2. Discriminant certificate (norm_num)**
+
+  b₂=−4, b₄=−2, b₆=−7, b₈=6  (each proved by simp [WeierstrassCurve.b₂/b₄/b₆/b₈]).
+
+  `E143_Weierstrass.Δ = −1859 = −11·13²`  (proved by norm_num).
+
+  Good reduction criterion:
+  `BSD_GoodRed_implies_nonzero_disc`:  ¬(p∣143) → ¬(p∣1859)  for prime p.
+  (143 = 11·13; 1859 = 11·13·13; if p ∤ 11 and p ∤ 13 then p ∤ 1859.)
+
+**§3. Affine point match (linear_combination)**
+
+  `E143_point_iff_Weierstrass`:  E143_point p x y ↔ WeierstrassCurve affine eq at (ZMod p).
+
+  Both sides reduce to y²+y = x³−x²−x−2 after simp; proof closes by linear_combination.
+
+  `E143_Finset_eq_Weierstrass_pts`:  E143_Finset p = filter by WeierstrassCurve equation.
+
+**§4. BSD_WeilHasse_Weierstrass_OPEN (named open def)**
+
+  `def BSD_WeilHasse_Weierstrass_OPEN : Prop :=`
+  `  ∀ (p : ℕ) [Fact p.Prime], ¬(p ∣ 143) → (a_p p : ℝ) ^ 2 ≤ 4 * (p : ℝ)`
+
+  Definitionally equal to BSD_HasseBound_Discriminant_OPEN (proved: Iff.rfl).
+  Stated in Mathlib-forward terms for future closure.
+
+  `BSD_HasseBound_TierC_OPEN`:  ∀ p > 997, [Fact p.Prime] → ¬(p∣143) → a_p²≤4p.
+  Explicit name for the remaining Tier C residue.
+
+**§5. Bridges**
+
+  `BSD_WeilHasse_eq_Gate1`     : Iff.rfl (definitional equality)
+  `BSD_Gate1_from_Weierstrass` : BSD_WeilHasse_Weierstrass_OPEN → BSD_HasseBound_Discriminant_OPEN
+
+**§6. Combinator**
+
+  `BSD_Genesis775_Combinator (h_hasse : BSD_WeilHasse_Weierstrass_OPEN) (h_anchor : BSD_LFunctionIsLinFunc_OPEN) : BSD_143_OPEN`
+
+### Why Option C is architecturally significant
+
+When Mathlib vX.Y adds a Frobenius API (likely form):
+
+```lean
+theorem WeierstrassCurve.card_affine_sub_one_le_two_sqrt
+    (p : ℕ) [Fact p.Prime] (W : WeierstrassCurve ℤ) (hΔ : ¬(p ∣ W.Δ.natAbs)) :
+    |(affineCount W p - p - 1 : ℤ)| ≤ 2 * Nat.sqrt p
+```
+
+then `BSD_WeilHasse_Weierstrass_OPEN` closes in ONE theorem using:
+- E143_Weierstrass (defined here)
+- E143_Weierstrass.Δ = −1859 (proved here by norm_num)
+- E143_point_iff_Weierstrass (proved here by linear_combination)
+- BSD_GoodRed_implies_nonzero_disc (proved here)
+
+No new math is needed at that point — the bridge is already built.
+
+### Gap map after genesis-775
+
+| Gap | Status |
+|-----|--------|
+| `BSD_WeilHasse_Weierstrass_OPEN` (Gate 1, Mathlib-forward) | OPEN — Frobenius absent from v4.12.0 |
+| `BSD_HasseBound_TierC_OPEN` (Tier C explicit) | OPEN — p > 997; closes with Frobenius API |
+| Tier A evidence | 166 primes ≤ 997 proved (genesis-734..774) |
+| `BSD_LFunctionIsLinFunc_OPEN` (Gate 2) | OPEN — Mellin/Hecke absent |
+
+---
+
+## Scheduled: native_decide extension (deferred)
+
+~943 additional genesis files (primes 1009..99991, 10 primes each) using
+`native_decide` instead of `decide` would extend Tier A from 166 primes (≤997)
+to ~9,590 primes (≤100,000).
+
+**Why deferred**: native_decide is not kernel-verified (CMI chain convention uses
+`decide` for Tier A). The 943 batches exist as a possible extension if the trust
+model is relaxed, or if a 1D-slice approach is developed to handle them with
+kernel decide within workflow heartbeat limits.
+
+When this runs, BSD_HasseBound_TierC_OPEN's scope shrinks to p > 100,000.
+The architecture is already in place: genesis-775 defines BSD_HasseBound_TierC_OPEN
+to receive whatever cutoff emerges from future batch runs.
+
+**NOT a current task.** BSD: OPEN. No Clay claim.
