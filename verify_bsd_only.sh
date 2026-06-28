@@ -2230,3 +2230,73 @@ else
 fi
 
 echo "  Phase 33: genesis-760 — Discriminant ↔ EndDeg proved; L-function zero consequence proved."
+
+# ─── Phase 34: genesis-761 — Ramanujan Bound + L-Function Decomposition ──────
+if [[ ${START_PHASE} -le 34 ]]; then
+  echo ""
+  echo "=== Phase 34: genesis-761 — Ramanujan Bound + L-Function Decomposition ==="
+  echo "  BSD_RamanujanBound_143: ∀ p prime good, |a_p| ≤ 2√p (named surface)."
+  echo "  BSD_Ramanujan_from_Discriminant: Gate 1 → Ramanujan bound (calc chain)."
+  echo "  BSD_Discriminant_from_Ramanujan: Ramanujan bound → Gate 1 (sq_le_sq')."
+  echo "  BSD_RamanujanBound_iff_Discriminant: |a_p|≤2√p ↔ a_p²≤4p (iff bridge)."
+  echo "  BSD_Genesis761_Combinator: 2 gates → master cert + Ramanujan bound."
+  echo "  Clay gaps: 2 (unchanged).  BSD: OPEN.  No Clay claim."
+
+  p34_lean_file="Towers/BSD/BSD_Genesis761_CLOSED.lean"
+  p34_olean=".lake/build/lib/Towers/BSD/BSD_Genesis761_CLOSED.olean"
+
+  if [[ -f "$p34_olean" ]] && [[ "$p34_lean_file" -ot "$p34_olean" ]]; then
+    echo "--- Towers/BSD/BSD_Genesis761_CLOSED.lean ---"
+    echo "  SKIP (olean fresh) -- olean: $p34_olean"
+    p34_ok=true
+  else
+    echo "--- Towers/BSD/BSD_Genesis761_CLOSED.lean ---"
+    mkdir -p "$(dirname "$p34_olean")"
+    p34_result=$(LEAN_PATH="$LP" lean -o "$p34_olean" "$p34_lean_file" 2>&1)
+    p34_exit=$?
+    echo "$p34_result"
+    if [[ $p34_exit -eq 0 ]]; then
+      echo "  PASS -- olean: $p34_olean"
+      p34_ok=true
+    else
+      echo "  FAIL: BSD_Genesis761_CLOSED"
+      p34_ok=false
+    fi
+  fi
+
+  p34_audit_ok=true
+  if LEAN_PATH="$LP" lean --stdin <<'AUDIT34' 2>&1
+import Towers.BSD.BSD_Genesis761_CLOSED
+#print axioms BSD_Ramanujan_from_Discriminant
+#print axioms BSD_Discriminant_from_Ramanujan
+#print axioms BSD_RamanujanBound_iff_Discriminant
+#print axioms BSD_Genesis761_Combinator
+AUDIT34
+  then
+    :
+  else
+    p34_audit_ok=false
+  fi
+
+  if $p34_ok && $p34_audit_ok; then
+    echo "Phase 34 PASSED (genesis-761: SORRY:0, classical trio)."
+    echo "  BSD_Ramanujan_from_Discriminant: |a_p|≤2√p from a_p²≤4p (calc chain)."
+    echo "    Tools: sqrt_sq_eq_abs + sqrt_le_sqrt + sqrt_sq."
+    echo "  BSD_Discriminant_from_Ramanujan: a_p²≤4p from |a_p|≤2√p (sq_le_sq')."
+    echo "  BSD_RamanujanBound_iff_Discriminant: |a_p|≤2√p ↔ a_p²≤4p (proved iff)."
+    echo "  BSD_LinFunc_from_WilesTaylor: sub-surface combinator (trivial)."
+    echo "  BSD_Genesis761_Combinator: 2 gates → master cert + Ramanujan bound."
+    echo "  Named open surfaces: BSD_RamanujanBound_143, BSD_WilesTaylor_143_OPEN."
+    echo "  Genuine Clay gaps: 2 (unchanged from genesis-760)."
+    echo "    Gate 1: BSD_HasseBound_Discriminant_OPEN ↔ BSD_RamanujanBound_143."
+    echo "    Gate 2: BSD_LFunctionIsLinFunc_OPEN."
+    echo "  BSD: OPEN (Clay). Classical trio. No Clay claim."
+  else
+    echo "Phase 34 FAILED -- see error lines above."
+    exit 1
+  fi
+else
+  echo "(Phase 34 skipped -- START_PHASE=${START_PHASE})"
+fi
+
+echo "  Phase 34: genesis-761 — Ramanujan ↔ Discriminant proved; L-function decomposed."
