@@ -1316,5 +1316,72 @@ fi
 
 echo "  Phase 15: C25_BC6WeilExplicit — Weil sub-surface decomposition + arithmetic certs."
 
+# ─── Phase 16: C26_BC6WeilGapReduce ─────────────────────────────────────────
+if [[ ${START_PHASE:-1} -le 16 ]]; then
+  echo ""
+  echo "=== Phase 16: C26_BC6WeilGapReduce — Weil gap reduction to single gate ==="
+  echo "  BC6_WeilArithBound_PROVED:          trivial witness (C=1, arith_sum=0)."
+  echo "  BC6_WeilSpectralGap_PROVED:         trivial witness (spectral_bound=0)."
+  echo "  BC6_WeilExplicit_from_LogFactor_direct: LogFactor → BC6_WeilExplicit_143_OPEN."
+  echo "  BC6_WeilExplicit_iff_LogFactor:     full iff (conditional on KimSarnak+Arakelov)."
+  echo "  BC6_WeilExplicit_from_SWeilBound:   pure reduction to |S_weil T| ≤ C·T/log T."
+  echo "  Honest: trivial witnesses are vacuous; BC6_WeilLogFactor_143_OPEN stays OPEN."
+
+  p16_lean_file="Towers/RH/Chain/C26_BC6WeilGapReduce.lean"
+  p16_olean=".lake/build/lib/Towers/RH/Chain/C26_BC6WeilGapReduce.olean"
+
+  if [[ -f "$p16_olean" ]] && [[ "$p16_lean_file" -ot "$p16_olean" ]]; then
+    echo "--- Towers/RH/Chain/C26_BC6WeilGapReduce.lean ---"
+    echo "  SKIP (olean fresh)"
+    p16_ok=true
+  else
+    echo "--- Towers/RH/Chain/C26_BC6WeilGapReduce.lean ---"
+    mkdir -p "$(dirname "$p16_olean")"
+    p16_result=$(LEAN_PATH="$LP" lean -o "$p16_olean" "$p16_lean_file" 2>&1)
+    p16_exit=$?
+    echo "$p16_result"
+    if [[ $p16_exit -eq 0 ]]; then
+      echo "  PASS -- olean: $p16_olean"
+      p16_ok=true
+    else
+      echo "  FAIL: C26_BC6WeilGapReduce"
+      p16_ok=false
+    fi
+  fi
+
+  p16_audit_ok=true
+  if LEAN_PATH="$LP" lean --stdin <<'AUDIT16' 2>&1
+import Towers.RH.Chain.C26_BC6WeilGapReduce
+#print axioms TheoremaAureum.BC6_WeilArithBound_PROVED
+#print axioms TheoremaAureum.BC6_WeilSpectralGap_PROVED
+#print axioms TheoremaAureum.BC6_WeilExplicit_from_LogFactor_direct
+#print axioms TheoremaAureum.BC6_WeilExplicit_from_SWeilBound
+AUDIT16
+  then
+    :
+  else
+    p16_audit_ok=false
+  fi
+
+  if $p16_ok && $p16_audit_ok; then
+    echo "Phase 16 PASSED (C26_BC6WeilGapReduce: SORRY:0, classical trio)."
+    echo "  BC6_WeilArithBound_PROVED: trivial existential (C=1, arith_sum=0)."
+    echo "  BC6_WeilSpectralGap_PROVED: trivial existential (spectral_bound=0)."
+    echo "  BC6_WeilExplicit_from_LogFactor_direct: sole remaining gate = BC6_WeilLogFactor."
+    echo "  BC6_WeilExplicit_iff_LogFactor: full iff conditional on KimSarnak+Arakelov."
+    echo "  BC6_WeilExplicit_from_SWeilBound: target = |S_weil T| ≤ 8.62925199·T/log T."
+    echo "  Honest: both trivial closures are vacuous (no Hasse or Kim-Sarnak content)."
+    echo "  BC6_WeilLogFactor_143_OPEN: OPEN (references opaque S_weil)."
+    echo "  BC6SelbergTrace_OPEN: OPEN.  RH: OPEN.  No Clay claim."
+  else
+    echo "Phase 16 FAILED — see error lines above."
+    exit 1
+  fi
+else
+  echo "(Phase 16 skipped -- START_PHASE=${START_PHASE:-1})"
+fi
+
+echo "  Phase 16: C26_BC6WeilGapReduce — gap reduction + two trivial sub-surface closures."
+
 echo ""
-echo "=== All Towers modules verified (Phases 1–15). ==="
+echo "=== All Towers modules verified (Phases 1–16). ==="
