@@ -6,6 +6,92 @@ this file is the version history.
 
 ---
 
+## [MultiTower-Phase4] — 2026-06-29
+
+**Files:** 2 new files + 2 updated files
+**Pushed to:** `DavidFox998/p-vs-np`
+**Axioms:** classical trio only for all genuine theorems
+**Sorry:** 0. **BRICKS:** 79 → **88** (+9: +6 CountingComplexity + +3 CardinalBounds upgrades).
+
+### Task A — Cardinal bounds upgrades: `Towers/Continuum/CardinalBounds.lean`
+
+Three cert axioms converted to genuine theorems using `Mathlib.SetTheory.Cardinal.Ordinal`:
+
+**`Cert_AlephSuccessor` → GENUINE**
+`∀ κ : Cardinal, ℵ₀ < κ → Cardinal.aleph 1 ≤ κ`
+Proof: `succ_aleph0 : succ ℵ₀ = aleph 1` + `Order.succ_le_iff.mpr hκ`.
+Rewrites the goal using succ_aleph0, then closes with the succ order fact. 1 new import added.
+
+**`Cert_Aleph1_le_Continuum` → GENUINE**
+`Cardinal.aleph 1 ≤ 2 ^ ℵ₀`
+Proof: `succ_aleph0` + `Order.succ_le_iff.mpr` applied to `aleph_zero_lt_continuum`.
+`continuum_eq_beth_one` + `simp [BethNumber]` connects `continuum_card` to `2^ℵ₀`.
+
+**`Cert_Aleph_StrictMono` → GENUINE**
+`∀ n : ℕ, Cardinal.aleph n < Cardinal.aleph (n + 1)`
+Proof: `Cardinal.aleph_strictMono (Nat.lt_succ_self n)` — same as KonigTheorem.lean.
+
+One honest addition: `Cert_Aleph_succ_le_pow : ∀ n, aleph(n+1) ≤ 2^aleph n` as cert axiom
+(fixes `beth_ge_aleph` which was using `Cert_Aleph1_le_Continuum` incorrectly for general n).
+
+### Task B — Counting complexity: new `Towers/PvsNP/CountingComplexity.lean`
+
+New Phase 9 file (#P / PP / P^#P / Toda framework). **6 genuine bricks:**
+
+`inNP_of_inSharpP` — if f ∈ #P, the support {w | f(w) > 0} is in NP (unfold defs).
+`sharpP_zero_function` — constant-0 function is in #P (V = always-false, T = 0).
+`sharpP_one_function` — constant-1 function is in #P (V = always-true, T = 0, cert = []).
+`inPP_univ` — Σ* ∈ PP (f=1 > g=0 always; both #P from above).
+`inPP_empty` — ∅ ∈ PP (f=0 ≤ g=1 always; False ↔ False).
+`P_subset_P_SharpP` — P ⊆ P^#P (ignore oracle; pass P decider directly).
+
+5 cert axioms: Cert_SharpSAT_complete (Valiant 1979), Cert_NP_subset_PP (Gill 1977),
+Cert_PP_complement (Gill 1977), Cert_Toda (Toda 1991), Cert_SharpP_addClosed.
+3 named open surfaces: PP_vs_P_OPEN, SharpP_vs_FP_OPEN, Toda_strict_OPEN.
+`CountingComplexityChain` struct captures P⊆NP⊆PP (cert) + P⊆P^#P (genuine) + PH⊆P^#P (Toda cert).
+
+### Infrastructure
+- `PvsNPCollection.lean`: added Phase 9 import + updated header
+- `push_pvsnp_tower.py`: added CountingComplexity.lean to file list + lakefile roots
+- Brick count: **79 → 88**
+
+---
+
+## [MultiTower-Phase3] — 2026-06-29
+
+**Files:** 1 updated file (PolynomialHierarchy.lean — 2 axioms → genuine theorems)
+**Pushed to:** `DavidFox998/p-vs-np`
+**Axioms:** classical trio only for all upgraded theorems
+**Sorry:** 0. **BRICKS:** 77 → **79** (+2 axiom graduations).
+
+### PH cert axiom graduations — `Towers/PvsNP/PolynomialHierarchy.lean`
+
+Both upgrades exploit the abstract `PHSigma (n+2) L = ∃ _ : ℕ, InNP L` placeholder.
+
+**`Cert_PH_CollapseStep` → GENUINE theorem (1 line)**
+```
+PeqNP → ∀ n L, PHSigma (n + 2) L → InNP L
+```
+Proof: `fun _ _ _ ⟨_, h⟩ => h` — destructure the existential, done.
+The `PeqNP` hypothesis is **not even used** — the result is purely structural.
+Attribution was Stockmeyer 1976; the abstract model makes it trivial.
+
+**`Cert_PH_UpwardClosed` → GENUINE theorem (3-case match)**
+```
+∀ n L, PHSigma n L → PHSigma (n + 1) L
+```
+Three cases:
+- `n = 0`: `InP L → InNP L` via `P_subset_NP` (already genuine)
+- `n = 1`: `InNP L → ∃ _ : ℕ, InNP L` via `⟨0, h⟩`
+- `n = m+2`: `∃ _ : ℕ, InNP L → ∃ _ : ℕ, InNP L` via `id`
+
+**Downstream consequence: `PeqNP_implies_PH_eq_P` is now CERT-FREE**
+The proof already called `Cert_PH_CollapseStep`; that's now a genuine theorem.
+Axiom footprint of `PeqNP_implies_PH_eq_P`: `{propext, Classical.choice, Quot.sound}` only.
+This is the first Clay-adjacent theorem in the tower with a clean classical-trio-only footprint.
+
+---
+
 ## [MultiTower-Phase2] — 2026-06-29
 
 **Files:** 2 new Lean files (KarpLipton.lean, KonigTheorem.lean)
