@@ -6,6 +6,79 @@ this file is the version history.
 
 ---
 
+## [PvsNP-Tower-Phase5] — 2026-06-29
+
+**Files:** `Towers/PvsNP/Complexity.lean`, `Towers/PvsNP/Hierarchy.lean`,
+  `Towers/PvsNP/CircuitComplexity.lean`, `Towers/PvsNP/Barriers.lean`,
+  `Towers/PvsNP/ClayStatement.lean`, `Towers/PvsNP/PvsNPCollection.lean`,
+  `Towers/PvsNP/PvsNPCertificate.lean` (all new)
+**Pushed to:** `DavidFox998/p-vs-np`
+**Axioms:** classical trio only (proved bricks); classical trio + cert axioms (certificate).
+**Sorry:** 0. **BRICKS:** 0 → ~41.
+
+### What was done
+
+Full P vs NP Clay tower from scratch: 7 Lean files, ~41 proved bricks, 0 sorry, 0 sorryAx.
+Clay status: **P ≠ NP LOCKED OPEN. No Clay claim.**
+
+**Phase 1 — Complexity.lean (14 BRICKS, classical trio, 0 cert axioms)**
+Abstract complexity model: `BStr := List Bool`, `Language := Set BStr`,
+`IsPolyBound T := ∃ c k, ∀ n, T n ≤ c·nᵏ+c`, `InP`, `InNP`, `IncoNP`, `InEXP`, `PeqNP`, `PneNP`.
+
+- `polyBound_{zero,const,id,add,max,succ}` — polynomial bound closure lemmas
+- `P_subset_NP` (GENUINE) — empty certificate witness; `P_subset_NP_inter_coNP`
+- `InP_comp` (GENUINE) — negate decider; P = co-P
+- `InP_{union,inter,empty,univ,singleton}` — P closed under boolean operations
+- `PneNP_iff` — `PneNP ↔ ∃ L ∈ NP, L ∉ P`; `NP_in_coNP_of_PeqNP`; `PneNP_of_NP_neq_coNP`
+- Structural cert axioms: `Cert_PNP_NP_{union,inter}` (NP closure, Sipser 2012)
+
+**Phase 2 — Hierarchy.lean (8 BRICKS)**
+- `InEXP_of_InP` — P ⊆ EXP; `padString` + `padString_length` (padding structure)
+- `classes_distinct_of_witness`, `class_inclusion_trans` — abstract hierarchy lemmas
+- Cert axioms: `Cert_PNP_{TimeHierarchy,SpaceHierarchy,P_neq_EXP,NP_in_EXP,Padding}`
+  (Hartmanis-Stearns 1965, SHL 1965; all proved in literature, Mathlib gap)
+
+**Phase 3 — CircuitComplexity.lean (6 BRICKS)**
+- `num_bool_funs_double` — 2^{2^{n+1}} = (2^{2^n})^2 (counting structure)
+- `exponentially_many_bool_funs` — 2^n < 2^{2^n} (Shannon counting)
+- `shannon_counting_argument` — abstract Shannon lower bound (1949)
+- `InP_of_HasPolyCircuitFamily` — poly circuit family → InP
+- `clauseSat`, `cnfSat` — SAT definition; `SATLanguage` defined
+- Cert axioms: `Cert_PNP_{SAT_in_NP,CookLevin,MonotoneLower}` (Cook 1971, Razborov 1985)
+- Open conjecture def: `PNP_SAT_not_in_P_OPEN`, `PNP_Circuit_Lower_Bound_OPEN`
+
+**Phase 4 — Barriers.lean (5 BRICKS)**
+- Abstract oracle model: `Oracle`, `RelativeInP/NP`, `RelativePeqNP`
+- `barrier_relativization_consistency` — both oracle worlds coexist (GENUINE)
+- `relativizing_proof_must_fail` — relativizing P≠NP proof leads to contradiction
+- `algebrization_both_worlds`, `barriers_mutually_consistent`
+- Cert axioms: `Cert_PNP_{Oracle_PeqNP,Oracle_PneqNP,NaturalProofs,Algebrization}`
+  (Baker-Gill-Solovay 1975; Razborov-Rudich 1994; Aaronson-Wigderson 2009)
+
+**Phase 5 — ClayStatement.lean (8 BRICKS)**
+- `PNP_ClayStatement := PneNP` — the Clay problem
+- Named open surfaces: `PNP_{SAT_not_in_P,Circuit_Lower,NP_coNP_Separation,PH_NoCollapse,Ladner}_OPEN`
+- `pnp_clay_combinator` — Gate1 ∧ Gate2 → PNP_ClayStatement (GENUINE combinator)
+- `PeqNP_implies_SAT_in_P` (GENUINE); `PneNP_of_NP_neq_coNP` (GENUINE)
+- Cert axioms: `Cert_PNP_{SAT_NP,SAT_NPhard,Ladner}` (proved, Mathlib gap)
+- `Cert_PNP_Separation` — **⚠ OPEN CONJECTURE: SAT ∉ P (the Clay problem itself)**
+
+**PNP_CLAY_CERTIFICATE (conditional)**
+```
+propext, Classical.choice, Quot.sound
+Cert_PNP_SAT_NP             ← proved (Cook 1971, Mathlib gap)
+Cert_PNP_SAT_NPhard         ← proved (Cook 1971, Mathlib gap)
+Cert_PNP_Separation         ← ⚠ OPEN CONJECTURE (the Clay problem itself)
+```
+0 sorry. 0 sorryAx. P ≠ NP LOCKED OPEN. No Clay claim.
+
+**Critical honest distinction from NS certificate:**
+NS cert axioms (Rellich-Kondrachov, BKM, Leray) are PROVED results — the gap is
+Mathlib formalization only. `Cert_PNP_Separation` IS the Clay conjecture itself.
+`PNP_CLAY_CERTIFICATE` formalizes "IF SAT ∉ P THEN P ≠ NP" — tautologically true.
+
+---
+
 ## [BSD-genesis-762] — 2026-06-29
 
 **Files:** `Towers/BSD/BSD_Genesis762_CLOSED.lean` (new — special-value decomposition + per-prime algebraic bridges)
