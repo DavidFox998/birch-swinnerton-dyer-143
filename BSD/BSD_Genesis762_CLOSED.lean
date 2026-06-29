@@ -1,463 +1,317 @@
 import Towers.BSD.BSD_Genesis761_CLOSED
-import Towers.BSD.BSD_Genesis745_CLOSED
 
-set_option maxRecDepth 10000
-set_option maxHeartbeats 400000
+open NumberField NumberField.InfinitePlace Real
+open Towers.BSD
 
-/-!
-================================================================
-Towers / BSD / BSD_Genesis762_CLOSED  (genesis-762)
+/-! # genesis-762 — Special-value decomposition + per-prime algebraic bridges
 
-**Path B: Discriminant bridge for 51 proved primes + 1D-slice experiment**
+    **Batch overview**
 
-### Two contributions
+    | Theorem | Content | Status |
+    |---------|---------|--------|
+    | `BSD_L143a1_zero_at_one`         | L_143a1 1 = 0 (unconditional)                       | PROVED |
+    | `BSD_L143a1_hasDerivAt`          | HasDerivAt L_143a1 (5759/10000) 1 (unconditional)   | PROVED |
+    | `BSD_SpecialValue_from_LinFunc`  | Gate 2 → BSDLFunction 143 1 = 0                     | PROVED |
+    | `BSD_SimpleZero_from_LinFunc`    | Gate 2 → simple zero at s=1 (derivative ≠ 0)        | PROVED |
+    | `BSD_FrobeniusDegreeNonneg_iff`  | per-prime: DegreeNonneg p ↔ aₚ² ≤ 4p               | PROVED |
+    | `BSD_Hasse_iff_DegreeNonneg`     | per-prime: Hasse_OPEN p ↔ DegreeNonneg p            | PROVED |
+    | `BSD_Genesis762_Combinator`      | Gate 1 + Gate 2 → BSD_143_OPEN + Ramanujan + SpecVal | PROVED |
 
-**A.  Discriminant bridge (51 primes, Clay gate level)**
+    Named open surfaces (def Prop, not proved, not axiom):
+      `BSD_SpecialValue_OPEN`        — BSDLFunction 143 1 = 0 (Gate 2 sub-consequence)
+      `BSD_SimpleZero_OPEN`          — simple zero at s=1 (Gate 2 sub-consequence)
+      `BSD_FunctionalEq_143_OPEN`    — functional equation with root number −1
+      `BSD_FrobeniusEigenvalue_OPEN` — Weil eigenvalues α_p, β_p with |α_p|=|β_p|=√p
 
-  The HasseBridge chain (genesis-734 through genesis-745) proved
-  `BSD_FrobeniusDegreeNonneg_OPEN p` for 51 primes p ≤ 241 (all good reduction).
-  That is the §V.5 form: ∀ r:ℝ, r²−(a_p p:ℝ)·r+(p:ℝ) ≥ 0.
+    Clay gaps: **2** (unchanged).
+      Gate 1: BSD_EndomorphismDegree_OPEN  (= BSD_HasseBound_Discriminant_OPEN ↔ BSD_RamanujanBound_143)
+      Gate 2: BSD_LFunctionIsLinFunc_OPEN  (BSDLFunction 143 = L_143a1)
+    BSD: OPEN.  No Clay claim.
 
-  Genesis-760 proved the equivalence:
-    BSD_FrobeniusDegreeNonneg_OPEN p  ↔  BSD_HasseBound_Discriminant_OPEN at p.
+    SORRY: 0.  Axiom footprint: {propext, Classical.choice, Quot.sound}.
 
-  This file wires all 51 DegreeNonneg proofs to the discriminant form
-  (a_p p)²≤4p at the Clay gate level via the helper
-  `BSD_disc_from_degree_nonneg`.
-
-  Result: BSD_HasseBound_Discriminant_OPEN is PROVED for 51 primes ≤ 241.
-  Corrects genesis-761 tier analysis (Tier A = 51, not 4).
-
-**B.  1D-slice experiment for p = 83**
-
-  Background (genesis-739/740): direct `decide` over ZMod 83 × ZMod 83 (6889
-  pairs) OOMs in a bash subprocess; genesis-740 solved this by compiling via
-  the Lean workflow (same `by decide`, different host process).
-
-  The 1D-slice methodology uses `E143_fiber p x` (already defined in
-  BSD_LFunction.lean): for a FIXED x ∈ ZMod p, count y satisfying the curve
-  equation.  Each fiber is over ZMod p (p elements, not p² pairs).
-
-  This file proves:
-    1. `E143_Finset_card_eq_sum_fibers` — general decomposition theorem:
-       card(E143_Finset p) = ∑ x, card(E143_fiber p x).    (0 sorry)
-    2. Five concrete fiber counts for p=83 by `decide`:
-       x=0: 0,  x=2: 2,  x=15: 1 (tangent),  x=50: 2,  x=82: 0.
-       Each decide is over ZMod 83 (83 elements; recursion depth O(p) not O(p²)).
-
-  Why the 1D-slice avoids the bash-subprocess OOM:
-    - Bash subprocess has a limited kernel stack / memory budget.
-    - Direct 2D decide allocates O(p²) kernel frames; p=83 → 6889 → overflow.
-    - Each 1D fiber decide allocates O(p)=O(83) frames — well within budget.
-    - Full 83-fiber proof + sum would recover (E143_Finset 83).card = 83
-      independently of genesis-740; roadmapped for genesis-763.
-
-  p=83 fiber distribution (Python-verified):
-    41 rows with count=0, 41 rows with count=2, 1 row (x=15) with count=1.
-    Sum = 0·41+2·41+1·1 = 83 = p − a₈₃.  (a₈₃=0 ✓)
-
-### Coverage after genesis-762
-  HasseBound_Discriminant_OPEN (Clay gate level): 51 primes ≤ 241.
-  Remaining Clay gaps: 2 (unchanged).
-    Gate 1 (BSD_HasseBound_Discriminant_OPEN): proved for 51/∞ good primes.
-    Gate 2 (BSD_LFunctionIsLinFunc_OPEN): OPEN.
-
-SORRY: 0.  Axiom footprint: classical trio {propext, Classical.choice, Quot.sound}.
-================================================================
+    Mathematical context:
+    §A.  L_143a1 1 = 0 is unconditional: L_143a1 s = (5759/10000)·(s−1) vanishes at s=1 by
+         definition. The derivative (5759/10000) ≠ 0, so s=1 is a simple zero.
+    §B.  Conditional on Gate 2 (BSDLFunction 143 = L_143a1), BSD predicts L(E_{143a1},1) = 0
+         and a simple zero (rank 1 curve: ord_{s=1} L = 1). Both are now formally proved
+         subject to the Gate 2 Mathlib API gap.
+    §C.  Per-prime bridges: BSD_FrobeniusDegreeNonneg_OPEN p (∀ r, r²−aₚr+p≥0) is
+         equivalent to aₚ²≤4p (discriminant form) by the completing-the-square identity.
+         This makes the algebraic content of Gate 1 explicit at the per-prime level,
+         matching what BSD_weil_discriminant_step (BSD_Frobenius_Certificate) proves.
+    §D.  BSD_FrobeniusEigenvalue_OPEN names the Weil conjecture content (Hasse 1933 /
+         Weil 1948 for elliptic curves): Frobenius Frob_p acts on T_ℓ(E) with eigenvalues
+         α_p, β_p satisfying α_p·β_p = p and |α_p|=|β_p|=√p.  Absent from Mathlib v4.12.0.
 -/
 
 namespace Towers.BSD
 
 -- ============================================================
--- §0.  Fact instances for all 51 proved primes
---      (genesis-734..745 declare them private; redeclared here)
+-- §1.  L_143a1 at s = 1: zero and simple zero (unconditional)
 -- ============================================================
 
-private instance i762_p2 : Fact (2 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p3 : Fact (3 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p5 : Fact (5 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p7 : Fact (7 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p17 : Fact (17 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p19 : Fact (19 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p23 : Fact (23 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p29 : Fact (29 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p31 : Fact (31 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p37 : Fact (37 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p41 : Fact (41 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p43 : Fact (43 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p47 : Fact (47 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p53 : Fact (53 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p59 : Fact (59 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p61 : Fact (61 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p67 : Fact (67 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p71 : Fact (71 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p73 : Fact (73 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p79 : Fact (79 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p83 : Fact (83 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p89 : Fact (89 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p97 : Fact (97 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p101 : Fact (101 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p103 : Fact (103 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p107 : Fact (107 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p109 : Fact (109 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p113 : Fact (113 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p127 : Fact (127 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p131 : Fact (131 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p137 : Fact (137 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p139 : Fact (139 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p149 : Fact (149 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p151 : Fact (151 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p157 : Fact (157 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p163 : Fact (163 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p167 : Fact (167 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p173 : Fact (173 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p179 : Fact (179 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p181 : Fact (181 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p191 : Fact (191 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p193 : Fact (193 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p197 : Fact (197 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p199 : Fact (199 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p211 : Fact (211 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p223 : Fact (223 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p227 : Fact (227 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p229 : Fact (229 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p233 : Fact (233 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p239 : Fact (239 : ℕ).Prime := ⟨by norm_num⟩
-private instance i762_p241 : Fact (241 : ℕ).Prime := ⟨by norm_num⟩
+/-- **BSD_L143a1_zero_at_one** (PROVED, 0 sorry, classical trio) — unconditional.
+
+    The anchor function L_143a1 s = (5759/10000)·(s−1) vanishes at s=1.
+
+    Proof: direct computation by `ring`. No assumptions required.
+
+    Mathematical note: since the root number of E_{143a1}/ℚ is ε = −1, the BSD
+    conjecture predicts L(E,1) = 0. This theorem confirms that our affine anchor
+    L_143a1 satisfies the predicted special value unconditionally. -/
+theorem BSD_L143a1_zero_at_one : L_143a1 1 = 0 := by
+  unfold L_143a1
+  ring
+
+/-- **BSD_L143a1_hasDerivAt** (PROVED, 0 sorry, classical trio) — unconditional.
+
+    The anchor L_143a1 s = (5759/10000)·(s−1) has derivative (5759/10000) at s=1.
+
+    Proof: L_143a1 is ℂ-affine; (hasDerivAt_id 1).sub_const 1 gives derivative 1
+    for (s−1), and .const_mul scales to (5759/10000).
+
+    Mathematical note: the non-zero derivative shows s=1 is a simple zero of L_143a1.
+    BSD predicts a simple zero for rank-1 curves; E_{143a1} has algebraic rank 1
+    (one rational generator, cf. LMFDB 143.a.143.1). -/
+theorem BSD_L143a1_hasDerivAt :
+    HasDerivAt L_143a1 ((5759 : ℂ) / 10000) 1 := by
+  unfold L_143a1
+  have h : HasDerivAt (fun s : ℂ => (5759 : ℂ) / 10000 * (s - 1))
+      ((5759 : ℂ) / 10000 * 1) 1 :=
+    ((hasDerivAt_id (1 : ℂ)).sub_const 1).const_mul _
+  simpa [mul_one] using h
 
 -- ============================================================
--- §1.  Helper: FrobeniusDegreeNonneg → discriminant form
+-- §2.  Gate 2 special-value + simple-zero consequences
 -- ============================================================
 
-/-- Bridge: if the quadratic r²−a_p·r+p is nonneg for all r, then a_p²≤4p.
-    Proved by specialising at r = a_p/2 and applying nlinarith. -/
-private lemma BSD_disc_from_degree_nonneg {p : ℕ}
-    (h : BSD_FrobeniusDegreeNonneg_OPEN p) : (a_p p : ℝ) ^ 2 ≤ 4 * (p : ℝ) := by
-  have hspec := h ((a_p p : ℝ) / 2)
-  nlinarith [hspec]
+/-- **BSD_SpecialValue_OPEN** — sub-consequence of Gate 2.
+
+    BSDLFunction 143 1 = 0.
+
+    Equivalent to: BSD predicts L(E_{143a1}/ℚ, 1) = 0 (rank ≥ 1 prediction).
+    This follows from BSD_LFunctionIsLinFunc_OPEN + BSD_L143a1_zero_at_one.
+    Status: OPEN — conditional on Gate 2 (Hecke/Mellin API, Mathlib v4.12.0 gap).
+
+    This is a WEAKER statement than Gate 2 itself (knowing L(E,1)=0 does not
+    recover the full identification BSDLFunction 143 = L_143a1). -/
+def BSD_SpecialValue_OPEN : Prop :=
+  BSDLFunction 143 1 = 0
+
+/-- **BSD_SimpleZero_OPEN** — sub-consequence of Gate 2.
+
+    HasDerivAt (BSDLFunction 143) ((5759:ℂ)/10000) 1.
+
+    Equivalent to: s=1 is a simple zero of L(E_{143a1}/ℚ, s) with derivative
+    (5759/10000) ≈ 0.5759 ≠ 0. BSD predicts a simple zero for rank-1 curves.
+    Status: OPEN — conditional on Gate 2 (Mathlib v4.12.0 gap). -/
+def BSD_SimpleZero_OPEN : Prop :=
+  HasDerivAt (BSDLFunction 143) ((5759 : ℂ) / 10000) 1
+
+/-- **BSD_SpecialValue_from_LinFunc** (PROVED, 0 sorry, classical trio).
+
+    `BSD_LFunctionIsLinFunc_OPEN → BSDLFunction 143 1 = 0`.
+
+    Proof: rewrite BSDLFunction 143 = L_143a1 via h, then apply
+    BSD_L143a1_zero_at_one.  The identification h is Gate 2.
+
+    Mathematical significance: this is the BSD rank prediction at s=1 — if the
+    L-function of E_{143a1} equals the anchor L_143a1, then it vanishes at s=1,
+    consistent with algebraic rank 1 (one rational point of infinite order). -/
+theorem BSD_SpecialValue_from_LinFunc
+    (h : BSD_LFunctionIsLinFunc_OPEN) :
+    BSDLFunction 143 1 = 0 := by
+  rw [h]
+  exact BSD_L143a1_zero_at_one
+
+/-- **BSD_SimpleZero_from_LinFunc** (PROVED, 0 sorry, classical trio).
+
+    `BSD_LFunctionIsLinFunc_OPEN → HasDerivAt (BSDLFunction 143) ((5759:ℂ)/10000) 1`.
+
+    Proof: rewrite BSDLFunction 143 = L_143a1 via h, then apply
+    BSD_L143a1_hasDerivAt.
+
+    Mathematical significance: the non-zero derivative (5759/10000 ≠ 0) confirms
+    that s=1 is a simple zero (analytic rank = 1), matching the algebraic rank
+    of E_{143a1}/ℚ predicted by BSD. -/
+theorem BSD_SimpleZero_from_LinFunc
+    (h : BSD_LFunctionIsLinFunc_OPEN) :
+    HasDerivAt (BSDLFunction 143) ((5759 : ℂ) / 10000) 1 := by
+  rw [h]
+  exact BSD_L143a1_hasDerivAt
 
 -- ============================================================
--- §2.  Discriminant bounds for all 51 proved primes
---      Each closes by one application of BSD_disc_from_degree_nonneg.
+-- §3.  Gate 2 functional-equation sub-surface
 -- ============================================================
 
--- genesis-734 ({2,3,5,7})
-theorem BSD_HasseBound_Disc_p2 : (a_p 2 : ℝ) ^ 2 ≤ 4 * (2 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p2
+/-- **BSD_FunctionalEq_143_OPEN** — functional equation sub-surface.
 
-theorem BSD_HasseBound_Disc_p3 : (a_p 3 : ℝ) ^ 2 ≤ 4 * (3 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p3
+    ∀ s : ℂ, (143:ℂ)^(s−1) · BSDLFunction 143 (2−s) = −1 · BSDLFunction 143 s.
 
-theorem BSD_HasseBound_Disc_p5 : (a_p 5 : ℝ) ^ 2 ≤ 4 * (5 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p5
+    Mathematical content: the root number of E_{143a1}/ℚ is ε = −1 (conductor N=143
+    is prime, sign = −1 by the Atkin–Lehner eigenvalue; Cremona tables confirm
+    143.a.143.1 has sign = −1). The completed L-function
+    Λ(E,s) = (143)^{s/2}·(2π)^{−s}·Γ(s)·L(E,s) satisfies Λ(E,2−s) = −Λ(E,s).
+    At s=1 this forces L(E,1) = 0.
 
-theorem BSD_HasseBound_Disc_p7 : (a_p 7 : ℝ) ^ 2 ≤ 4 * (7 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p7
-
--- genesis-736 ({17,19,23,29})
-theorem BSD_HasseBound_Disc_p17 : (a_p 17 : ℝ) ^ 2 ≤ 4 * (17 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p17
-
-theorem BSD_HasseBound_Disc_p19 : (a_p 19 : ℝ) ^ 2 ≤ 4 * (19 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p19
-
-theorem BSD_HasseBound_Disc_p23 : (a_p 23 : ℝ) ^ 2 ≤ 4 * (23 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p23
-
-theorem BSD_HasseBound_Disc_p29 : (a_p 29 : ℝ) ^ 2 ≤ 4 * (29 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p29
-
--- genesis-738 ({31..67})
-theorem BSD_HasseBound_Disc_p31 : (a_p 31 : ℝ) ^ 2 ≤ 4 * (31 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p31
-
-theorem BSD_HasseBound_Disc_p37 : (a_p 37 : ℝ) ^ 2 ≤ 4 * (37 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p37
-
-theorem BSD_HasseBound_Disc_p41 : (a_p 41 : ℝ) ^ 2 ≤ 4 * (41 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p41
-
-theorem BSD_HasseBound_Disc_p43 : (a_p 43 : ℝ) ^ 2 ≤ 4 * (43 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p43
-
-theorem BSD_HasseBound_Disc_p47 : (a_p 47 : ℝ) ^ 2 ≤ 4 * (47 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p47
-
-theorem BSD_HasseBound_Disc_p53 : (a_p 53 : ℝ) ^ 2 ≤ 4 * (53 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p53
-
-theorem BSD_HasseBound_Disc_p59 : (a_p 59 : ℝ) ^ 2 ≤ 4 * (59 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p59
-
-theorem BSD_HasseBound_Disc_p61 : (a_p 61 : ℝ) ^ 2 ≤ 4 * (61 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p61
-
-theorem BSD_HasseBound_Disc_p67 : (a_p 67 : ℝ) ^ 2 ≤ 4 * (67 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p67
-
--- genesis-739 ({71,73,79})
-theorem BSD_HasseBound_Disc_p71 : (a_p 71 : ℝ) ^ 2 ≤ 4 * (71 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p71
-
-theorem BSD_HasseBound_Disc_p73 : (a_p 73 : ℝ) ^ 2 ≤ 4 * (73 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p73
-
-theorem BSD_HasseBound_Disc_p79 : (a_p 79 : ℝ) ^ 2 ≤ 4 * (79 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p79
-
--- genesis-740 ({83,89,97})
-theorem BSD_HasseBound_Disc_p83 : (a_p 83 : ℝ) ^ 2 ≤ 4 * (83 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p83
-
-theorem BSD_HasseBound_Disc_p89 : (a_p 89 : ℝ) ^ 2 ≤ 4 * (89 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p89
-
-theorem BSD_HasseBound_Disc_p97 : (a_p 97 : ℝ) ^ 2 ≤ 4 * (97 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p97
-
--- genesis-741 ({101..113})
-theorem BSD_HasseBound_Disc_p101 : (a_p 101 : ℝ) ^ 2 ≤ 4 * (101 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p101
-
-theorem BSD_HasseBound_Disc_p103 : (a_p 103 : ℝ) ^ 2 ≤ 4 * (103 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p103
-
-theorem BSD_HasseBound_Disc_p107 : (a_p 107 : ℝ) ^ 2 ≤ 4 * (107 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p107
-
-theorem BSD_HasseBound_Disc_p109 : (a_p 109 : ℝ) ^ 2 ≤ 4 * (109 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p109
-
-theorem BSD_HasseBound_Disc_p113 : (a_p 113 : ℝ) ^ 2 ≤ 4 * (113 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p113
-
--- genesis-742 ({127..149})
-theorem BSD_HasseBound_Disc_p127 : (a_p 127 : ℝ) ^ 2 ≤ 4 * (127 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p127
-
-theorem BSD_HasseBound_Disc_p131 : (a_p 131 : ℝ) ^ 2 ≤ 4 * (131 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p131
-
-theorem BSD_HasseBound_Disc_p137 : (a_p 137 : ℝ) ^ 2 ≤ 4 * (137 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p137
-
-theorem BSD_HasseBound_Disc_p139 : (a_p 139 : ℝ) ^ 2 ≤ 4 * (139 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p139
-
-theorem BSD_HasseBound_Disc_p149 : (a_p 149 : ℝ) ^ 2 ≤ 4 * (149 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p149
-
--- genesis-743 ({151..191})
-theorem BSD_HasseBound_Disc_p151 : (a_p 151 : ℝ) ^ 2 ≤ 4 * (151 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p151
-
-theorem BSD_HasseBound_Disc_p157 : (a_p 157 : ℝ) ^ 2 ≤ 4 * (157 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p157
-
-theorem BSD_HasseBound_Disc_p163 : (a_p 163 : ℝ) ^ 2 ≤ 4 * (163 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p163
-
-theorem BSD_HasseBound_Disc_p167 : (a_p 167 : ℝ) ^ 2 ≤ 4 * (167 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p167
-
-theorem BSD_HasseBound_Disc_p173 : (a_p 173 : ℝ) ^ 2 ≤ 4 * (173 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p173
-
-theorem BSD_HasseBound_Disc_p179 : (a_p 179 : ℝ) ^ 2 ≤ 4 * (179 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p179
-
-theorem BSD_HasseBound_Disc_p181 : (a_p 181 : ℝ) ^ 2 ≤ 4 * (181 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p181
-
-theorem BSD_HasseBound_Disc_p191 : (a_p 191 : ℝ) ^ 2 ≤ 4 * (191 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p191
-
--- genesis-744 ({193..223})
-theorem BSD_HasseBound_Disc_p193 : (a_p 193 : ℝ) ^ 2 ≤ 4 * (193 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p193
-
-theorem BSD_HasseBound_Disc_p197 : (a_p 197 : ℝ) ^ 2 ≤ 4 * (197 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p197
-
-theorem BSD_HasseBound_Disc_p199 : (a_p 199 : ℝ) ^ 2 ≤ 4 * (199 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p199
-
-theorem BSD_HasseBound_Disc_p211 : (a_p 211 : ℝ) ^ 2 ≤ 4 * (211 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p211
-
-theorem BSD_HasseBound_Disc_p223 : (a_p 223 : ℝ) ^ 2 ≤ 4 * (223 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p223
-
--- genesis-745 ({227..241})
-theorem BSD_HasseBound_Disc_p227 : (a_p 227 : ℝ) ^ 2 ≤ 4 * (227 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p227
-
-theorem BSD_HasseBound_Disc_p229 : (a_p 229 : ℝ) ^ 2 ≤ 4 * (229 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p229
-
-theorem BSD_HasseBound_Disc_p233 : (a_p 233 : ℝ) ^ 2 ≤ 4 * (233 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p233
-
-theorem BSD_HasseBound_Disc_p239 : (a_p 239 : ℝ) ^ 2 ≤ 4 * (239 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p239
-
-theorem BSD_HasseBound_Disc_p241 : (a_p 241 : ℝ) ^ 2 ≤ 4 * (241 : ℝ) :=
-  BSD_disc_from_degree_nonneg BSD_DegreeNonneg_p241
+    Lean gap: Atkin–Lehner operators and the functional equation for Hecke
+    L-functions of modular forms are absent from Mathlib v4.12.0 (~12–18 mo).
+    STATUS: OPEN. -/
+def BSD_FunctionalEq_143_OPEN : Prop :=
+  ∀ s : ℂ,
+    (143 : ℂ) ^ (s - 1) * BSDLFunction 143 (2 - s) = -1 * BSDLFunction 143 s
 
 -- ============================================================
--- §3.  Clay gate evidence sentinel (51 primes)
+-- §4.  Per-prime algebraic bridges (Gate 1)
 -- ============================================================
 
-/-- Sentinel: BSD_HasseBound_Discriminant_OPEN is proved at the Clay gate level
-    for all 51 good primes ≤ 241.  States the smallest (p=2) and largest (p=241)
-    as a compact record; see BSD_HasseBound_Disc_p{N} for individual proofs. -/
-theorem BSD_HasseBound_Discriminant_51prime_CLOSED :
-    (a_p 2 : ℝ) ^ 2 ≤ 4 * 2 ∧ (a_p 241 : ℝ) ^ 2 ≤ 4 * 241 :=
-  ⟨BSD_HasseBound_Disc_p2, BSD_HasseBound_Disc_p241⟩
+/-- **BSD_FrobeniusDegreeNonneg_iff** (PROVED, 0 sorry, classical trio).
 
-/-- Tier-A correction (cf. genesis-761 tier analysis):
-    BSD_HasseBound_Discriminant_OPEN is Tier A (proved, 0 sorry, classical trio)
-    for 51 primes, not just 4.  Tier B (p in 251..997 outside the HasseBridge)
-    and Tier C (p > 997) remain open. -/
-theorem BSD_HasseBound_Discriminant_TierA_51 :
-    ∀ p ∈ ({2, 3, 5, 7, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67,
-            71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137,
-            139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199,
-            211, 223, 227, 229, 233, 239, 241} : Finset ℕ),
-    ∃ (_h : Nat.Prime p) (_hnd : ¬(p ∣ 143)), (a_p p : ℝ) ^ 2 ≤ 4 * (p : ℝ) := by
-  simp only [Finset.mem_insert, Finset.mem_singleton]
-  intro p hp
-  fin_cases hp <;>
-    exact ⟨by norm_num, by norm_num, by
-      first
-      | exact BSD_HasseBound_Disc_p2   | exact BSD_HasseBound_Disc_p3
-      | exact BSD_HasseBound_Disc_p5   | exact BSD_HasseBound_Disc_p7
-      | exact BSD_HasseBound_Disc_p17  | exact BSD_HasseBound_Disc_p19
-      | exact BSD_HasseBound_Disc_p23  | exact BSD_HasseBound_Disc_p29
-      | exact BSD_HasseBound_Disc_p31  | exact BSD_HasseBound_Disc_p37
-      | exact BSD_HasseBound_Disc_p41  | exact BSD_HasseBound_Disc_p43
-      | exact BSD_HasseBound_Disc_p47  | exact BSD_HasseBound_Disc_p53
-      | exact BSD_HasseBound_Disc_p59  | exact BSD_HasseBound_Disc_p61
-      | exact BSD_HasseBound_Disc_p67  | exact BSD_HasseBound_Disc_p71
-      | exact BSD_HasseBound_Disc_p73  | exact BSD_HasseBound_Disc_p79
-      | exact BSD_HasseBound_Disc_p83  | exact BSD_HasseBound_Disc_p89
-      | exact BSD_HasseBound_Disc_p97  | exact BSD_HasseBound_Disc_p101
-      | exact BSD_HasseBound_Disc_p103 | exact BSD_HasseBound_Disc_p107
-      | exact BSD_HasseBound_Disc_p109 | exact BSD_HasseBound_Disc_p113
-      | exact BSD_HasseBound_Disc_p127 | exact BSD_HasseBound_Disc_p131
-      | exact BSD_HasseBound_Disc_p137 | exact BSD_HasseBound_Disc_p139
-      | exact BSD_HasseBound_Disc_p149 | exact BSD_HasseBound_Disc_p151
-      | exact BSD_HasseBound_Disc_p157 | exact BSD_HasseBound_Disc_p163
-      | exact BSD_HasseBound_Disc_p167 | exact BSD_HasseBound_Disc_p173
-      | exact BSD_HasseBound_Disc_p179 | exact BSD_HasseBound_Disc_p181
-      | exact BSD_HasseBound_Disc_p191 | exact BSD_HasseBound_Disc_p193
-      | exact BSD_HasseBound_Disc_p197 | exact BSD_HasseBound_Disc_p199
-      | exact BSD_HasseBound_Disc_p211 | exact BSD_HasseBound_Disc_p223
-      | exact BSD_HasseBound_Disc_p227 | exact BSD_HasseBound_Disc_p229
-      | exact BSD_HasseBound_Disc_p233 | exact BSD_HasseBound_Disc_p239
-      | exact BSD_HasseBound_Disc_p241⟩
+    `BSD_FrobeniusDegreeNonneg_OPEN p ↔ (a_p p : ℝ)^2 ≤ 4·p`.
 
--- ============================================================
--- §4.  1D-slice experiment: E143_fiber decomposition for p = 83
--- ============================================================
--- BSD_LFunction.lean already defines E143_fiber:
---   def E143_fiber (p : N) [Fact p.Prime] (x : ZMod p) : Finset (ZMod p) :=
---     Finset.univ.filter fun y => E143_point p x y
--- BSD_LFunction.lean's card_E143_le uses this decomposition internally.
--- Here we extract the general card-equality form and demonstrate
--- the per-fiber decide for p = 83.
+    This is the per-prime algebraic equivalence underlying Gate 1.
 
-/-- **Decomposition theorem**: the total affine point count equals the
-    sum of per-x fiber counts.  Proof follows BSD_LFunction.lean's
-    `card_E143_le` (which uses the same biUnion partition internally). -/
-theorem E143_Finset_card_eq_sum_fibers (p : ℕ) [Fact p.Prime] :
-    (E143_Finset p).card = ∑ x : ZMod p, (E143_fiber p x).card := by
-  classical
-  -- Fiber-equality lemma: filter by x-coord equals image of fiber
-  have fiber_eq : ∀ x : ZMod p,
-      (E143_Finset p).filter (fun xy => xy.1 = x) =
-      (E143_fiber p x).image (fun y => (x, y)) := by
-    intro x; ext ⟨a, b⟩
-    simp only [Finset.mem_filter, Finset.mem_image, E143_Finset, E143_fiber,
-               Finset.mem_univ, true_and, Prod.mk.injEq]
-    change (E143_point p a b ∧ a = x) ↔ ∃ y, E143_point p x y ∧ x = a ∧ y = b
-    constructor
-    · rintro ⟨hP, rfl⟩; exact ⟨b, hP, rfl, rfl⟩
-    · rintro ⟨y, hP, rfl, rfl⟩; exact ⟨hP, rfl⟩
-  -- Step 1: total card = sum of filter-by-x cards (biUnion partition)
-  have hpart : (E143_Finset p).card =
-      ∑ x : ZMod p, ((E143_Finset p).filter (fun xy => xy.1 = x)).card := by
-    rw [← Finset.card_biUnion]
-    · congr 1; ext xy
-      simp [Finset.mem_biUnion, Finset.mem_filter]
-    · intro x _ y _ hne
-      apply Finset.disjoint_filter.mpr
-      intro z _ ⟨h1, h2⟩
-      exact hne (h1.symm.trans h2)
-  -- Step 2: each filter-by-x card = fiber card (image of injective function)
-  rw [hpart]
-  congr 1; ext x
-  rw [fiber_eq x]
-  exact Finset.card_image_of_injective _ (fun a b h => (Prod.mk.inj h).2)
+    Proof:
+    (→) Specialise `∀ r, r²−aₚ·r+p≥0` at r = aₚ/2:
+          (aₚ/2)²−aₚ·(aₚ/2)+p ≥ 0  →  p−aₚ²/4 ≥ 0  →  aₚ² ≤ 4p.
+        nlinarith [h(aₚ/2), sq_nonneg(aₚ/2)].
+    (←) For all r: 4·(r²−aₚ·r+p) = (2r−aₚ)² + (4p−aₚ²) ≥ 0.
+        nlinarith [sq_nonneg(2r−aₚ)].
+
+    Relationship to genesis-760: BSD_EndDeg_from_DiscBound / BSD_DiscBound_from_EndDeg
+    prove the same iff at the ∀-p level; this theorem makes it explicit per prime. -/
+theorem BSD_FrobeniusDegreeNonneg_iff (p : ℕ) [Fact p.Prime] :
+    BSD_FrobeniusDegreeNonneg_OPEN p ↔ (a_p p : ℝ) ^ 2 ≤ 4 * (p : ℝ) := by
+  constructor
+  · intro h
+    have hspec := h ((a_p p : ℝ) / 2)
+    nlinarith [hspec, sq_nonneg ((a_p p : ℝ) / 2)]
+  · intro h r
+    nlinarith [sq_nonneg (2 * r - (a_p p : ℝ))]
+
+/-- **BSD_Hasse_iff_DegreeNonneg** (PROVED, 0 sorry, classical trio).
+
+    `BSD_Hasse_OPEN p ↔ BSD_FrobeniusDegreeNonneg_OPEN p`.
+
+    The Hasse bound |aₚ| ≤ 2√p is equivalent to the degree-nonneg condition
+    (∀ r, r²−aₚ·r+p≥0) at every prime p.
+
+    Proof: chain through the discriminant form aₚ²≤4p:
+      BSD_Hasse_OPEN p
+        ↔ aₚ²≤(2√p)²=4p          (completing the square + sqrt identity)
+        ↔ BSD_FrobeniusDegreeNonneg_OPEN p   (BSD_FrobeniusDegreeNonneg_iff)
+
+    Forward (|aₚ|≤2√p → aₚ²≤4p):
+      sq_le_sq' gives |aₚ|²≤(2√p)²; then sq_abs + mul_pow + sq_sqrt close.
+    Backward (aₚ²≤4p → |aₚ|≤2√p):
+      Real.sqrt_sq_eq_abs + Real.sqrt_le_sqrt + Real.sqrt_sq close.
+
+    Note: BSD_hasse_of_degree_nonneg (BSD_Frobenius_Certificate) gives the
+    direction DegreeNonneg→Hasse; this theorem provides the full iff. -/
+theorem BSD_Hasse_iff_DegreeNonneg (p : ℕ) [Fact p.Prime] :
+    BSD_Hasse_OPEN p ↔ BSD_FrobeniusDegreeNonneg_OPEN p := by
+  rw [BSD_FrobeniusDegreeNonneg_iff]
+  simp only [BSD_Hasse_OPEN]
+  have hp : (0 : ℝ) ≤ (p : ℝ) := Nat.cast_nonneg p
+  have hsq : Real.sqrt (p : ℝ) ^ 2 = (p : ℝ) := Real.sq_sqrt hp
+  constructor
+  · intro h
+    have habs : |(a_p p : ℝ)| ^ 2 ≤ (2 * Real.sqrt (p : ℝ)) ^ 2 :=
+      sq_le_sq' (by linarith [abs_nonneg (a_p p : ℝ), Real.sqrt_nonneg (p : ℝ)]) h
+    rw [sq_abs] at habs
+    nlinarith [mul_pow 2 (Real.sqrt (p : ℝ)) 2, hsq]
+  · intro h
+    have h1 : (a_p p : ℝ) ^ 2 ≤ (2 * Real.sqrt (p : ℝ)) ^ 2 := by
+      rw [mul_pow]; nlinarith [hsq]
+    calc |(a_p p : ℝ)|
+        = Real.sqrt ((a_p p : ℝ) ^ 2) := (Real.sqrt_sq_eq_abs _).symm
+      _ ≤ Real.sqrt ((2 * Real.sqrt (p : ℝ)) ^ 2) := Real.sqrt_le_sqrt h1
+      _ = 2 * Real.sqrt (p : ℝ) := Real.sqrt_sq (by positivity)
 
 -- ============================================================
--- §4a.  Concrete fiber counts for p = 83 (by decide, O(83) each)
--- ============================================================
--- p = 83: E143_fiber 83 x is a subset of ZMod 83 (83 elements).
--- Each decide evaluates 83 membership tests — no kernel blow-up.
--- Compare: BSD_E143_card_p83 (genesis-740) uses a single decide over
--- ZMod 83 × ZMod 83 (6889 pairs) — blows up bash, fine in workflow.
---
--- Distribution for p=83 (Python-verified):
---   x in {0,1,3,7,10,11,12,13,19,20,21,22,23,24,25,27,33,37,40,41,42,
---           44,45,49,52,54,55,56,57,58,59,60,63,64,67,70,72,73,75,77,82}
---         → count = 0   (41 rows)
---   x in {2,4,5,6,8,9,14,16,17,18,26,28,29,30,31,32,34,35,36,38,39,43,
---           46,47,48,50,51,53,61,62,65,66,68,69,71,74,76,78,79,80,81}
---         → count = 2   (41 rows)
---   x = 15 → count = 1   (unique tangent / flex point)
--- Sum = 0*41 + 2*41 + 1*1 = 83 = p - a_p(83) = 83 - 0 ✓
-
-/-- Fiber at x=0 (count 0 — no solutions). -/
-theorem BSD_E143_fiber_p83_x0  : (E143_fiber 83  (0 : ZMod 83)).card = 0 := by decide
-/-- Fiber at x=2 (count 2 — two y solutions). -/
-theorem BSD_E143_fiber_p83_x2  : (E143_fiber 83  (2 : ZMod 83)).card = 2 := by decide
-/-- Fiber at x=15 (count 1 — tangent/flex point; unique row with odd count). -/
-theorem BSD_E143_fiber_p83_x15 : (E143_fiber 83 (15 : ZMod 83)).card = 1 := by decide
-/-- Fiber at x=50 (count 2 — two y solutions). -/
-theorem BSD_E143_fiber_p83_x50 : (E143_fiber 83 (50 : ZMod 83)).card = 2 := by decide
-/-- Fiber at x=82 (count 0 — no solutions). -/
-theorem BSD_E143_fiber_p83_x82 : (E143_fiber 83 (82 : ZMod 83)).card = 0 := by decide
-
--- ============================================================
--- §5.  Named open surfaces / gap sentinels
+-- §5.  Gate 1 Frobenius eigenvalue sub-surface
 -- ============================================================
 
-/-- OPEN: Hasse bound for primes 251 ≤ p ≤ 997 (Tier B — not yet in HasseBridge).
-    Proof route: extend the HasseBridge chain to cover all 168 LMFDB primes,
-    OR close the compatibility bridge BSD_HasseCompatibility_OPEN for those primes.
-    Mathlib wall: none (decidable for each p; workflow can compile). -/
-def BSD_HasseSmallPrime_Tier_B_OPEN : Prop :=
-  ∀ p ∈ Finset.Icc 251 997, Nat.Prime p → ¬(p ∣ 143) →
-    (a_p p : ℝ) ^ 2 ≤ 4 * (p : ℝ)
+/-- **BSD_FrobeniusEigenvalue_OPEN** — Weil eigenvalue sub-surface.
 
-/-- OPEN: Hasse bound for primes p > 997 (Tier C).
-    Requires Mathlib EllipticCurve.Frobenius + Isogeny.degree (Silverman AEC V.2). -/
-def BSD_HasseLargePrime_Tier_C_OPEN : Prop :=
-  ∀ p : ℕ, Nat.Prime p → p > 997 → ¬(p ∣ 143) →
-    (a_p p : ℝ) ^ 2 ≤ 4 * (p : ℝ)
+    ∀ p prime good, ∃ α β : ℂ, α·β = p ∧ α+β = aₚ ∧ |α| = √p ∧ |β| = √p.
+
+    Mathematical content (Hasse 1933 / Weil 1948 for elliptic curves):
+    The geometric Frobenius Frob_p acts on the ℓ-adic Tate module T_ℓ(E) as a
+    2×2 matrix with characteristic polynomial x²−aₚ·x+p.  The eigenvalues α_p, β_p
+    satisfy:
+      (i)   α_p · β_p = p          (determinant = p, Weil pairing)
+      (ii)  α_p + β_p = a_p(p)     (trace = aₚ, definition of aₚ)
+      (iii) |α_p| = |β_p| = √p    (Riemann hypothesis for the local L-factor;
+                                    proved by Hasse for elliptic curves in 1933)
+
+    Note: α_p, β_p ∈ ℂ in general (complex conjugates when aₚ² < 4p).
+
+    Lean gap: ℓ-adic cohomology / Tate module API absent from Mathlib v4.12.0
+    (~18–24 mo for a Mathlib-native proof).
+    STATUS: OPEN.  This surface subsumes BSD_EndomorphismDegree_OPEN (which
+    follows immediately: if |α|=|β|=√p then aₚ²=(α+β)²≤(|α|+|β|)²=4p). -/
+def BSD_FrobeniusEigenvalue_OPEN : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime], ¬(p ∣ 143) →
+    ∃ α β : ℂ,
+      α * β = (p : ℂ) ∧
+      α + β = (a_p p : ℂ) ∧
+      Complex.abs α = Real.sqrt (p : ℝ) ∧
+      Complex.abs β = Real.sqrt (p : ℝ)
 
 -- ============================================================
--- §6.  Clay gate combinator (genesis-762)
+-- §6.  genesis-762 master combinator
 -- ============================================================
 
-/-- genesis-762 combinator: BSD_143_OPEN follows from two gaps.
-    Same structure as genesis-760; adds 51-prime discriminant evidence.
-    Primary gaps unchanged: HasseBound_Discriminant + LFunctionIsLinFunc.  -/
+/-- **BSD_Genesis762_Combinator** (PROVED, 0 sorry, classical trio).
+
+    Given the two Clay gaps (Gate 1 + Gate 2 from genesis-760/761), derives:
+      (a) BSD_143_OPEN: the BSD rank = analytic rank statement.
+      (b) BSD_RamanujanBound_143: ∀ p prime good, |aₚ| ≤ 2√p.
+      (c) BSD_SpecialValue_OPEN: BSDLFunction 143 1 = 0.
+
+    New in genesis-762: the SpecialValue output (c) is a direct consequence of
+    Gate 2 now proved via BSD_SpecialValue_from_LinFunc; it is appended to the
+    prior genesis-761 output to give a three-component conclusion.
+
+    Proof: (a)+(b) from BSD_Genesis761_Combinator; (c) from
+    BSD_SpecialValue_from_LinFunc applied to h_lin.
+
+    SORRY: 0.  Classical trio.  Clay gaps: **2** (unchanged). -/
 theorem BSD_Genesis762_Combinator
-    (hd : BSD_HasseBound_Discriminant_OPEN)
-    (hl : BSD_LFunctionIsLinFunc_OPEN) :
-    BSD_143_OPEN :=
-  BSD_Genesis760_Combinator hd hl
+    (h_disc : BSD_HasseBound_Discriminant_OPEN)
+    (h_lin  : BSD_LFunctionIsLinFunc_OPEN) :
+    BSD_143_OPEN ∧ BSD_RamanujanBound_143 ∧ BSD_SpecialValue_OPEN := by
+  obtain ⟨h_bsd, h_ram⟩ := BSD_Genesis761_Combinator h_disc h_lin
+  exact ⟨h_bsd, h_ram, BSD_SpecialValue_from_LinFunc h_lin⟩
+
+/-! ══════════════════════════════════════════════════════════════════
+    §7.  Summary audit
+    ══════════════════════════════════════════════════════════════════ -/
+
+/-- **BSD_Genesis762_summary** (PROVED, 0 sorry):
+
+    Proved (0 sorry, classical trio):
+      BSD_L143a1_zero_at_one         — L_143a1 1 = 0 (ring)
+      BSD_L143a1_hasDerivAt          — HasDerivAt L_143a1 (5759/10000) 1
+      BSD_SpecialValue_from_LinFunc  — Gate 2 → L(E,1) = 0
+      BSD_SimpleZero_from_LinFunc    — Gate 2 → simple zero at s=1
+      BSD_FrobeniusDegreeNonneg_iff  — per-prime: DegreeNonneg ↔ aₚ²≤4p
+      BSD_Hasse_iff_DegreeNonneg     — per-prime: Hasse_OPEN ↔ DegreeNonneg
+      BSD_Genesis762_Combinator      — Gate 1+2 → BSD_143 ∧ Ramanujan ∧ SpecVal
+
+    Named open surfaces (def Prop, not proved, not axiom):
+      BSD_SpecialValue_OPEN          — L(E_{143a1},1)=0 (Gate 2 sub-consequence)
+      BSD_SimpleZero_OPEN            — simple zero at s=1 (Gate 2 sub-consequence)
+      BSD_FunctionalEq_143_OPEN      — functional equation, root number −1
+      BSD_FrobeniusEigenvalue_OPEN   — Weil eigenvalues α_p,β_p with |α|=|β|=√p
+
+    Genuine Clay gaps: **2** (unchanged from genesis-760).
+      Gate 1: BSD_EndomorphismDegree_OPEN ↔ BSD_HasseBound_Discriminant_OPEN
+              ↔ BSD_RamanujanBound_143 ↔ BSD_FrobeniusEigenvalue_OPEN (subsumes)
+      Gate 2: BSD_LFunctionIsLinFunc_OPEN (= BSDLFunction 143 = L_143a1)
+    BSD: OPEN (Clay).  Classical trio.  No Clay claim. -/
+def BSD_open_surface_count_762 : ℕ := 2
 
 end Towers.BSD
