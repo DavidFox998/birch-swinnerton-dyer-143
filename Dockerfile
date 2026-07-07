@@ -1,6 +1,6 @@
 FROM ghcr.io/leanprover/lean4:nightly-2024-12-31 AS builder
 WORKDIR /app
-COPY./app
+COPY
 ENV LEAN_MAX_MEMORY=4096
 RUN lake update && lake build
 
