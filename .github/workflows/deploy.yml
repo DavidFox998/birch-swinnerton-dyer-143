@@ -1,0 +1,40 @@
+name: Build + Deploy API
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Lean via Elan
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+
+      - name: Cache mathlib + build project
+        run: |
+          lake exe cache get
+          lake build
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Upload artifacts for deploy
+        uses: actions/upload-artifact@v4
+        with:
+          name: bsd-api-build
+          path: |
+           .lake/build/
+            x0_143.py
+            requirements.txt
+          retention-days: 7
