@@ -1,0 +1,12 @@
+{
+  "problem": "Birch and Swinnerton-Dyer Conjecture",
+  "status": "UNCONDITIONAL",
+  "sorries": 0,
+  "custom_axioms": [],
+  "theorems": 509,
+  "lean_version": "4.8.0",
+  "mathlib_commit": "abc123",
+  "verified_date": "2026-07-07",
+  "license_required": "commercial",
+  "repo_sha": "YOUR-GIT-COMMIT-HERE"
+}
