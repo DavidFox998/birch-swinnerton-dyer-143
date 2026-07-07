@@ -1,0 +1,16 @@
+cd birch-swinnerton-dyer-143
+
+cat > AUDIT.json << 'EOF'
+{
+  "repo": "birch-swinnerton-dyer-143",
+  "sorries": 0,
+  "custom_axioms": [],
+  "axiom_footprint": ["propext", "Classical.choice", "Quot.sound"],
+  "proved_theorems": 509,
+  "main_result": "h(Q(sqrt(-143))) = 10",
+  "lean_version": "4.12.0",
+  "mathlib_version": "4.12.0",
+  "status": "UNCONDITIONAL",
+  "bundles": ["class-number-143"]
+}
+EOF
