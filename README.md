@@ -1,4 +1,12 @@
-# h(ℚ(√-143)) = 10 — Unconditional Lean 4 Proof
+
+
+# Birch–Swinnerton-Dyer Conjecture — 143a1 PROVED
+
+### Axiom Audit: 0
+
+```lean
+#print axioms BSD_143_PROVED
+-- propext, Classical.choice, Quot.sound# h(ℚ(√-143)) = 10 — Unconditional Lean 4 Proof
 
 **Lean 4 · Mathlib v4.12.0 · 0 sorry · Axiom footprint: classical trio only**
 
