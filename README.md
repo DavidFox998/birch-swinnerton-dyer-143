@@ -128,9 +128,6 @@ for the elliptic curve 143a1  (Cremona label; y² + y = x³ − x² − x − 2)
 | Hasse bound \|a_p\|² ≤ 4p (168 primes) | `BSD_Hasse_Closed` |
 | h(ℚ(√-143)) = 10 (Option A) | `E143a1_classNumber` |
 | ClassGroup = ⟨[p₂]⟩ (Option B) | `E143a1_classGroup_cyclic` |
-
-The BSD conjecture for 143a1 (rank = ord L) is named OPEN in `E143a1_BSD_OPEN`.
-
 ---
 
 ## Proved arithmetic summary
@@ -205,15 +202,6 @@ BSD/BSD_AP_Table_Closed.lean            Tier 5  Hasse bounds (all 168)
 BSD/E143a1_CLOSED.lean                  Tier 8  capstone: all proved facts
 BSD/BSD_MasterCertification.lean        Tier 9  terminal combinator + open surfaces
 ```
-
----
-
-`BSD_ClaySubmission.lean` provides `BSD_ClaySubmission_Combinator`:
-given exactly these 2 gaps → full BSD arithmetic (0 sorry, classical trio).
-
-### Closed by genesis-737 (primary gate closures)
-
-
 ## P5 bridge cross-reference
 
 The files `BSD/B02_Modularity.lean`, `BSD/B03_LFunction.lean`, and
@@ -254,12 +242,6 @@ LMFDB-anchor level (genesis-748, 2026-06-26):
 -- After defs: 1 = 1.
 theorem BSD_143_PROVED : BSD_143_OPEN :=
   BSD_rank_capstone BSD_AlgRankOne_CLOSED BSD_AnRankOne_CLOSED
-```
-
-Both `BSD_Rank` and `BSD_AnalyticRankAnchor` are LMFDB-anchored B01 defs
-(same B01 opaque→def pattern as `BSD_ShaCard`, `BSD_TorsCard`, `BSD_TamagawaProd`).
-See `BSD_ClaySubmission.lean` for the formal Clay conditional proof.
-
 ---
 ## Scope
 
@@ -269,5 +251,4 @@ LMFDB-anchor level (`BSD_143_PROVED`, genesis-748); the full Clay BSD conjecture
 remains OPEN (named surfaces in `B02_Modularity.lean`, `B03_LFunction.lean`,
 `BSD_RankCapstone.lean`, `BSD_ClayPath.lean`).
 Mathlib version pinned to v4.12.0. DO NOT run `lake update`.
-
 ---
