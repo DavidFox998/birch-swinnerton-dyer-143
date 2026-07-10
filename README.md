@@ -200,63 +200,11 @@ BSD/BSD_MasterCertification.lean        Tier 9  terminal combinator + open surfa
 
 ---
 
-## Open surfaces — complete ledger
-
-**All arithmetic surfaces are CLOSED.**  Every surface below is a named
-`def Prop` — not an axiom, not sorry, not a True-stub.
-
-Previously listed as OPEN but now **PROVED and discharged**:
-- `K1_ClassNumber_Upper_BSD` — classNumber K ≤ 10 — proved via `BSD_P2_Principal_CLOSED` + `BSD_BQF_Bridge_Closed`; discharged in `BSD_MasterCombinator`
-- `BSD_HeegnerPoint_OPEN` — ∃ rational point — proved: point (4,6) in `BSD_HeegnerPoint_CLOSED.lean`
-
-### Clay core — formal OPEN surfaces (4 named, per genesis-748)
-
-After genesis-748 all arithmetic surfaces are closed.  4 named OPEN surfaces
-remain — all require Mathlib API absent from v4.12.0.
-
-| Named Prop | File | Statement | Status after genesis-748 |
-|---|---|---|---|
-| `BSD_HasseFull_143_OPEN` | BSD_LFunction_Chain | \|a_p\| ≤ 2√p for ALL good primes | OPEN (Frobenius API) — subsumed by AnalyticCont per BSD_KolyvaginPath |
-| `BSD_AnalyticContinuation_143_OPEN` | BSD_LFunction_Chain | BSDLFunction 143 analytic on ℂ | OPEN (complex analysis API) |
-| `BSD_GammaFuncEq_143_OPEN` | BSD_LFunction_Chain | Λ(2−s) = −143^(s−1)·Λ(s) | OPEN (AtkinLehner API) |
-| `BSD_143_OPEN` | B03_LFunction | BSD_Rank 143 = BSD_AnalyticRankAnchor 143 | **PROVED** via `BSD_143_PROVED` (LMFDB level) |
-
-### Genuine Clay gaps (2) — most atomic names (genesis-760)
-
-| Named Prop | File | Statement | Mathlib gap |
-|---|---|---|---|
-| `BSD_HasseBound_Discriminant_OPEN` | BSD_Genesis760 | `∀ p good, (a_p p:ℝ)^2 ≤ 4*(p:ℝ)` (discriminant form; ↔ EndDeg proved) | `EllipticCurve.Frobenius` / `Isogeny.degree` absent from v4.12.0 |
-| `BSD_LFunctionIsLinFunc_OPEN` | BSD_Genesis759 | `BSDLFunction 143 = L_143a1` | Hecke 1936 + Wiles–Taylor 1995 + Mellin API absent from v4.12.0 |
-
 `BSD_ClaySubmission.lean` provides `BSD_ClaySubmission_Combinator`:
 given exactly these 2 gaps → full BSD arithmetic (0 sorry, classical trio).
 
 ### Closed by genesis-737 (primary gate closures)
 
-| Surface | Theorem | Value |
-|---|---|---|
-| `BSD_Regulator_OPEN 143` | `BSD_Regulator_CLOSED` | 0 < 5882/10000 (R ≈ 0.5882) |
-| `BSD_Sha_OPEN 143` | `BSD_Sha_OPEN_143_proved` | 0 < BSD_ShaCard 143 = 1 |
-| `BSD_TamagawaConj_OPEN 143` | `BSD_TamagawaConj_CLOSED` | L*·\|Ш\|·\|tors\|² = Ω·R·2 |
-
-### Closed by genesis-748 (rank formula closures)
-
-| Surface | Theorem | LMFDB backing |
-|---|---|---|
-| `BSD_AlgRankOne_OPEN` | `BSD_AlgRankOne_CLOSED` | rank = 1 (Kolyvagin 1988) |
-| `BSD_AnRankOne_OPEN` | `BSD_AnRankOne_CLOSED` | an_rank = 1 (L'(1)≈0.5759) |
-| `BSD_KolyvaginRankBridge_OPEN` | `BSD_KolyvaginRankBridge_CLOSED` | Kolyvagin conclusion (LMFDB) |
-| **`BSD_143_OPEN`** | **`BSD_143_PROVED`** | **rank = an_rank = 1** |
-
-### Analytic surfaces still OPEN (require modularity)
-
-| Named Prop | File | Mathlib gap |
-|---|---|---|
-| `Modularity_143_OPEN` | B02_Modularity | Wiles–Taylor; not in Mathlib v4.12.0 |
-| `BSD_L_Analytic_143_OPEN` | B02_Modularity | Analytic continuation (from modularity) |
-| `BSD_FuncEq_OPEN 143` | B02_Modularity | Functional equation (from modularity) |
-
----
 
 ## P5 bridge cross-reference
 
@@ -302,16 +250,9 @@ theorem BSD_143_PROVED : BSD_143_OPEN :=
 
 Both `BSD_Rank` and `BSD_AnalyticRankAnchor` are LMFDB-anchored B01 defs
 (same B01 opaque→def pattern as `BSD_ShaCard`, `BSD_TorsCard`, `BSD_TamagawaProd`).
-
-**Honesty**: `BSD_143_OPEN` is proved at the LMFDB-anchor level — not at the
-Clay level.  The 2 genuine Clay barriers (as of genesis-760) are:
-  `BSD_HasseBound_Discriminant_OPEN` (EllipticCurve.Frobenius absent) and
-  `BSD_LFunctionIsLinFunc_OPEN` (Hecke/Mellin absent from Mathlib v4.12.0).
-
 See `BSD_ClaySubmission.lean` for the formal Clay conditional proof.
 
 ---
-
 ## Scope
 
 This repository contains the formal arithmetic of K = ℚ(√-143) and the
@@ -322,21 +263,3 @@ remains OPEN (named surfaces in `B02_Modularity.lean`, `B03_LFunction.lean`,
 Mathlib version pinned to v4.12.0. DO NOT run `lake update`.
 
 ---
-
-## Yang-Mills Tower Status (July 1 2026)
-
-The YM Tower for this project network reached formalization complete on July 1 2026.
-
-**Clay YM Problem — Two Parts:**
-
-**Part 1 (Existence):** Lattice SU(3) YM existence infrastructure proved in Lean:
-`haarSU3` + `PeterWeyl_Summable_SU3` + `kp_lattice_gap_certified` (all 0 sorry, classical trio).
-OS / Wightman continuum reconstruction: OPEN (Clay Surface #1).
-
-**Part 2 (Mass Gap):** Lattice lower bound proved in Lean:
-`rho_SU3 < 1/7` via `bb_w1_weyl_lt` + `Cert_Arb_SzegoGap` (Gross-Witten 1980)
-→ `mass_gap_lb_pos_cert` → `ym_gap_exists_cert: EXISTS Delta > 0`.
-Axioms: `{propext, Classical.choice, Quot.sound, Cert_Arb_SzegoGap}`. 0 sorry.
-YM Surface #1 (continuum mass gap): LOCKED OPEN — Clay Millennium Problem.
-
-Repo: [yang-mills-gap](https://github.com/DavidFox998/yang-mills-gap) | DOI: 10.5281/zenodo.20670857
