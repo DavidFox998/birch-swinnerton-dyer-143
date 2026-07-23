@@ -1,0 +1,27 @@
+name: Count Files
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  count:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Count files
+        run: |
+          echo "TOTAL FILES:"
+          find. -type f! -path "./.git/*" | wc -l
+          echo ""
+          echo "BY FOLDER:"
+          echo "BSD/: $(find BSD -type f 2>/dev/null | wc -l)"
+          echo "BSD_Genesis: $(find BSD -name "BSD_Genesis*.lean" 2>/dev/null | wc -l)"
+          echo "lean/: $(find lean -type f 2>/dev/null | wc -l)"
+          echo "hasseprimset/: $(find hasseprimset -type f 2>/dev/null | wc -l)"
+          echo "root.lean: $(ls -1 *.lean 2>/dev/null | wc -l)"
+          echo ""
+          echo "LIST:"
+          find. -type f! -path "./.git/*" | sort
