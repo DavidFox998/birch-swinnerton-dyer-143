@@ -1,6 +1,6 @@
 {
-  "title": "Birch-Swinnerton-Dyer Conjecture — 143a1 PROVED",
-  "description": "Unconditional proof of the Birch–Swinnerton-Dyer Conjecture for elliptic curve 143a1. Class number h(ℚ(√-143)) = 10 proved via principal ideal + BQF routes. Rank = ord_L = 1 proved. BSD formula L*(E,1)·|Ш|·|E_tors|² = Ω·R·∏c_p certified. Lean 4. 0 sorry. 0 axiom. Part of Theorema Aureum 143 / Morning Star Project.",
+  "title": "Birch-Swinnerton-Dyer Conjecture for 143a1 \u2014 formal proof in Lean 4",
+  "description": "Unconditional proof of the Birch\u2013Swinnerton-Dyer Conjecture for elliptic curve 143a1. Class number h(\u211a(\u221a-143)) = 10. Rank = ord_L = 1. BSD formula certified. Lean 4. 0 sorry. 0 axiom. Part of Opera Numerorum.",
   "creators": [
     {
       "name": "Fox, David J.",
@@ -8,19 +8,18 @@
       "affiliation": "Opera Numerorum"
     }
   ],
-  "license": "apache-2.0",
+  "license": "Apache-2.0",
   "upload_type": "software",
+  "access_right": "open",
   "keywords": [
     "birch-swinnerton-dyer",
     "millennium-prize",
     "elliptic-curves",
     "class-number",
-    "lmfdb",
     "lean4",
     "formal-proof",
     "conductor-143",
-    "arithmetic-geometry",
-    "theorema-aureum-143"
+    "opera-numerorum"
   ],
   "related_identifiers": [
     {
@@ -29,11 +28,5 @@
       "resource_type": "software"
     }
   ],
-  "communities": [
-    {
-      "identifier": "lean"
-    }
-  ],
-  "version": "v1.0-bsd-143a1-proved-unconditional",
-  "language": "lean"
+  "version": "v1.0-bsd-143a1-proved"
 }
