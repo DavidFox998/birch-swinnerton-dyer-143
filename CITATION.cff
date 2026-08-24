@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+title: "Birch–Swinnerton-Dyer for Elliptic Curve 143a1 — Formalization"
+message: "If you use this software, please cite it as below."
+type: software
+authors:
+  - family-names: Fox
+    given-names: David
+    orcid: "https://orcid.org/0009-0008-1290-6105"
+    affiliation: "Opera Numerorum"
+license: MIT
+repository-code: "https://github.com/DavidFox998/birch-swinnerton-dyer-143"
+keywords:
+  - "Birch–Swinnerton-Dyer conjecture"
+  - "BSD"
+  - "elliptic curve 143a1"
+  - "class number"
+  - "Lean 4"
+  - "formal verification"
+  - "Opera Numerorum"
+abstract: "Lean 4 formalization of the Birch–Swinnerton-Dyer formalization for the elliptic curve 143a1, including the class number of ℚ(√−143), rank, and BSD formula components. This repository is part of David Fox's Opera Numerorum ensemble."
