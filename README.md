@@ -1,4 +1,4 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22049025.svg)](https://doi.org/10.5281/zenodo.22049025) [![CI](https://github.com/DavidFox998/birch-swinnerton-dyer-143/actions/workflows/manifest-locked.yml/badge.svg)](https://github.com/DavidFox998/birch-swinnerton-dyer-143/actions/workflows/manifest-locked.yml)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22049025.svg)](https://doi.org/10.5281/zenodo.22049025) [![Lean proof build](https://github.com/DavidFox998/birch-swinnerton-dyer-143/actions/workflows/lean.yml/badge.svg)](https://github.com/DavidFox998/birch-swinnerton-dyer-143/actions/workflows/lean.yml)
 
 # Birch–Swinnerton-Dyer Conjecture — 143a1 PROVED
 
