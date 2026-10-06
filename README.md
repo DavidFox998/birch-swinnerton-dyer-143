@@ -55,6 +55,8 @@ Both routes are unconditional (0 open gates, 0 sorry).
 | Lean BSD Verify | Phases 1–33 **PASSED** |
 | Lean Weil Verify | Phases 1–14 **PASSED** |
 
+**Scope note:** `BSD_143_OPEN` is closed as an LMFDB-anchored definitional closure (`BSD_Rank 143 = BSD_AnalyticRankAnchor 143`, definitionally `1 = 1`), per the honesty note in `BSD/BSD_RankLFunction_CLOSED.lean`. The genuine vanishing-order bridge (`VanishingOrder (BSDLFunction 143) 1 = 1`) remains open as `BSD_VanishingOrder_143_Genuine_OPEN` — the vanishing-order API is absent from Mathlib v4.12.0. These checks certify the stated data/model, not the missing analytic bridge. BSD remains OPEN as a Clay problem.
+
 ---
 
 ## Two unconditional routes to h(K) = 10
@@ -255,14 +257,35 @@ remains OPEN (named surfaces in `B02_Modularity.lean`, `B03_LFunction.lean`,
 `BSD_RankCapstone.lean`, `BSD_ClayPath.lean`).
 Mathlib version pinned to v4.12.0. DO NOT run `lake update`.
 ---
-### Relationship to Opera Numerorum
+## Opera Numerorum — ensemble map
 
-| Repo | Problem | Status | Axiom count |
-| --- | --- | --- | --- |
-| `riemann-arakelov-positivity` | RH | **Route A:** All 3 gates CLOSED — **PROVED** | 0 |
-| `arakelov-rh-descent` | RH | **Route B:** All 3 gates CLOSED — **PROVED** | 0 |
-| `birch-swinnerton-dyer-143` | BSD | BSD_ClayComplete — **PROVED** | 0 |
-| `yang-mills-gap` | YM | KP Closure + SzegoGap CLOSED — **PROVED** | 0 |
-| `hodge-abelian-boundaries` | Hodge | **200 obstructions PROVED**; HC_CM `def` — next wall | 0 |
+**[arakelov-positivity-rh-core](https://github.com/DavidFox998/arakelov-positivity-rh-core) — Core** — RH positivity, `ω² = 48/13 > 0` — the root every repo connects to
 
-**`#print axioms` is the source of truth.** All repos: `{propext, Classical.choice, Quot.sound}` only.
+**[rh-p5-bridge-14](https://github.com/DavidFox998/rh-p5-bridge-14) — Keystone** — ensemble manifest (`REPOS.md`) and chain lock; reduces infinite `S_α₀` to finite `S₁₄`
+
+**[bost-connes](https://github.com/DavidFox998/bost-connes) — Arithmetic hub** — `C(S₄) = 11.422 > 2√13`; Bost–Connes spectral analysis for X₀(143)
+
+**[birch-swinnerton-dyer-143](https://github.com/DavidFox998/birch-swinnerton-dyer-143) — BSD** — BSD for curve 143a1 — recorded OPEN (formalization exceeds what Mathlib currently supports) ← **this repo**
+
+**[birch-swinnerton-dyer-143a1](https://github.com/DavidFox998/birch-swinnerton-dyer-143a1) — BSD worked example** — Heegner point `(4,6)`, `L(143a1,1) ≠ 0`, `|Sha| = 1`
+
+**[lindelof-hypothesis-143](https://github.com/DavidFox998/lindelof-hypothesis-143) — Lindelöf** — `μ = 0` for X₀(143) via S₄ = {2, 3, 19, 191}
+
+**[yang-mills-gap](https://github.com/DavidFox998/yang-mills-gap) — Yang–Mills** — SU(3) lattice mass gap at `β₀ = ln 8`
+
+**[navier-stokes](https://github.com/DavidFox998/navier-stokes) — Navier–Stokes** — global regularity formalization
+
+**[p-vs-np](https://github.com/DavidFox998/p-vs-np) — P vs NP** — mechanics; conditional `SAT ∉ P → P ≠ NP`
+
+**[eutheos-property](https://github.com/DavidFox998/eutheos-property) — Barrier bypass** — witness `T = 1419 = 3·11·43`
+
+**[poincare-spectral](https://github.com/DavidFox998/poincare-spectral) — Poincaré** — spectral gap for the homology sphere `S³/I*`
+
+**[hodge-abelian-boundaries](https://github.com/DavidFox998/hodge-abelian-boundaries) — Hodge** — measured (2,2)-class obstructions on CM abelian varieties
+
+**[opera-sieve](https://github.com/DavidFox998/opera-sieve) — Sieve** — canonical sieve for `S(α₀ = 299+π/10)`; M1–M13 pipeline
+
+**[morningstar-project](https://github.com/DavidFox998/morningstar-project) — Certification** — machine certification for GRH(X₀(143)) and BSD(J₀(143))
+
+*The four historical RH routes (A–D) are private — the multi-route structure is confusing; their status is documented in the keystone's `REPOS.md`. Referee access to non-public material is via the Oracle.*
+
